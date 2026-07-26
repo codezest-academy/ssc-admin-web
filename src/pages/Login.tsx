@@ -44,66 +44,87 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-      {/* Left side: Form */}
-      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="mx-auto w-full max-w-sm space-y-8">
-          <div className="space-y-2 text-center lg:text-left">
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Code Zest Academy</h1>
-            <p className="text-slate-500 font-medium">SSC (Staff Selection Commission) Admin Portal</p>
+    <div className="w-full min-h-screen grid lg:grid-cols-2">
+      {/* Left side: Branding (Always Primary Color) */}
+      <div className="hidden lg:flex flex-col justify-between bg-primary p-12 text-primary-foreground">
+        {/* Top left Logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+            <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
-          
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@codezest.com"
-                required
-                className="h-11"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="h-11"
-                disabled={isLoading}
-              />
-            </div>
-            {error && (
-              <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
-            <Button type="submit" className="w-full h-11 text-base font-semibold" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+          <span className="text-xl font-bold tracking-tight text-white">Code Zest Academy</span>
+        </div>
+
+        {/* Bottom left Text */}
+        <div className="max-w-md mt-auto">
+          <h1 className="text-5xl font-bold mb-6 tracking-tight leading-tight text-white">
+            Powering the future of SSC education.
+          </h1>
+          <p className="text-lg opacity-90 leading-relaxed font-medium">
+            A comprehensive command center designed for speed, clarity, and reliability.
+          </p>
         </div>
       </div>
 
-      {/* Right side: Branding/Image */}
-      <div className="hidden lg:flex flex-col justify-center items-center bg-slate-900 text-white p-12 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 bg-primary/10" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary rounded-full blur-3xl opacity-20" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20" />
-        
-        <div className="relative z-10 flex flex-col items-center text-center max-w-md">
-          <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm border border-primary/30">
-            <ShieldCheck className="w-10 h-10 text-primary" />
+      {/* Right side: Form (Dark Mode / Theme Aware) */}
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="w-full max-w-[420px]">
+          {/* Mobile Logo (visible only on small screens) */}
+          <div className="flex items-center gap-3 mb-10 lg:hidden">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-foreground">Code Zest Academy</span>
           </div>
-          <h2 className="text-4xl font-bold mb-6 tracking-tight text-white">Admin Secure Portal</h2>
-          <p className="text-lg text-slate-300">
-            Manage curriculum, oversee student performance, and administer mock tests with Code Zest Academy's powerful backend tools.
-          </p>
+
+          <div className="bg-card text-card-foreground border rounded-2xl p-8 sm:p-10 shadow-sm">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold tracking-tight">Log In</h2>
+              <p className="text-sm text-muted-foreground mt-2">Sign in to your admin account to continue</p>
+            </div>
+            
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@codezest.com"
+                  required
+                  className="h-12 bg-background/50 border-input"
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Password</Label>
+                  <a href="#" className="text-xs font-medium text-primary hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-12 bg-background/50 border-input"
+                  disabled={isLoading}
+                />
+              </div>
+              
+              {error && (
+                <p className="text-sm font-medium text-destructive">{error}</p>
+              )}
+              
+              <Button type="submit" className="w-full h-12 text-base font-bold rounded-lg" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
