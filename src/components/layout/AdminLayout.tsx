@@ -24,8 +24,8 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className="w-full md:w-64 border-r bg-card flex-shrink-0 flex flex-col">
         <div className="p-6">
-          <h1 className="text-2xl font-bold tracking-tight text-primary">SSC Admin</h1>
-          <p className="text-sm text-muted-foreground mt-1">v1.0.0</p>
+          <h1 className="text-xl font-bold tracking-tight text-primary">Code Zest Academy</h1>
+          <p className="text-sm text-slate-600 font-medium mt-1">SSC Admin Module</p>
         </div>
         
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto">

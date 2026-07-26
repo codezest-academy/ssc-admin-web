@@ -46,10 +46,10 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold tracking-tight text-center">Admin Portal</CardTitle>
-          <CardDescription className="text-center">
-            Enter your credentials to access the SSC admin dashboard
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold tracking-tight text-primary">Code Zest Academy</CardTitle>
+          <CardDescription className="text-slate-600 font-medium">
+            SSC (Staff Selection Commission) Admin Portal
           </CardDescription>
         </CardHeader>
         <CardContent>
