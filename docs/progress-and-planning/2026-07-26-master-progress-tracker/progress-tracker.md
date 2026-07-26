@@ -12,7 +12,7 @@
 | **Product** | SSC Competitive Exam Education Platform — Admin Dashboard |
 | **Repo** | `ssc-admin-web` |
 | **API Repo** | `ssc-api` |
-| **Framework** | React (TBD: Vite or Next.js) |
+| **Framework** | React (Vite) + Zustand + React Query + Shadcn UI |
 | **Users** | `SUPER_ADMIN`, `ADMIN` |
 
 ---
@@ -21,8 +21,8 @@
 
 | Phase | Scope | Status | Depends On |
 |---|---|---|---|
-| **Phase 1** | Project scaffolding, routing, API client setup | 🔴 Not Started | API Phase 1 |
-| **Phase 2** | Auth — Login page, JWT handling, role guards | 🔴 Not Started | API Phase 2 |
+| **Phase 1** | Project scaffolding, routing, API client setup | ✅ Complete | API Phase 1 |
+| **Phase 2** | Auth — Login page, JWT handling, role guards | ✅ Complete | API Phase 2 |
 | **Phase 3** | Subject, Chapter, Lesson management screens | 🔴 Not Started | API Phase 4 |
 | **Phase 4** | Question bank — CRUD, bulk import UI | 🔴 Not Started | API Phase 5 |
 | **Phase 5** | Practice Set builder | 🔴 Not Started | API Phase 6 |
