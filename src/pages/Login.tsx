@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/axios";
 import { ShieldCheck } from "lucide-react";
+import { DotPattern } from "@/components/ui/pattern";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -45,22 +46,28 @@ export default function Login() {
 
   return (
     <div className="w-full min-h-screen grid lg:grid-cols-2">
-      {/* Left side: Branding */}
-      <div className="hidden lg:flex flex-col justify-between bg-slate-50 dark:bg-slate-900/50 p-12 text-foreground border-r border-border/50">
+      {/* Left side: Premium Branding Environment */}
+      <div className="hidden lg:flex flex-col justify-between bg-[#0b1016] p-12 text-white relative overflow-hidden border-r border-border/10">
+        {/* Abstract Glows & Patterns */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-80" />
+        <div className="absolute -top-48 -right-48 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px]" />
+        <div className="absolute -bottom-48 -left-48 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
+        <DotPattern />
+
         {/* Top left Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center">
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl flex items-center justify-center shadow-2xl shadow-primary/20">
             <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
-          <span className="text-xl font-bold tracking-tight">Code Zest Academy</span>
+          <span className="text-xl font-bold tracking-tight text-white">Code Zest Academy</span>
         </div>
 
         {/* Bottom left Text */}
-        <div className="max-w-md mt-auto">
-          <h1 className="text-5xl font-bold mb-6 tracking-tight leading-tight">
+        <div className="max-w-md mt-auto relative z-10">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-tight text-white">
             Powering the future of <span className="text-primary">SSC education.</span>
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+          <p className="text-lg text-slate-300 leading-relaxed font-medium">
             A comprehensive command center designed for speed, clarity, and reliability.
           </p>
         </div>
