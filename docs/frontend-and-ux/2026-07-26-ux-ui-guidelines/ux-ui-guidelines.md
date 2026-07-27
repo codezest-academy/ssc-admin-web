@@ -29,8 +29,10 @@ Defines the design principles, component conventions, and interaction patterns f
 `--primary = oklch(0.55 0.20 275)` → **CodeZest Indigo**
 
 Used for: active sidebar nav, primary CTA buttons, focus rings.
+*Why Indigo?* It promotes focus, calm, and professional trust—essential for long study/admin sessions.
 
-**Red (`--destructive`) = danger only:** Delete, logout, error states, inactive badges.
+**Red (`--destructive`) = danger/error only:** Delete, logout, error states, inactive badges, and incorrect answers.
+*Why not Red primary?* Red causes visual fatigue over long periods and signals "incorrect" in an exam context, which induces anxiety. Keep it strictly semantic.
 
 ### 60-30-10 Rule
 

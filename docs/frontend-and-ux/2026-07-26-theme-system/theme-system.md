@@ -39,6 +39,16 @@ The `ssc-admin-web` is a **content operations interface**, not a marketing page.
 
 **The goal:** The admin interface should feel professional, calm, and data-dense — an internal tool that trusts its operators, not a consumer app trying to delight.
 
+### The Education Platform Psychology: Indigo vs. Red
+A common design trap is attempting to port high-energy, conversion-heavy designs (like Restaurant POS systems or E-commerce sites) to educational platforms. In marketing, **Red** stimulates urgency, appetite, and clicks.
+
+In an **Educational Context** (Code Zest Academy):
+1. **Red = Danger/Wrong:** In exams, red universally means "Incorrect". If primary buttons and active states are red, it induces subconscious anxiety.
+2. **Visual Fatigue:** Students and admins stare at these dashboards for hours. Bright, warm colors cause eye strain faster than cool colors.
+3. **Indigo = Trust & Focus:** Educational institutions and pro-tools rely on Blues and Indigos to promote calm, focused, deep work.
+
+**Decision (2026-07-28):** **CodeZest Indigo** is the absolute single primary brand color. Red is strictly semantic (Destructive actions and incorrect answers only).
+
 ---
 
 ## 2. The Design Token Hierarchy
@@ -52,10 +62,10 @@ Tier 1: Primitives (Raw values — never used directly in components)
   └── oklch(0.75 0.17 75)          — a specific amber
 
 Tier 2: Alias Tokens (Semantic meaning — defined in index.css)
-  └── --primary     = oklch(0.55 0.20 275)    ← CodeZest brand indigo
+  └── --primary     = oklch(0.55 0.20 275)    ← CodeZest brand indigo (Focus/Trust)
   └── --success     = oklch(0.65 0.15 160)
   └── --warning     = oklch(0.75 0.17 75)
-  └── --destructive = oklch(0.5987 0.1978 21.78)
+  └── --destructive = oklch(0.5987 0.1978 21.78) ← Semantic Red ONLY
 
 Tier 3: Component Usage (Tailwind utility classes)
   └── bg-primary, text-primary, border-primary

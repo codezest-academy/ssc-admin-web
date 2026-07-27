@@ -1,7 +1,7 @@
 # SSC Admin Web — Master Progress Tracker
 
-**Last Updated:** 2026-07-26
-**Overall Status:** 🔴 Not Started — Waiting for API Phase 1–3
+**Last Updated:** 2026-07-28
+**Overall Status:** 🟡 In Progress — Phases 1–5 complete; Phase 6 Mock Test builder next
 
 ---
 
@@ -25,7 +25,7 @@
 | **Phase 2** | Auth — Login page, JWT handling, role guards | ✅ Complete | API Phase 2 |
 | **Phase 3** | Subject, Chapter, Lesson management screens | ✅ Complete | API Phase 4 |
 | **Phase 4** | Question Bank Management | ✅ Complete | Client Portal Phase 1 |
-| **Phase 5** | Practice Set builder | ✅ Complete | API Phase 6 |
+| **Phase 5** | Practice Set builder + Global theme polish (Periwinkle Frost bg, Indigo branding locked, dark mode) | ✅ Complete | API Phase 6 |
 | **Phase 6** | Mock Test builder | 🔴 Not Started | API Phase 6 |
 | **Phase 7** | Analytics & Leaderboard views | 🔴 Not Started | API Phase 8 |
 | **Phase 8** | Student management (SUPER_ADMIN) | 🔴 Not Started | API Phase 3 |
@@ -50,4 +50,5 @@
 |---|---|
 | Core Architecture | [core-architecture.md](../../architecture-and-infrastructure/2026-07-26-core-architecture/core-architecture.md) |
 | UX/UI Guidelines | [ux-ui-guidelines.md](../../frontend-and-ux/2026-07-26-ux-ui-guidelines/ux-ui-guidelines.md) |
+| Theme System | [theme-system.md](../../frontend-and-ux/2026-07-26-theme-system/theme-system.md) |
 | Global Enums Reference | [global-enums.md](../../database-and-schema/2026-07-26-global-enums/global-enums.md) |

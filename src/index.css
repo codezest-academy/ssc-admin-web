@@ -55,8 +55,8 @@
 @layer base {
   :root {
     /* ── Core surfaces ───────────────────────────────────────── */
-    --background:          210 40% 98%;
-    --foreground:          215 31% 12%;
+    --background:          228 60% 96%;  /* Periwinkle Frost — airy premium tint */
+    --foreground:          215 35% 10%;
 
     --card:                0 0% 100%;
     --card-foreground:     215 31% 12%;
@@ -74,8 +74,8 @@
     --secondary-foreground: 210 40% 98%;
 
     /* ── Muted ───────────────────────────────────────────────── */
-    --muted:               210 40% 96%;
-    --muted-foreground:    215 16% 47%;
+    --muted:               228 45% 91%;  /* Muted periwinkle for table headers */
+    --muted-foreground:    228 20% 42%;
 
     /* ── Accent (hover surfaces) ─────────────────────────────── */
     --accent:              243 60% 96%;
@@ -99,8 +99,8 @@
     --radius: 0.5rem;
 
     /* ── Sidebar token family ────────────────────────────────── */
-    --sidebar:             220 25% 97%;
-    --sidebar-foreground:  215 31% 12%;
+    --sidebar:             228 55% 93%;  /* Slightly deeper periwinkle sidebar */
+    --sidebar-foreground:  215 35% 10%;
     --sidebar-primary:     243 74% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent:      220 20% 92%;
