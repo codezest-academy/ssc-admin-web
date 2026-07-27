@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/axios";
 import { ShieldCheck } from "lucide-react";
@@ -11,6 +12,7 @@ import { DotPattern } from "@/components/ui/pattern";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post("/auth/login", { email, password, rememberMe });
       // Depending on the exact API response shape (Assuming it returns token and user info)
       const { token, user } = response.data.data;
       
@@ -127,6 +129,20 @@ export default function Login() {
                 <p className="text-sm font-medium text-destructive">{error}</p>
               )}
               
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="remember" 
+                  checked={rememberMe} 
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)} 
+                />
+                <Label
+                  htmlFor="remember"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Keep me logged in
+                </Label>
+              </div>
+
               <Button type="submit" className="w-full h-12 text-base font-bold rounded-lg" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
