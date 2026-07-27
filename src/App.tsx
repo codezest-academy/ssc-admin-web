@@ -9,6 +9,8 @@ import ProtectedRoute from "./components/layout/ProtectedRoute";
 import SubjectsPage from "./pages/subjects/index";
 import ChaptersPage from "./pages/chapters/index";
 import LessonsPage from "./pages/lessons/index";
+import QuestionsPage from "./pages/questions/index";
+import QuestionEditor from "./pages/questions/editor";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +38,9 @@ function App() {
               <Route path="subjects" element={<SubjectsPage />} />
               <Route path="subjects/:subjectSlug/chapters" element={<ChaptersPage />} />
               <Route path="chapters/:chapterId/lessons" element={<LessonsPage />} />
+              <Route path="questions" element={<QuestionsPage />} />
+              <Route path="questions/new" element={<QuestionEditor />} />
+              <Route path="questions/:questionId" element={<QuestionEditor />} />
             </Route>
 
             {/* Future Routes */}

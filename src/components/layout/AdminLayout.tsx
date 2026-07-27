@@ -1,6 +1,6 @@
 
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, BookOpen, GraduationCap, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, GraduationCap, LogOut, Library } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +8,7 @@ const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Users", href: "/users", icon: Users },
   { name: "Subjects", href: "/subjects", icon: BookOpen },
+  { name: "Question Bank", href: "/questions", icon: Library },
   { name: "Attempts", href: "/attempts", icon: GraduationCap },
 ];
 
