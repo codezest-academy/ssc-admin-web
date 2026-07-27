@@ -5,6 +5,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AdminLayout from "./components/layout/AdminLayout";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import SubjectsPage from "./pages/subjects/index";
+import ChaptersPage from "./pages/chapters/index";
+import LessonsPage from "./pages/lessons/index";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,9 +30,16 @@ function App() {
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            
+            {/* RBAC Protected Content Management Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN", "STAFF"]} />}>
+              <Route path="subjects" element={<SubjectsPage />} />
+              <Route path="subjects/:subjectSlug/chapters" element={<ChaptersPage />} />
+              <Route path="chapters/:chapterId/lessons" element={<LessonsPage />} />
+            </Route>
+
             {/* Future Routes */}
             {/* <Route path="users" element={<Users />} /> */}
-            {/* <Route path="syllabus" element={<Syllabus />} /> */}
             {/* <Route path="attempts" element={<Attempts />} /> */}
           </Route>
 

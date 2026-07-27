@@ -23,7 +23,7 @@
 |---|---|---|---|
 | **Phase 1** | Project scaffolding, routing, API client setup | ✅ Complete | API Phase 1 |
 | **Phase 2** | Auth — Login page, JWT handling, role guards | ✅ Complete | API Phase 2 |
-| **Phase 3** | Subject, Chapter, Lesson management screens | 🔴 Not Started | API Phase 4 |
+| **Phase 3** | Subject, Chapter, Lesson management screens | ✅ Complete | API Phase 4 |
 | **Phase 4** | Question bank — CRUD, bulk import UI | 🔴 Not Started | API Phase 5 |
 | **Phase 5** | Practice Set builder | 🔴 Not Started | API Phase 6 |
 | **Phase 6** | Mock Test builder | 🔴 Not Started | API Phase 6 |
