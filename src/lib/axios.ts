@@ -31,14 +31,22 @@ api.interceptors.response.use(
       // Prevent infinite loops if the refresh itself fails
       if (!originalRequest._retry) {
         originalRequest._retry = true;
-        // Here you would implement refresh logic:
-        // try {
-        //   await axios.post('/api/v1/auth/refresh');
-        //   return api(originalRequest);
-        // } catch (e) { ... }
-        
-        // For now, clear state
-        useAuthStore.getState().logout();
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1"}/auth/refresh`,
+            {},
+            { withCredentials: true }
+          );
+          
+          const newAccessToken = response.data.data.accessToken;
+          useAuthStore.getState().setToken(newAccessToken);
+          
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return api(originalRequest);
+        } catch (refreshError) {
+          useAuthStore.getState().logout();
+          return Promise.reject(refreshError);
+        }
       }
     }
     return Promise.reject(error);
