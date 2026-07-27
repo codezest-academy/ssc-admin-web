@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -80,6 +81,7 @@ export default function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-4">
+            <ModeToggle />
             <Button variant="ghost" size="icon" className="text-muted-foreground hidden sm:flex rounded-full">
               <Bell className="w-5 h-5" />
             </Button>
