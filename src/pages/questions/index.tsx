@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Trash2, Edit, Upload, Search, FilterX } from "lucide-react";
+import { Plus, Trash2, Pencil, FileUp, Search, SlidersHorizontal } from "lucide-react";
 
 export default function QuestionsPage() {
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ export default function QuestionsPage() {
           <Dialog open={isImportModalOpen} onOpenChange={setIsImportModalOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="gap-2">
-                <Upload className="w-4 h-4" /> Bulk Import
+                <FileUp className="w-4 h-4" /> Bulk Import
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
@@ -175,7 +175,7 @@ export default function QuestionsPage() {
         </Select>
         
         <Button variant="ghost" size="icon" onClick={() => { setSearch(""); setSubjectId("all"); setChapterId("all"); setPage(1); }} title="Clear Filters">
-          <FilterX className="w-4 h-4" />
+          <SlidersHorizontal className="w-4 h-4" />
         </Button>
       </div>
 
@@ -226,7 +226,7 @@ export default function QuestionsPage() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="ghost" size="icon" onClick={() => navigate(`/questions/${q.id}`)}>
-                        <Edit className="w-4 h-4 text-slate-600" />
+                        <Pencil className="w-4 h-4 text-muted-foreground" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => {
                         if (confirm("Delete this question forever?")) deleteMutation.mutate(q.id);

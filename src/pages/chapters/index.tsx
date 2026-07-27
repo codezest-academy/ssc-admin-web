@@ -6,7 +6,7 @@ import { getChaptersBySubject, createChapter, updateChapter, deleteChapter } fro
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ArrowLeft, Video } from "lucide-react";
+import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ArrowLeft, Layers } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -207,7 +207,7 @@ export default function ChaptersPage() {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link to={`/chapters/${chapter.id}/lessons`} className="cursor-pointer">
-                            <Video className="mr-2 h-4 w-4" />
+                            <Layers className="mr-2 h-4 w-4" />
                             Manage Lessons
                           </Link>
                         </DropdownMenuItem>

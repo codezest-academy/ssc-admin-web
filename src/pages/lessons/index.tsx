@@ -7,7 +7,7 @@ import type { LessonType } from "@/api/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ArrowLeft, PlayCircle, FileText, File } from "lucide-react";
+import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ArrowLeft, PlayCircle, FileText, FileBadge } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -162,9 +162,9 @@ export default function LessonsPage() {
 
   const getLessonIcon = (type: LessonType) => {
     switch (type) {
-      case "VIDEO": return <PlayCircle className="w-4 h-4 text-blue-500" />;
-      case "ARTICLE": return <FileText className="w-4 h-4 text-orange-500" />;
-      case "PDF": return <File className="w-4 h-4 text-red-500" />;
+      case "VIDEO": return <PlayCircle className="w-4 h-4 text-primary" />;
+      case "ARTICLE": return <FileText className="w-4 h-4 text-warning" />;
+      case "PDF": return <FileBadge className="w-4 h-4 text-destructive" />;
     }
   };
 

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Trash2, Edit, Search, FilterX, LayoutList } from "lucide-react";
+import { Plus, Trash2, Pencil, Search, SlidersHorizontal, ClipboardList } from "lucide-react";
 
 export default function PracticeSetsPage() {
   const navigate = useNavigate();
@@ -111,7 +111,7 @@ export default function PracticeSetsPage() {
         </Select>
         
         <Button variant="ghost" size="icon" onClick={() => { setSearch(""); setSubjectId("all"); setChapterId("all"); setPage(1); }} title="Clear Filters">
-          <FilterX className="w-4 h-4" />
+          <SlidersHorizontal className="w-4 h-4" />
         </Button>
       </div>
 
@@ -162,10 +162,10 @@ export default function PracticeSetsPage() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="outline" size="sm" onClick={() => navigate(`/practice-sets/${set.id}`)} className="gap-2">
-                        <LayoutList className="w-4 h-4" /> Build
+                        <ClipboardList className="w-4 h-4" /> Build
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => navigate(`/practice-sets/${set.id}/edit`)}>
-                        <Edit className="w-4 h-4 text-slate-600" />
+                        <Pencil className="w-4 h-4 text-muted-foreground" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => {
                         if (confirm("Delete this practice set?")) deleteMutation.mutate(set.id);
