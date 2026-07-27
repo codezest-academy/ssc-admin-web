@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSubjectBySlug } from "@/api/subjects";
-import { getChaptersBySubject, createChapter, deleteChapter } from "@/api/chapters";
+import { getChaptersBySubject, createChapter, updateChapter, deleteChapter } from "@/api/chapters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -17,13 +17,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function ChaptersPage() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [isCreating, setIsCreating] = useState(false);
+  
+  // Create Modal State
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newChapterName, setNewChapterName] = useState("");
+
+  // Edit Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingChapter, setEditingChapter] = useState<any>(null);
+  const [editChapterName, setEditChapterName] = useState("");
+  const [editIsActive, setEditIsActive] = useState(true);
 
   const { data: subject, isLoading: isSubjectLoading } = useQuery({
     queryKey: ["subject", subjectSlug],
@@ -57,8 +75,20 @@ export default function ChaptersPage() {
     },
     onSuccess: () => {
       setNewChapterName("");
-      setIsCreating(false);
+      setIsCreateModalOpen(false);
       toast.success("Chapter created successfully");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string, data: any }) => updateChapter({ id, ...data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chapters", subject?.id] });
+      setIsEditModalOpen(false);
+      toast.success("Chapter updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to update chapter");
     },
   });
 
@@ -74,6 +104,22 @@ export default function ChaptersPage() {
     e.preventDefault();
     if (!newChapterName.trim() || !subject) return;
     createMutation.mutate({ subjectId: subject.id, name: newChapterName });
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editChapterName.trim() || !editingChapter) return;
+    updateMutation.mutate({ 
+      id: editingChapter.id, 
+      data: { name: editChapterName, isActive: editIsActive } 
+    });
+  };
+
+  const openEditModal = (chapter: any) => {
+    setEditingChapter(chapter);
+    setEditChapterName(chapter.name);
+    setEditIsActive(chapter.isActive);
+    setIsEditModalOpen(true);
   };
 
   if (isSubjectLoading) {
@@ -106,30 +152,11 @@ export default function ChaptersPage() {
             Manage chapters for {subject.name}.
           </p>
         </div>
-        <Button onClick={() => setIsCreating(!isCreating)} className="gap-2">
+        <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
           <Plus className="w-4 h-4" />
-          {isCreating ? "Cancel" : "New Chapter"}
+          New Chapter
         </Button>
       </div>
-
-      {isCreating && (
-        <div className="bg-card border rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-4">Create New Chapter</h3>
-          <form onSubmit={handleCreate} className="flex gap-4 max-w-md">
-            <Input
-              autoFocus
-              placeholder="e.g. Percentage & Ratios"
-              value={newChapterName}
-              onChange={(e) => setNewChapterName(e.target.value)}
-              disabled={createMutation.isPending}
-            />
-            <Button type="submit" disabled={createMutation.isPending || !newChapterName.trim()}>
-              {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Create
-            </Button>
-          </form>
-        </div>
-      )}
 
       <div className="bg-card border rounded-xl shadow-sm overflow-hidden">
         <Table>
@@ -184,7 +211,7 @@ export default function ChaptersPage() {
                             Manage Lessons
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(chapter)} className="cursor-pointer">
                           <Pencil className="mr-2 h-4 w-4" />
                           Edit Details
                         </DropdownMenuItem>
@@ -209,6 +236,84 @@ export default function ChaptersPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Create Modal */}
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleCreate}>
+            <DialogHeader>
+              <DialogTitle>Create New Chapter</DialogTitle>
+              <DialogDescription>
+                Add a new chapter to {subject.name}.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name">Chapter Name</Label>
+                <Input
+                  id="name"
+                  placeholder="e.g. Percentage & Ratios"
+                  value={newChapterName}
+                  onChange={(e) => setNewChapterName(e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createMutation.isPending || !newChapterName.trim()}>
+                {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Create Chapter
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleEditSubmit}>
+            <DialogHeader>
+              <DialogTitle>Edit Chapter</DialogTitle>
+              <DialogDescription>
+                Update the details for this chapter.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-name">Chapter Name</Label>
+                <Input
+                  id="edit-name"
+                  value={editChapterName}
+                  onChange={(e) => setEditChapterName(e.target.value)}
+                  disabled={updateMutation.isPending}
+                />
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <Checkbox
+                  id="edit-active"
+                  checked={editIsActive}
+                  onCheckedChange={(val) => setEditIsActive(Boolean(val))}
+                  disabled={updateMutation.isPending}
+                />
+                <Label htmlFor="edit-active" className="cursor-pointer">Active</Label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={updateMutation.isPending || !editChapterName.trim()}>
+                {updateMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

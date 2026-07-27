@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getChapterById } from "@/api/chapters";
-import { getLessonsByChapter, createLesson, deleteLesson } from "@/api/lessons";
+import { getLessonsByChapter, createLesson, updateLesson, deleteLesson } from "@/api/lessons";
 import type { LessonType } from "@/api/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,17 +18,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function LessonsPage() {
   const { chapterId } = useParams<{ chapterId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [isCreating, setIsCreating] = useState(false);
-
-  // Form state
+  
+  // Create Modal State
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState<LessonType>("VIDEO");
   const [newIsFree, setNewIsFree] = useState(false);
+
+  // Edit Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingLesson, setEditingLesson] = useState<any>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editType, setEditType] = useState<LessonType>("VIDEO");
+  const [editIsFree, setEditIsFree] = useState(false);
+  const [editIsActive, setEditIsActive] = useState(true);
 
   const { data: chapter, isLoading: isChapterLoading } = useQuery({
     queryKey: ["chapter", chapterId],
@@ -64,8 +82,20 @@ export default function LessonsPage() {
       setNewTitle("");
       setNewType("VIDEO");
       setNewIsFree(false);
-      setIsCreating(false);
+      setIsCreateModalOpen(false);
       toast.success("Lesson created successfully");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string, data: any }) => updateLesson({ id, ...data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lessons", chapterId] });
+      setIsEditModalOpen(false);
+      toast.success("Lesson updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to update lesson");
     },
   });
 
@@ -87,6 +117,29 @@ export default function LessonsPage() {
       type: newType,
       isFree: newIsFree,
     });
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTitle.trim() || !editingLesson) return;
+    updateMutation.mutate({ 
+      id: editingLesson.id, 
+      data: { 
+        title: editTitle, 
+        type: editType, 
+        isFree: editIsFree, 
+        isActive: editIsActive 
+      } 
+    });
+  };
+
+  const openEditModal = (lesson: any) => {
+    setEditingLesson(lesson);
+    setEditTitle(lesson.title);
+    setEditType(lesson.type);
+    setEditIsFree(lesson.isFree);
+    setEditIsActive(lesson.isActive);
+    setIsEditModalOpen(true);
   };
 
   if (isChapterLoading) {
@@ -127,67 +180,11 @@ export default function LessonsPage() {
             Manage the individual lessons within this chapter.
           </p>
         </div>
-        <Button onClick={() => setIsCreating(!isCreating)} className="gap-2">
+        <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
           <Plus className="w-4 h-4" />
-          {isCreating ? "Cancel" : "New Lesson"}
+          New Lesson
         </Button>
       </div>
-
-      {isCreating && (
-        <div className="bg-card border rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-4">Create New Lesson</h3>
-          <form onSubmit={handleCreate} className="space-y-4 max-w-md">
-            <div>
-              <label className="text-sm font-medium mb-1 block">Title</label>
-              <Input
-                autoFocus
-                placeholder="e.g. Introduction to Ratios"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                disabled={createMutation.isPending}
-              />
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-1 block">Lesson Type</label>
-              <select
-                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                value={newType}
-                onChange={(e) => setNewType(e.target.value as LessonType)}
-                disabled={createMutation.isPending}
-              >
-                <option value="VIDEO">Video</option>
-                <option value="ARTICLE">Article (Text)</option>
-                <option value="PDF">PDF Document</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
-              <input
-                type="checkbox"
-                id="isFree"
-                className="w-5 h-5 rounded border-input text-primary focus:ring-primary"
-                checked={newIsFree}
-                onChange={(e) => setNewIsFree(e.target.checked)}
-                disabled={createMutation.isPending}
-              />
-              <div className="flex-1">
-                <label htmlFor="isFree" className="text-sm font-semibold cursor-pointer block">
-                  Free Preview (Unlocked)
-                </label>
-                <p className="text-xs text-muted-foreground">
-                  Allow FREE tier students to access this lesson.
-                </p>
-              </div>
-            </div>
-
-            <Button type="submit" disabled={createMutation.isPending || !newTitle.trim()} className="w-full">
-              {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Create Lesson
-            </Button>
-          </form>
-        </div>
-      )}
 
       <div className="bg-card border rounded-xl shadow-sm overflow-hidden">
         <Table>
@@ -248,9 +245,9 @@ export default function LessonsPage() {
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(lesson)} className="cursor-pointer">
                           <Pencil className="mr-2 h-4 w-4" />
-                          Edit Content
+                          Edit Details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
@@ -273,6 +270,134 @@ export default function LessonsPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Create Modal */}
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleCreate}>
+            <DialogHeader>
+              <DialogTitle>Create New Lesson</DialogTitle>
+              <DialogDescription>
+                Add a new lesson to {chapter.name}.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="title">Lesson Title</Label>
+                <Input
+                  id="title"
+                  placeholder="e.g. Introduction to Ratios"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="type">Lesson Type</Label>
+                <select
+                  id="type"
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={newType}
+                  onChange={(e) => setNewType(e.target.value as LessonType)}
+                  disabled={createMutation.isPending}
+                >
+                  <option value="VIDEO">Video</option>
+                  <option value="ARTICLE">Article (Text)</option>
+                  <option value="PDF">PDF Document</option>
+                </select>
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <Checkbox
+                  id="isFree"
+                  checked={newIsFree}
+                  onCheckedChange={(val) => setNewIsFree(Boolean(val))}
+                  disabled={createMutation.isPending}
+                />
+                <Label htmlFor="isFree" className="cursor-pointer">
+                  Free Preview (Unlocked)
+                </Label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createMutation.isPending || !newTitle.trim()}>
+                {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Create Lesson
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleEditSubmit}>
+            <DialogHeader>
+              <DialogTitle>Edit Lesson</DialogTitle>
+              <DialogDescription>
+                Update the details for this lesson.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-title">Lesson Title</Label>
+                <Input
+                  id="edit-title"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  disabled={updateMutation.isPending}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-type">Lesson Type</Label>
+                <select
+                  id="edit-type"
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={editType}
+                  onChange={(e) => setEditType(e.target.value as LessonType)}
+                  disabled={updateMutation.isPending}
+                >
+                  <option value="VIDEO">Video</option>
+                  <option value="ARTICLE">Article (Text)</option>
+                  <option value="PDF">PDF Document</option>
+                </select>
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <Checkbox
+                  id="edit-isFree"
+                  checked={editIsFree}
+                  onCheckedChange={(val) => setEditIsFree(Boolean(val))}
+                  disabled={updateMutation.isPending}
+                />
+                <Label htmlFor="edit-isFree" className="cursor-pointer">
+                  Free Preview (Unlocked)
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <Checkbox
+                  id="edit-active"
+                  checked={editIsActive}
+                  onCheckedChange={(val) => setEditIsActive(Boolean(val))}
+                  disabled={updateMutation.isPending}
+                />
+                <Label htmlFor="edit-active" className="cursor-pointer">Active</Label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={updateMutation.isPending || !editTitle.trim()}>
+                {updateMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
