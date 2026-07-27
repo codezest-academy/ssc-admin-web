@@ -11,7 +11,9 @@ import ChaptersPage from "./pages/chapters/index";
 import LessonsPage from "./pages/lessons/index";
 import QuestionsPage from "./pages/questions/index";
 import QuestionEditor from "./pages/questions/editor";
-
+import PracticeSetsPage from "./pages/practiceSets/index";
+import PracticeSetEditor from "./pages/practiceSets/editor";
+import PracticeSetBuilder from "./pages/practiceSets/builder";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -41,6 +43,10 @@ function App() {
               <Route path="questions" element={<QuestionsPage />} />
               <Route path="questions/new" element={<QuestionEditor />} />
               <Route path="questions/:questionId" element={<QuestionEditor />} />
+              <Route path="practice-sets" element={<PracticeSetsPage />} />
+              <Route path="practice-sets/new" element={<PracticeSetEditor />} />
+              <Route path="practice-sets/:id/edit" element={<PracticeSetEditor />} />
+              <Route path="practice-sets/:id" element={<PracticeSetBuilder />} />
             </Route>
 
             {/* Future Routes */}

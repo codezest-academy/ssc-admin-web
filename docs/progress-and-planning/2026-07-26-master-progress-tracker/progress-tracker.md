@@ -25,7 +25,7 @@
 | **Phase 2** | Auth — Login page, JWT handling, role guards | ✅ Complete | API Phase 2 |
 | **Phase 3** | Subject, Chapter, Lesson management screens | ✅ Complete | API Phase 4 |
 | **Phase 4** | Question Bank Management | ✅ Complete | Client Portal Phase 1 |
-| **Phase 5** | Practice Set builder | 🔴 Not Started | API Phase 6 |
+| **Phase 5** | Practice Set builder | ✅ Complete | API Phase 6 |
 | **Phase 6** | Mock Test builder | 🔴 Not Started | API Phase 6 |
 | **Phase 7** | Analytics & Leaderboard views | 🔴 Not Started | API Phase 8 |
 | **Phase 8** | Student management (SUPER_ADMIN) | 🔴 Not Started | API Phase 3 |

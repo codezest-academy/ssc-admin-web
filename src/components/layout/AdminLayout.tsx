@@ -9,6 +9,7 @@ const navItems = [
   { name: "Users", href: "/users", icon: Users },
   { name: "Subjects", href: "/subjects", icon: BookOpen },
   { name: "Question Bank", href: "/questions", icon: Library },
+  { name: "Practice Sets", href: "/practice-sets", icon: BookOpen },
   { name: "Attempts", href: "/attempts", icon: GraduationCap },
 ];
 
