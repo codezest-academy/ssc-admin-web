@@ -39,8 +39,9 @@ export default function Login() {
 
       setAuth(user, token);
       navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+    } catch (err: unknown) {
+      const e = err as any;
+      setError(e.response?.data?.message || "Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -52,7 +53,7 @@ export default function Login() {
       <div className="hidden lg:flex flex-col justify-between bg-[#0b1016] p-12 text-white relative overflow-hidden border-r border-border/10">
         {/* Abstract Glows & Patterns */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-80" />
-        <div className="absolute -top-48 -right-48 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px]" />
+        <div className="absolute -top-48 -right-48 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
         <div className="absolute -bottom-48 -left-48 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
         <DotPattern />
 
@@ -69,7 +70,7 @@ export default function Login() {
           <h1 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-tight text-white">
             Powering the future of <span className="text-primary">SSC education.</span>
           </h1>
-          <p className="text-lg text-slate-300 leading-relaxed font-medium">
+          <p className="text-lg text-muted-foreground leading-relaxed font-medium">
             A comprehensive command center designed for speed, clarity, and reliability.
           </p>
         </div>

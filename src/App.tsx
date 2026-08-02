@@ -14,6 +14,7 @@ import QuestionEditor from "./pages/questions/editor";
 import PracticeSetsPage from "./pages/practiceSets/index";
 import PracticeSetEditor from "./pages/practiceSets/editor";
 import PracticeSetBuilder from "./pages/practiceSets/builder";
+import DesignSystem from "./pages/DesignSystem";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -30,6 +31,7 @@ function App() {
         <Router>
           <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/design-system" element={<DesignSystem />} />
           
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
@@ -57,7 +59,7 @@ function App() {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Router>
-      <Toaster />
+      <Toaster position="top-right" />
       </QueryClientProvider>
     </ThemeProvider>
   );

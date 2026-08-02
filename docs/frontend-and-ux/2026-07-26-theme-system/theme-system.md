@@ -561,3 +561,18 @@ grep -rn 'style=.*color' src/ --include='*.tsx'
 - [UX/UI Guidelines (Admin)](./ux-ui-guidelines.md) — Page layouts, component patterns, interaction conventions
 - [Global Enums Reference](../database-and-schema/2026-07-26-global-enums/global-enums.md) — Status values and subject enums from the API
 - [Master Progress Tracker](../progress-and-planning/2026-07-26-master-progress-tracker/progress-tracker.md) — Phase status
+
+---
+
+## 15. The Design System Documentation Hub
+
+The interactive reference for all these tokens is available at `/design-system` within the app.
+This is a **production-ready documentation site layout** featuring industry-standard tooling:
+
+- **Interactive Token Editor**: A sidebar that allows designers and developers to dynamically adjust `--primary` hue, chroma, border radius, and fonts with live real-time WCAG contrast checking. Enables rapid prototyping and CSS variable export.
+- **Visual Token Governance (Do / Don't)**: Dedicated sections outlining strict visual contracts and anti-patterns for using raw Tailwind colors versus semantic tokens.
+- **Dual-Theme Previews**: Component blocks wrapped in a `ThemePreview` component that explicitly forces `.light` on one side and `.dark` on the other, ensuring developers can verify contrast instantly without manually toggling the global theme.
+- **Modular Sections**: The hub is split into distinct logical sections (`Colors`, `PagePatterns`, `Governance`, etc.) ensuring the code remains maintainable.
+- **Page Patterns**: Composed layouts like data tables, sidebar navigation, and forms to demonstrate how tokens work together in reality.
+
+**Always refer to `/design-system` as the absolute source of truth when reviewing PRs.**
