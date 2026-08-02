@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
+import { oklchToRelativeLuminance, getContrastRatio } from "@/lib/color-utils";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -50,10 +51,10 @@ export function TokenEditorSidebar() {
     };
   }, [hue, chroma, radius]);
 
-  // Contrast check
-  const primaryLightness = 0.55;
-  const primaryLuminance = Math.pow(primaryLightness, 2.2);
-  const contrastRatio = 1.05 / (primaryLuminance + 0.05);
+  // Contrast check using proper OKLCH -> sRGB -> Luminance conversion
+  const primaryLuminance = oklchToRelativeLuminance(0.55, chroma, hue);
+  const bgLuminance = oklchToRelativeLuminance(0.96, 0.01, 250); // Light mode background approximation
+  const contrastRatio = getContrastRatio(primaryLuminance, bgLuminance);
   const contrastIsValid = contrastRatio >= 3.0;
 
   const swatchStyle = `oklch(0.55 ${chroma} ${hue})`;

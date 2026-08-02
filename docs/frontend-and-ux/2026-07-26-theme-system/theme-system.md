@@ -170,6 +170,8 @@ The sidebar has its own token family so it can be independently styled (e.g., da
 
 For all analytics dashboards and Recharts data visualizations.
 
+> **Important:** Chart hues (220, 15, 100, 260, 320) are intentionally disjoint from both the `--primary` brand hue and all `--subject-*` hues to prevent false visual associations (e.g., mistaking a chart series for "Quant" or the "Primary" action). Do not adjust these to match brand colors.
+
 | Token | Usage in Admin |
 |:---|:---|
 | `--chart-1` | Primary data series (e.g., total attempts) |
@@ -262,13 +264,12 @@ This is the canonical mapping for all content entities (Subject, Chapter, Lesson
 
 | Token | Size | Weight | Use |
 |:---|:---|:---|:---|
-| `text-xs` | 12px | 400 | Captions, table footnotes, help text |
-| `text-sm` | 14px | 400/500 | Table body, form labels, badge text |
-| `text-base` | 16px | 400 | Body content, form field values |
-| `text-lg` | 18px | 600 | Card titles, section headings |
-| `text-xl` | 20px | 600/700 | Page titles |
-| `text-2xl` | 24px | 700 | Dashboard stat numbers |
-| `text-3xl+` | 30px+ | 700 | Reserved — use sparingly in admin context |
+| `text-xs` | 12px | 500 | Label/Meta: Captions, table footnotes, help text, uppercase tracking |
+| `text-sm` | 14px | 400/500 | Body/UI: Table body, form labels, badge text (Used for 90% of UI) |
+| `text-base` | 16px | 600 | Subheading: Card titles, section headings |
+| `text-xl` | 20px | 600 | Page titles |
+| `text-2xl` | 24px | 700 | **Exception:** Allowed ONLY inside StatCard/metric components (e.g. `text-2xl font-bold tabular-nums`) |
+| `text-lg, text-3xl+` | N/A | N/A | **Banned.** Do not use. |
 
 ### Math & Question Formatting
 
@@ -355,6 +356,16 @@ The `--ring` token is set globally. Never suppress `outline-none` unless you rep
 // ✅ Replaces with accessible ring
 <button className="outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">...</button>
 ```
+
+### Rule 7: Elevation is Structural, Not Shadow-Based
+Both light and dark modes use a symmetric numerical lightness delta (`Δ0.04`) for elevation, rather than relying on drop shadows which can wash out or disappear.
+
+- **Light Mode:** Background is `L 0.96`. Cards sit at `L 1.0` (Δ0.04). A subtle hairline border (`border-border`) is required as a fallback in high-glare environments. **Client is borderless in light mode only.**
+- **Dark Mode:** Background is `L 0.18`. Cards sit at `L 0.22` (Δ0.04). **Dark mode cards MUST have a visible border** (`oklch(0.28 0.02 250)`) for structural elevation. Pure black drop-shadows are invisible in dark mode and explicitly rejected.
+
+### Rule 8: Ambient Gradients (Client Only)
+- **Admin:** Ambient gradients are strictly forbidden. Use subtle grid patterns instead, with a strict opacity ceiling of `2-4%` (tested against dense data like Question Bank tables).
+- **Client:** Ambient gradient tints are permitted but they are **contextual per subject page, and never blended across subjects**. Backgrounds should stay constant across the whole app canvas, applying gradients only at the page-header level to provide subject identity.
 
 ---
 

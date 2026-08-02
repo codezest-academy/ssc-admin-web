@@ -44,6 +44,16 @@ See `theme-system.md` for full token reference.
 
 ---
 
+## Spacing Grid System
+
+Admin relies on a **strict 8-point grid** to maintain horizontal and vertical rhythm.
+
+- **Allowed values:** `8px`, `16px`, `24px`, `32px`, `48px`, `64px` etc. (e.g., `p-2`, `m-4`, `gap-6`).
+- **Half-Step Exception:** `4px` (`p-1`, `gap-1`) is the **only permitted half-step**. Use it strictly for tight inline spacing, such as icon-to-text gaps within buttons or badge internal padding.
+- **Banned:** All other off-grid values (`p-3`, `gap-5`, `m-7`) and arbitrary values (`p-[13px]`) are globally banned via ESLint. This prevents the UI from becoming disjointed.
+
+---
+
 ## Layout Conventions
 
 ### Admin Shell
@@ -59,6 +69,11 @@ See `theme-system.md` for full token reference.
 | **Table** | Dense admin data: Questions, Users, Attempts |
 | **Card Grid** | Groupings: Subjects |
 | **Single Card** | Editors, builders |
+
+### Backgrounds & Gradients
+
+- **Grid Pattern:** When applying a subtle dot grid pattern (`bg-grid-pattern`) to admin backgrounds, the opacity must be capped at a **strict ceiling of 2–4%**. It must be visually tested against dense data (like the Question Bank table) to ensure it introduces zero visual noise.
+- **Gradients:** Ambient decorative gradients are **strictly forbidden** in the Admin UI.
 
 ---
 
@@ -108,6 +123,11 @@ See `theme-system.md` for full token reference.
 ### Dialogs / Modals
 
 Create and Edit open a **Dialog modal**. Exceptions: Question Editor, Practice Set Builder (dedicated pages due to complexity).
+
+### Animations & Reduced Motion
+
+- All animations (such as the `animate-progress-stripe` progress bar) must respect `prefers-reduced-motion: reduce`.
+- The global `index.css` sets all animation durations to `0.01ms` when this flag is detected. Ensure custom keyframes do not override this accessibility safeguard.
 
 ### Status Badges
 

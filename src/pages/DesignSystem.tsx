@@ -8,6 +8,8 @@ import { IntroSection } from "./design-system/sections/IntroSection";
 import { ColorsSection } from "./design-system/sections/ColorsSection";
 import { SemanticStatusSection } from "./design-system/sections/SemanticStatusSection";
 import { SubjectSystemSection } from "./design-system/sections/SubjectSystemSection";
+import { SidebarSystemSection } from "./design-system/sections/SidebarSystemSection";
+import { ChartSystemSection } from "./design-system/sections/ChartSystemSection";
 import { InteractiveComponentsSection } from "./design-system/sections/InteractiveComponentsSection";
 import { ToasterSection } from "./design-system/sections/ToasterSection";
 import { PagePatternsSection } from "./design-system/sections/PagePatternsSection";
@@ -57,6 +59,8 @@ export default function DesignSystem() {
     { id: "colors", label: "Brand & Colors" },
     { id: "semantic-status", label: "Semantic Status" },
     { id: "subjects", label: "Subject System" },
+    { id: "sidebar-system", label: "Sidebar System" },
+    { id: "chart-system", label: "Chart System" },
     { id: "interactive", label: "Interactive Components" },
     { id: "toasts", label: "Toasts (Sonner)" },
     { id: "patterns", label: "Page Patterns" },
@@ -123,31 +127,17 @@ export default function DesignSystem() {
 
         {/* Main Content */}
         <main id="main-scroll-container" className="flex-1 overflow-y-auto p-8 lg:p-12 pb-32">
-          <div className="max-w-5xl mx-auto">
-            <div id="intro">
-              <IntroSection />
-            </div>
-            <div id="governance">
-              <TokenGovernanceSection />
-            </div>
-            <div id="colors">
-              <ColorsSection />
-            </div>
-            <div id="semantic-status">
-              <SemanticStatusSection />
-            </div>
-            <div id="subjects">
-              <SubjectSystemSection />
-            </div>
-            <div id="interactive">
-              <InteractiveComponentsSection />
-            </div>
-            <div id="toasts">
-              <ToasterSection />
-            </div>
-            <div id="patterns">
-              <PagePatternsSection />
-            </div>
+          <div className="max-w-5xl mx-auto pb-32">
+            <IntroSection />
+            <TokenGovernanceSection />
+            <ColorsSection />
+            <SemanticStatusSection />
+            <SubjectSystemSection />
+            <SidebarSystemSection />
+            <ChartSystemSection />
+            <InteractiveComponentsSection />
+            <ToasterSection />
+            <PagePatternsSection />
           </div>
         </main>
 

@@ -2,7 +2,7 @@ import { Check, X, Palette, Layout, ShieldAlert } from "lucide-react";
 
 export function TokenGovernanceSection() {
   return (
-    <div className="space-y-12 mb-16">
+    <section id="governance" className="space-y-12 pt-12 border-t mt-12">
       <div className="prose prose-slate dark:prose-invert max-w-none">
         <h2 className="text-3xl font-bold tracking-tight mb-2">Token Governance</h2>
         <p className="text-muted-foreground text-lg leading-relaxed">
@@ -87,6 +87,6 @@ export function TokenGovernanceSection() {
           bun run lint
         </div>
       </div>
-    </div>
+    </section>
   );
 }

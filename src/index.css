@@ -72,10 +72,10 @@
 @layer base {
   :root {
     /* ── Core surfaces ───────────────────────────────────────── */
-    --background:          oklch(0.98 0.01 250);  /* Crisp Alabaster */
+    --background:          oklch(0.96 0.01 250);  /* Deeper Alabaster for card contrast */
     --foreground:          oklch(0.18 0.02 250);
 
-    --card:                oklch(1 0 0);
+    --card:                oklch(1 0 0);          /* Pure Opaque White */
     --card-foreground:     oklch(0.18 0.02 250);
 
     --popover:             oklch(1 0 0);
@@ -91,7 +91,7 @@
 
     /* ── Muted ───────────────────────────────────────────────── */
     --muted:               oklch(0.96 0.01 250);
-    --muted-foreground:    oklch(0.55 0.02 250);
+    --muted-foreground:    oklch(0.53 0.02 250); /* Shifted from 0.55 to 0.53 to clear WCAG 4.5:1 against muted background */
 
     /* ── Accent (hover surfaces) ─────────────────────────────── */
     --accent:              oklch(0.94 0.04 250);
@@ -117,16 +117,16 @@
     --subject-reason:      oklch(0.65 0.18 145);  /* Green */
     --subject-science:     oklch(0.65 0.18 190);  /* Teal */
 
-    /* ── Chart Colors ────────────────────────────────────────── */
-    --chart-1:             oklch(0.65 0.18 275);
-    --chart-2:             oklch(0.65 0.18 190);
-    --chart-3:             oklch(0.65 0.18 45);
-    --chart-4:             oklch(0.65 0.18 300);
-    --chart-5:             oklch(0.65 0.18 340);
+    /* ── Chart Colors (Shifted to prevent clash with Subject/Primary) ── */
+    --chart-1:             oklch(0.65 0.18 220);
+    --chart-2:             oklch(0.65 0.18 15);
+    --chart-3:             oklch(0.65 0.18 100);
+    --chart-4:             oklch(0.65 0.18 260);
+    --chart-5:             oklch(0.65 0.18 320);
 
     /* ── Borders / Inputs / Ring ─────────────────────────────── */
-    --border:              oklch(0.92 0.01 250);
-    --input:               oklch(0.92 0.01 250);
+    --border:              oklch(0.93 0.005 250); /* Subtle structural border fallback */
+    --input:               oklch(0.85 0.01 250);  /* Darker input border for better visibility */
     --ring:                oklch(0.55 0.20 275);
 
     --radius: 0.5rem;
@@ -146,7 +146,7 @@
     --background:          oklch(0.18 0.02 250);  /* Deep Slate */
     --foreground:          oklch(0.98 0.01 250);
 
-    --card:                oklch(0.22 0.02 250);
+    --card:                oklch(0.22 0.02 250);  /* Lifted for dark mode elevation */
     --card-foreground:     oklch(0.98 0.01 250);
 
     --popover:             oklch(0.22 0.02 250);
@@ -188,16 +188,16 @@
     --subject-reason:      oklch(0.60 0.18 145);
     --subject-science:     oklch(0.60 0.18 190);
 
-    /* ── Chart Colors ────────────────────────────────────────── */
-    --chart-1:             oklch(0.60 0.18 275);
-    --chart-2:             oklch(0.60 0.18 190);
-    --chart-3:             oklch(0.60 0.18 45);
-    --chart-4:             oklch(0.60 0.18 300);
-    --chart-5:             oklch(0.60 0.18 340);
+    /* ── Chart Colors (Shifted to prevent clash with Subject/Primary) ── */
+    --chart-1:             oklch(0.60 0.18 220);
+    --chart-2:             oklch(0.60 0.18 15);
+    --chart-3:             oklch(0.60 0.18 100);
+    --chart-4:             oklch(0.60 0.18 260);
+    --chart-5:             oklch(0.60 0.18 320);
 
     /* ── Borders / Inputs / Ring ─────────────────────────────── */
-    --border:              oklch(0.28 0.02 250);
-    --input:               oklch(0.28 0.02 250);
+    --border:              oklch(0.28 0.02 250); /* Explicit border for dark mode card elevation */
+    --input:               oklch(0.35 0.02 250); /* Brighter input border for dark mode */
     --ring:                oklch(0.65 0.18 275);
 
     /* ── Sidebar token family ────────────────────────────────── */
