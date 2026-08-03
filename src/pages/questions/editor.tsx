@@ -14,13 +14,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { QuestionRenderer } from "@/components/ui/question-renderer";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, FileText } from "lucide-react";
 
 const EXAM_TYPES: ExamType[] = ["SSC_CGL", "SSC_CHSL", "SSC_MTS", "SSC_CPO", "SSC_GD"];
 const OPTION_KEYS = ["A", "B", "C", "D"];
 
-const initialOptions: QuestionOption[] = OPTION_KEYS.map(key => ({ key, text: "", imageUrl: null }));
+const initialOptions: QuestionOption[] = OPTION_KEYS.map(key => ({ key, text: "", imageUrl: null, formatType: "TEXT" }));
 
 export default function QuestionEditor() {
   const { questionId } = useParams();
@@ -74,7 +75,7 @@ export default function QuestionEditor() {
       setExplanationImageUrl(existingQuestion.explanationImageUrl || "");
       
       if (existingQuestion.options?.length === 4) {
-        setOptions(existingQuestion.options);
+        setOptions(existingQuestion.options.map(opt => ({ ...opt, formatType: opt.formatType || "TEXT" })));
       }
     }
   }, [existingQuestion]);
@@ -128,7 +129,7 @@ export default function QuestionEditor() {
     setExamTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
   };
 
-  const updateOption = (index: number, field: "text" | "imageUrl", value: string) => {
+  const updateOption = (index: number, field: "text" | "imageUrl" | "formatType", value: string) => {
     const newOptions = [...options];
     newOptions[index] = { ...newOptions[index], [field]: value };
     setOptions(newOptions);
@@ -139,7 +140,7 @@ export default function QuestionEditor() {
   }
 
   return (
-    <div className="space-y-8 pb-12 max-w-5xl mx-auto">
+    <div className="space-y-8 pb-12 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/questions")}>
@@ -156,18 +157,82 @@ export default function QuestionEditor() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Editor Section */}
-        <div className="lg:col-span-2 space-y-8">
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Main Editor Section (Left 60%) */}
+        <div className="w-full lg:w-[60%] space-y-8">
+          
+          {/* Categorization & Settings Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card border rounded-xl p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Categorization</h3>
+              <div className="space-y-2">
+                <Label>Subject *</Label>
+                <Select value={subjectId} onValueChange={setSubjectId}>
+                  <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
+                  <SelectContent>
+                    {subjects.map((sub: any) => (
+                      <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Chapter *</Label>
+                <Select value={chapterId} onValueChange={setChapterId} disabled={!subjectId}>
+                  <SelectTrigger><SelectValue placeholder={subjectId ? "Select Chapter" : "Select Subject first"} /></SelectTrigger>
+                  <SelectContent>
+                    {chapters?.map((chap: any) => (
+                      <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Difficulty</Label>
+                <Select value={difficulty} onValueChange={(val: any) => setDifficulty(val)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EASY">Easy</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="HARD">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="bg-card border rounded-xl p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Tags & Target Exams</h3>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="isPYQ" checked={isPYQ} onCheckedChange={(val) => setIsPYQ(Boolean(val))} />
+                <Label htmlFor="isPYQ">Is Previous Year Question (PYQ)?</Label>
+              </div>
+              {isPYQ && (
+                <div className="space-y-2 pl-6">
+                  <Label>PYQ Year</Label>
+                  <Input type="number" value={pyqYear} onChange={e => setPyqYear(e.target.value ? parseInt(e.target.value) : "")} placeholder="e.g. 2023" />
+                </div>
+              )}
+              <div className="space-y-3 pt-4 border-t">
+                <Label>Relevant Exams</Label>
+                <div className="flex flex-wrap gap-2">
+                  {EXAM_TYPES.map(exam => (
+                    <div key={exam} className="flex items-center space-x-1">
+                      <Checkbox id={`exam-${exam}`} checked={examTypes.includes(exam)} onCheckedChange={() => toggleExamType(exam)} />
+                      <Label htmlFor={`exam-${exam}`} className="text-xs">{exam.replace("SSC_", "")}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Question Body */}
           <div className="bg-card border rounded-xl p-6 space-y-4">
             <h3 className="text-lg font-semibold">Question Details</h3>
-            
             <div className="space-y-2">
               <Label>Question Text *</Label>
               <RichTextEditor value={questionText} onChange={setQuestionText} placeholder="Enter your question here. Use formatting for math/emphasis." />
             </div>
-
             <div className="space-y-2">
               <Label>Question Image URL (Optional)</Label>
               <Input value={questionImageUrl} onChange={e => setQuestionImageUrl(e.target.value)} placeholder="https://example.com/image.png" />
@@ -181,23 +246,45 @@ export default function QuestionEditor() {
               <p className="text-sm text-muted-foreground">Select the correct option</p>
             </div>
             
-            <RadioGroup value={correctOption} onValueChange={setCorrectOption} className="space-y-4">
+            <RadioGroup value={correctOption} onValueChange={setCorrectOption} className="space-y-6">
               {options.map((opt, i) => (
-                <div key={opt.key} className={`border rounded-lg p-4 flex gap-4 transition-colors ${correctOption === opt.key ? 'bg-success/5 border-success/30' : 'bg-muted/30'}`}>
-                  <div className="pt-2">
-                    <RadioGroupItem value={opt.key} id={`opt-${opt.key}`} className={correctOption === opt.key ? "text-success border-success" : ""} />
-                  </div>
-                  <div className="flex-1 space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Label htmlFor={`opt-${opt.key}`} className="text-base font-bold min-w-8">Option {opt.key}</Label>
+                <div key={opt.key} className={`border rounded-lg p-4 transition-colors ${correctOption === opt.key ? 'bg-success/5 border-success/30' : 'bg-muted/30'}`}>
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value={opt.key} id={`opt-${opt.key}`} className={correctOption === opt.key ? "text-success border-success" : ""} />
+                      <Label htmlFor={`opt-${opt.key}`} className="text-base font-bold">Option {opt.key}</Label>
                       {correctOption === opt.key && <Badge variant="outline" className="bg-success text-success-foreground border-success">Correct Answer</Badge>}
                     </div>
-                    <Textarea 
-                      value={opt.text} 
-                      onChange={e => updateOption(i, "text", e.target.value)} 
-                      placeholder={`Enter text for Option ${opt.key}`}
-                      className="min-h-[80px]"
-                    />
+                    <div className="flex items-center gap-2">
+                      <Select value={opt.formatType || "TEXT"} onValueChange={(val: any) => updateOption(i, "formatType", val)}>
+                        <SelectTrigger className="w-[140px] h-8 text-xs bg-background">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="TEXT">Plain Text</SelectItem>
+                          <SelectItem value="RICH_TEXT">Rich Text / Math</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4 pl-7">
+                    {(!opt.formatType || opt.formatType === "TEXT") ? (
+                      <Textarea 
+                        value={opt.text} 
+                        onChange={e => updateOption(i, "text", e.target.value)} 
+                        placeholder={`Enter text for Option ${opt.key}`}
+                        className="min-h-[80px]"
+                      />
+                    ) : (
+                      <div className="bg-background">
+                        <RichTextEditor 
+                          value={opt.text} 
+                          onChange={(val) => updateOption(i, "text", val)} 
+                          placeholder={`Enter rich text or KaTeX for Option ${opt.key}`}
+                        />
+                      </div>
+                    )}
                     <Input 
                       value={opt.imageUrl || ""} 
                       onChange={e => updateOption(i, "imageUrl", e.target.value)} 
@@ -214,11 +301,9 @@ export default function QuestionEditor() {
           <div className="bg-card border rounded-xl p-6 space-y-4">
             <h3 className="text-lg font-semibold">Explanation (Optional)</h3>
             <p className="text-sm text-muted-foreground mb-4">Shown to students after they attempt the question.</p>
-            
             <div className="space-y-2">
               <RichTextEditor value={explanation} onChange={setExplanation} placeholder="Explain why the correct answer is correct..." />
             </div>
-
             <div className="space-y-2">
               <Label>Explanation Image URL (Optional)</Label>
               <Input value={explanationImageUrl} onChange={e => setExplanationImageUrl(e.target.value)} placeholder="https://example.com/explain.png" />
@@ -226,88 +311,71 @@ export default function QuestionEditor() {
           </div>
         </div>
 
-        {/* Sidebar Settings */}
-        <div className="space-y-6">
-          <div className="bg-card border rounded-xl p-6 space-y-6">
-            <h3 className="text-lg font-semibold">Categorization</h3>
-            
-            <div className="space-y-2">
-              <Label>Subject *</Label>
-              <Select value={subjectId} onValueChange={setSubjectId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Subject" />
-                </SelectTrigger>
-                <SelectContent>
-                  {subjects.map((sub: any) => (
-                    <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Live Preview Panel (Right 40% Sticky) */}
+        <div className="w-full lg:w-[40%] sticky top-8">
+          <div className="bg-card border rounded-xl p-0 overflow-hidden shadow-sm">
+            <div className="bg-muted/50 border-b px-4 py-3 flex items-center justify-between">
+              <h3 className="font-semibold flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Live Preview
+              </h3>
+              <Badge variant="secondary">Student View</Badge>
             </div>
-
-            <div className="space-y-2">
-              <Label>Chapter *</Label>
-              <Select value={chapterId} onValueChange={setChapterId} disabled={!subjectId}>
-                <SelectTrigger>
-                  <SelectValue placeholder={subjectId ? "Select Chapter" : "Select Subject first"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {chapters?.map((chap: any) => (
-                    <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Difficulty</Label>
-              <Select value={difficulty} onValueChange={(val: any) => setDifficulty(val)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="EASY">Easy</SelectItem>
-                  <SelectItem value="MEDIUM">Medium</SelectItem>
-                  <SelectItem value="HARD">Hard</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="bg-card border rounded-xl p-6 space-y-6">
-            <h3 className="text-lg font-semibold">Tags & Target Exams</h3>
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox id="isPYQ" checked={isPYQ} onCheckedChange={(val) => setIsPYQ(Boolean(val))} />
-              <Label htmlFor="isPYQ">Is Previous Year Question (PYQ)?</Label>
-            </div>
-
-            {isPYQ && (
-              <div className="space-y-2 pl-6">
-                <Label>PYQ Year</Label>
-                <Input 
-                  type="number" 
-                  value={pyqYear} 
-                  onChange={e => setPyqYear(e.target.value ? parseInt(e.target.value) : "")} 
-                  placeholder="e.g. 2023" 
-                />
+            <div className="p-6 space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
+              
+              {/* Question */}
+              <div className="space-y-4">
+                {questionText ? (
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <QuestionRenderer content={questionText} />
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground italic text-sm">Question text will appear here...</p>
+                )}
+                {questionImageUrl && (
+                  <img src={questionImageUrl} alt="Question" className="max-w-full rounded-md border" />
+                )}
               </div>
-            )}
 
-            <div className="space-y-3 pt-4 border-t">
-              <Label>Relevant Exams</Label>
-              <div className="space-y-2">
-                {EXAM_TYPES.map(exam => (
-                  <div key={exam} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`exam-${exam}`} 
-                      checked={examTypes.includes(exam)}
-                      onCheckedChange={() => toggleExamType(exam)}
-                    />
-                    <Label htmlFor={`exam-${exam}`}>{exam.replace("_", " ")}</Label>
+              {/* Options */}
+              <div className="space-y-3">
+                {options.map(opt => (
+                  <div key={opt.key} className={`border rounded-lg p-3 flex gap-3 ${correctOption === opt.key ? 'border-primary ring-1 ring-primary/20' : ''}`}>
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs font-medium bg-muted/50">
+                      {opt.key}
+                    </div>
+                    <div className="flex-1 space-y-2 min-w-0">
+                      {opt.text ? (
+                        <div className="prose prose-sm dark:prose-invert max-w-none">
+                          <QuestionRenderer content={opt.text} />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground italic text-xs">Empty option</span>
+                      )}
+                      {opt.imageUrl && (
+                        <img src={opt.imageUrl} alt={`Option ${opt.key}`} className="max-w-full h-auto rounded border" />
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {/* Explanation Preview */}
+              {(explanation || explanationImageUrl) && (
+                <div className="mt-8 p-4 bg-success/10 border border-success/20 rounded-lg space-y-3">
+                  <h4 className="font-semibold text-success flex items-center gap-2 text-sm">
+                    Explanation
+                  </h4>
+                  {explanation && (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <QuestionRenderer content={explanation} />
+                    </div>
+                  )}
+                  {explanationImageUrl && (
+                    <img src={explanationImageUrl} alt="Explanation" className="max-w-full rounded-md border mt-2" />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

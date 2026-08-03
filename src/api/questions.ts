@@ -8,6 +8,7 @@ export interface QuestionOption {
   key: string;
   text: string;
   imageUrl?: string | null;
+  formatType?: "TEXT" | "RICH_TEXT";
 }
 
 export interface Question {
