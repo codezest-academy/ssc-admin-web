@@ -34,3 +34,8 @@ Never use primary brand colors for subject identification. Use the specific subj
 * **Gradients (Admin):** Strictly banned. Use flat colors and semantic surfaces.
 
 For the complete and absolute source of truth, ALWAYS review `docs/frontend-and-ux/2026-07-26-theme-system/theme-system.md` before making architectural UI decisions.
+
+## 6. QuestionRenderer (KaTeX)
+Whenever you need to render strings containing LaTeX math (`$$...$$`, `\[...\]`, or `\(...\)`), you MUST use the `QuestionRenderer` component from `@/components/ui/question-renderer`. Do NOT write custom math parsers, use `dangerouslySetInnerHTML` directly for math, or rely on client-side DOM mutation libraries like `auto-render`.
+* **Usage:** `<QuestionRenderer content={htmlString} />`
+* The component pre-processes the string for robust hydration and styling without React DOM mutation clashes.

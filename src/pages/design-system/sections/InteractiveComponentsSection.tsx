@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemePreview } from "../components/ThemePreview";
+import { QuestionRenderer } from "@/components/ui/question-renderer";
 
 export function InteractiveComponentsSection() {
   return (
@@ -102,6 +103,20 @@ export function InteractiveComponentsSection() {
               <Skeleton className="h-4 w-[90%]" />
               <Skeleton className="h-4 w-[80%]" />
             </div>
+          </div>
+        </ThemePreview>
+
+        <ThemePreview title="KaTeX Question Renderer" description="Safe HTML rendering with automatic LaTeX math parsing.">
+          <div className="w-full text-left bg-card p-6 rounded-xl border shadow-sm">
+            <QuestionRenderer 
+              content={`
+                <p>Solve the following quadratic equation for \\(x\\):</p>
+                <p>$$ax^2 + bx + c = 0$$</p>
+                <p>The solution is given by the quadratic formula:</p>
+                <p>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$</p>
+                <p>Where \\(a \\neq 0\\). Note that if \\(b^2 - 4ac < 0\\), the roots are complex.</p>
+              `}
+            />
           </div>
         </ThemePreview>
       </div>

@@ -49,7 +49,8 @@ export default function Login() {
 
   return (
     <div className="w-full min-h-screen grid lg:grid-cols-2">
-      {/* Left side: Premium Branding Environment */}
+      {/* Left side: Premium Branding Environment (Exempt from strict admin tokens) */}
+      {/* eslint-disable-next-line react/no-unknown-property, no-restricted-syntax */}
       <div className="hidden lg:flex flex-col justify-between bg-[#0b1016] p-12 text-white relative overflow-hidden border-r border-border/10">
         {/* Abstract Glows & Patterns */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-80" />
