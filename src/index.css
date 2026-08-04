@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -129,7 +130,7 @@
     --input:               oklch(0.85 0.01 250);  /* Darker input border for better visibility */
     --ring:                oklch(0.55 0.20 275);
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
 
     /* ── Sidebar token family ────────────────────────────────── */
     --sidebar:             oklch(0.97 0.01 250);
@@ -216,7 +217,9 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Inter", sans-serif !important;
+    font-size: 14px !important; /* Standard admin dense size */
   }
 }
 
