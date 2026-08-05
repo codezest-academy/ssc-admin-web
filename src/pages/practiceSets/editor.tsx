@@ -18,8 +18,6 @@ export default function PracticeSetEditor() {
   const queryClient = useQueryClient();
   const isEditing = Boolean(id && id !== "new");
 
-  const [initialLoading, setInitialLoading] = useState(isEditing);
-
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState("");
   const [scope, setScope] = useState<"subject" | "chapter">("subject");
@@ -40,23 +38,24 @@ export default function PracticeSetEditor() {
     enabled: Boolean(subjectId),
   });
 
-  // Load existing data if editing
+  const { data: practiceSet, isLoading: initialLoading } = useQuery({
+    queryKey: ["practiceSet", id],
+    queryFn: () => getPracticeSetById(id!),
+    enabled: isEditing,
+  });
+
+  // Sync loaded data to local state
   useEffect(() => {
-    if (isEditing && id) {
-      getPracticeSetById(id)
-        .then((data) => {
-          setTitle(data.title);
-          setSubjectId(data.subjectId);
-          setScope(data.chapterId ? "chapter" : "subject");
-          setChapterId(data.chapterId || "none");
-          setOrder(data.order);
-          setIsFree(data.isFree);
-          setIsActive(data.isActive);
-        })
-        .catch(() => toast.error("Failed to load practice set"))
-        .finally(() => setInitialLoading(false));
+    if (practiceSet) {
+      setTitle(practiceSet.title);
+      setSubjectId(practiceSet.subjectId);
+      setScope(practiceSet.chapterId ? "chapter" : "subject");
+      setChapterId(practiceSet.chapterId || "none");
+      setOrder(practiceSet.order);
+      setIsFree(practiceSet.isFree);
+      setIsActive(practiceSet.isActive);
     }
-  }, [id, isEditing]);
+  }, [practiceSet]);
 
   const mutation = useMutation({
     mutationFn: (values: any) => {

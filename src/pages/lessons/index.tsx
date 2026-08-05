@@ -89,20 +89,45 @@ export default function LessonsPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string, data: any }) => updateLesson({ id, ...data }),
-    onSuccess: () => {
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ["lessons", chapterId] });
+      const previousLessons = queryClient.getQueryData(["lessons", chapterId]);
+      queryClient.setQueryData(["lessons", chapterId], (old: any) => 
+        old?.map((lesson: any) => lesson.id === id ? { ...lesson, ...data } : lesson)
+      );
+      return { previousLessons };
+    },
+    onError: (error: any, _variables, context) => {
+      queryClient.setQueryData(["lessons", chapterId], context?.previousLessons);
+      toast.error(error.response?.data?.message || "Failed to update lesson");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons", chapterId] });
+    },
+    onSuccess: () => {
       setIsEditModalOpen(false);
       toast.success("Lesson updated successfully");
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to update lesson");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteLesson,
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["lessons", chapterId] });
+      const previousLessons = queryClient.getQueryData(["lessons", chapterId]);
+      queryClient.setQueryData(["lessons", chapterId], (old: any) => 
+        old?.filter((lesson: any) => lesson.id !== id)
+      );
+      return { previousLessons };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(["lessons", chapterId], context?.previousLessons);
+      toast.error("Failed to delete lesson");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons", chapterId] });
+    },
+    onSuccess: () => {
       toast.success("Lesson deleted");
     },
   });
