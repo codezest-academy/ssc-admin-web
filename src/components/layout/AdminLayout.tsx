@@ -7,6 +7,7 @@ import {
   HelpCircle,
   ClipboardList,
   BarChart3,
+  Timer,
   LogOut,
   Search,
   Bell,
@@ -43,6 +44,7 @@ const navItems = [
   { name: "Subjects",      href: "/subjects",      icon: BookOpen },
   { name: "Question Bank", href: "/questions",     icon: HelpCircle },
   { name: "Practice Sets", href: "/practice-sets", icon: ClipboardList },
+  { name: "Mock Tests",    href: "/mock-tests",    icon: Timer },
   { name: "Attempts",      href: "/attempts",      icon: BarChart3 },
 ];
 
