@@ -1,7 +1,7 @@
 # SSC Admin Web — Master Progress Tracker
 
-**Last Updated:** 2026-07-28
-**Overall Status:** 🟡 In Progress — Phases 1–5 complete; Phase 6 Mock Test builder next
+**Last Updated:** 2026-08-06
+**Overall Status:** 🟡 Phase 6 (Mock Test Builder) remaining, Phase 7 & 10 Complete
 
 ---
 
@@ -25,11 +25,12 @@
 | **Phase 2** | Auth — Login page, JWT handling, role guards | ✅ Complete | API Phase 2 |
 | **Phase 3** | Subject, Chapter, Lesson management screens | ✅ Complete | API Phase 4 |
 | **Phase 4** | Question Bank Management | ✅ Complete | Client Portal Phase 1 |
-| **Phase 5** | Practice Set builder + Global theme polish (Periwinkle Frost bg, Indigo branding locked, dark mode) | ✅ Complete | API Phase 6 |
+| **Phase 5** | Practice Set builder + Global theme polish | ✅ Complete | API Phase 6 |
 | **Phase 6** | Mock Test builder | 🔴 Not Started | API Phase 6 |
-| **Phase 7** | Analytics & Leaderboard views | 🔴 Not Started | API Phase 8 |
+| **Phase 7** | Analytics & Leaderboard views | ✅ Complete | API Phase 8 |
 | **Phase 8** | Student management (SUPER_ADMIN) | 🔴 Not Started | API Phase 3 |
 | **Phase 9** | Admin management (SUPER_ADMIN) | 🔴 Not Started | API Phase 3 |
+| **Phase 10** | Cloudflare R2 file uploads integration | ✅ Complete | API Phase 9 |
 
 ---
 
