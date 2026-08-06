@@ -6,12 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/axios";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { DotPattern } from "@/components/ui/pattern";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +51,7 @@ export default function Login() {
   return (
     <div className="w-full min-h-screen grid lg:grid-cols-2">
       {/* Left side: Premium Branding Environment (Exempt from strict admin tokens) */}
-      {/* eslint-disable-next-line react/no-unknown-property, no-restricted-syntax */}
+      {/* eslint-disable-next-line no-restricted-syntax */}
       <div className="hidden lg:flex flex-col justify-between bg-[#0b1016] p-12 text-white relative overflow-hidden border-r border-border/10">
         {/* Abstract Glows & Patterns */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-80" />
@@ -116,15 +117,28 @@ export default function Login() {
                     Forgot password?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-12 bg-background/50 border-input"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="h-12 pr-10 bg-background/50 border-input"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
               
               {error && (

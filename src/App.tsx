@@ -17,6 +17,10 @@ import PracticeSetBuilder from "./pages/practiceSets/builder";
 import MockTestsPage from "./pages/mockTests/index";
 import MockTestEditor from "./pages/mockTests/editor";
 import MockTestBuilder from "./pages/mockTests/builder";
+import ProductsPage from "./pages/products/index";
+import ProductEditor from "./pages/products/editor";
+import ProductBuilder from "./pages/products/builder";
+import PurchasesPage from "./pages/purchases/index";
 import DesignSystem from "./pages/DesignSystem";
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +60,11 @@ function App() {
               <Route path="mock-tests/new" element={<MockTestEditor />} />
               <Route path="mock-tests/:id/edit" element={<MockTestEditor />} />
               <Route path="mock-tests/:id" element={<MockTestBuilder />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="products/new" element={<ProductEditor />} />
+              <Route path="products/:id/edit" element={<ProductEditor />} />
+              <Route path="products/:id" element={<ProductBuilder />} />
+              <Route path="sales" element={<PurchasesPage />} />
             </Route>
 
             {/* Future Routes */}

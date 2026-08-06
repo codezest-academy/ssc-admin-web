@@ -148,7 +148,7 @@ export default function PracticeSetsPage() {
                       <Badge variant="outline" className="text-[10px]">
                         {set.chapterId ? 'Chapter Level' : 'Subject Level'}
                       </Badge>
-                      {set.isFree && <Badge variant="secondary" className="text-[10px] bg-success/10 text-success">Free</Badge>}
+                      {set.accessTier === "FREE" && <Badge variant="secondary" className="text-[10px] bg-success/10 text-success">Free</Badge>}
                     </div>
                   </TableCell>
                   <TableCell>

@@ -11,7 +11,7 @@ export interface MockTest {
   markingCorrect: number;
   markingIncorrect: number;
   markingSkipped: number;
-  isFree: boolean;
+  accessTier: 'FREE' | 'PRO' | 'EXCLUSIVE';
   isActive: boolean;
   scheduledAt: string | null;
   sections?: MockTestSection[];

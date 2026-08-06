@@ -15,6 +15,8 @@ import {
   User as UserIcon,
   ChevronLeft,
   ChevronRight,
+  Package,
+  IndianRupee,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
@@ -45,6 +47,8 @@ const navItems = [
   { name: "Question Bank", href: "/questions",     icon: HelpCircle },
   { name: "Practice Sets", href: "/practice-sets", icon: ClipboardList },
   { name: "Mock Tests",    href: "/mock-tests",    icon: Timer },
+  { name: "Products",      href: "/products",      icon: Package },
+  { name: "Sales",         href: "/sales",         icon: IndianRupee },
   { name: "Attempts",      href: "/attempts",      icon: BarChart3 },
 ];
 

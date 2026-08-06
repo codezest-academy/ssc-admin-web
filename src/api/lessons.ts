@@ -15,7 +15,7 @@ export interface Lesson {
   durationMins: number | null;
   thumbnailUrl: string | null;
   order: number;
-  isFree: boolean;
+  accessTier: 'FREE' | 'PRO' | 'EXCLUSIVE';
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -36,7 +36,7 @@ export const createLesson = async (data: {
   pdfUrl?: string;
   durationMins?: number;
   thumbnailUrl?: string;
-  isFree?: boolean;
+  accessTier?: 'FREE' | 'PRO' | 'EXCLUSIVE';
 }): Promise<Lesson> => {
   const response = await api.post("/lessons", data);
   return response.data.data;
@@ -55,7 +55,7 @@ export const updateLesson = async ({
   durationMins?: number | null;
   thumbnailUrl?: string | null;
   order?: number;
-  isFree?: boolean;
+  accessTier?: 'FREE' | 'PRO' | 'EXCLUSIVE';
   isActive?: boolean;
 }): Promise<Lesson> => {
   const response = await api.patch(`/lessons/${id}`, data);

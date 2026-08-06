@@ -24,7 +24,7 @@ export default function MockTestEditor() {
   const [markingCorrect, setMarkingCorrect] = useState<number>(2);
   const [markingIncorrect, setMarkingIncorrect] = useState<number>(0.5);
   const [markingSkipped, setMarkingSkipped] = useState<number>(0);
-  const [isFree, setIsFree] = useState(false);
+  const [accessTier, setAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">("FREE");
   const [isActive, setIsActive] = useState(true);
 
   const { data: mockTest, isLoading: initialLoading } = useQuery({
@@ -44,7 +44,7 @@ export default function MockTestEditor() {
       setMarkingCorrect(mockTest.markingCorrect);
       setMarkingIncorrect(mockTest.markingIncorrect);
       setMarkingSkipped(mockTest.markingSkipped);
-      setIsFree(mockTest.isFree);
+      setAccessTier(mockTest.accessTier);
       setIsActive(mockTest.isActive);
     }
   }, [mockTest]);
@@ -87,7 +87,7 @@ export default function MockTestEditor() {
       markingCorrect: Number(markingCorrect),
       markingIncorrect: Number(markingIncorrect),
       markingSkipped: Number(markingSkipped),
-      isFree,
+      accessTier,
       isActive,
     };
     mutation.mutate(payload);
@@ -207,18 +207,23 @@ export default function MockTestEditor() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-          <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm h-[88px]">
-            <Checkbox
-              id="isFree"
-              checked={isFree}
-              onCheckedChange={(val) => setIsFree(Boolean(val))}
-            />
-            <div className="space-y-1 leading-none">
-              <Label htmlFor="isFree">Free Mock Test</Label>
-              <p className="text-[0.8rem] text-muted-foreground">
-                Available to non-pro users
-              </p>
+          <div className="flex flex-col items-start space-y-2 rounded-md border p-4 shadow-sm min-h-[88px]">
+            <div className="w-full">
+              <Label>Access Tier</Label>
+              <Select onValueChange={(val: any) => setAccessTier(val)} value={accessTier}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select Tier" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="FREE">FREE</SelectItem>
+                  <SelectItem value="PRO">PRO</SelectItem>
+                  <SelectItem value="EXCLUSIVE">EXCLUSIVE</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+            <p className="text-[0.8rem] text-muted-foreground">
+              Define who can access this mock test.
+            </p>
           </div>
 
           <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm h-[88px]">

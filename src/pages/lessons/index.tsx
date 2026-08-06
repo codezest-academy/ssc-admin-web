@@ -38,14 +38,14 @@ export default function LessonsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState<LessonType>("VIDEO");
-  const [newIsFree, setNewIsFree] = useState(false);
+  const [newAccessTier, setNewAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">("FREE");
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<any>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editType, setEditType] = useState<LessonType>("VIDEO");
-  const [editIsFree, setEditIsFree] = useState(false);
+  const [editAccessTier, setEditAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">("FREE");
   const [editIsActive, setEditIsActive] = useState(true);
 
   const { data: chapter, isLoading: isChapterLoading } = useQuery({
@@ -81,7 +81,7 @@ export default function LessonsPage() {
     onSuccess: () => {
       setNewTitle("");
       setNewType("VIDEO");
-      setNewIsFree(false);
+      setNewAccessTier("FREE");
       setIsCreateModalOpen(false);
       toast.success("Lesson created successfully");
     },
@@ -140,7 +140,7 @@ export default function LessonsPage() {
       subjectId: chapter.subjectId,
       title: newTitle,
       type: newType,
-      isFree: newIsFree,
+      accessTier: newAccessTier,
     });
   };
 
@@ -152,7 +152,7 @@ export default function LessonsPage() {
       data: { 
         title: editTitle, 
         type: editType, 
-        isFree: editIsFree, 
+        accessTier: editAccessTier, 
         isActive: editIsActive 
       } 
     });
@@ -162,7 +162,7 @@ export default function LessonsPage() {
     setEditingLesson(lesson);
     setEditTitle(lesson.title);
     setEditType(lesson.type);
-    setEditIsFree(lesson.isFree);
+    setEditAccessTier(lesson.accessTier);
     setEditIsActive(lesson.isActive);
     setIsEditModalOpen(true);
   };
@@ -248,10 +248,12 @@ export default function LessonsPage() {
                     {lesson.title}
                   </TableCell>
                   <TableCell>
-                    {lesson.isFree ? (
+                    {lesson.accessTier === "FREE" ? (
                       <Badge variant="outline" className="text-success border-success/30 bg-success/10">Free Preview</Badge>
+                    ) : lesson.accessTier === "PRO" ? (
+                      <Badge variant="secondary">Pro</Badge>
                     ) : (
-                      <Badge variant="secondary">Premium</Badge>
+                      <Badge variant="secondary" className="bg-primary/20 text-primary">Exclusive</Badge>
                     )}
                   </TableCell>
                   <TableCell>
@@ -331,16 +333,19 @@ export default function LessonsPage() {
                   <option value="PDF">PDF Document</option>
                 </select>
               </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <Checkbox
-                  id="isFree"
-                  checked={newIsFree}
-                  onCheckedChange={(val) => setNewIsFree(Boolean(val))}
+              <div className="flex flex-col gap-2 mt-2">
+                <Label htmlFor="accessTier">Access Tier</Label>
+                <select
+                  id="accessTier"
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={newAccessTier}
+                  onChange={(e) => setNewAccessTier(e.target.value as any)}
                   disabled={createMutation.isPending}
-                />
-                <Label htmlFor="isFree" className="cursor-pointer">
-                  Free Preview (Unlocked)
-                </Label>
+                >
+                  <option value="FREE">FREE</option>
+                  <option value="PRO">PRO</option>
+                  <option value="EXCLUSIVE">EXCLUSIVE</option>
+                </select>
               </div>
             </div>
             <DialogFooter>
@@ -390,16 +395,19 @@ export default function LessonsPage() {
                   <option value="PDF">PDF Document</option>
                 </select>
               </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <Checkbox
-                  id="edit-isFree"
-                  checked={editIsFree}
-                  onCheckedChange={(val) => setEditIsFree(Boolean(val))}
+              <div className="flex flex-col gap-2 mt-2">
+                <Label htmlFor="edit-accessTier">Access Tier</Label>
+                <select
+                  id="edit-accessTier"
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={editAccessTier}
+                  onChange={(e) => setEditAccessTier(e.target.value as any)}
                   disabled={updateMutation.isPending}
-                />
-                <Label htmlFor="edit-isFree" className="cursor-pointer">
-                  Free Preview (Unlocked)
-                </Label>
+                >
+                  <option value="FREE">FREE</option>
+                  <option value="PRO">PRO</option>
+                  <option value="EXCLUSIVE">EXCLUSIVE</option>
+                </select>
               </div>
               <div className="flex items-center space-x-2 mt-2">
                 <Checkbox

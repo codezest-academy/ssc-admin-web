@@ -7,7 +7,7 @@ export interface PracticeSet {
   subjectId: string;
   chapterId?: string | null;
   questionCount: number;
-  isFree: boolean;
+  accessTier: 'FREE' | 'PRO' | 'EXCLUSIVE';
   order: number;
   isActive: boolean;
   createdAt: string;
@@ -42,7 +42,7 @@ export type CreatePracticeSetInput = {
   title: string;
   subjectId: string;
   chapterId?: string | null;
-  isFree?: boolean;
+  accessTier?: 'FREE' | 'PRO' | 'EXCLUSIVE';
   order?: number;
   isActive?: boolean;
 };

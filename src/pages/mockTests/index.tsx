@@ -12,7 +12,7 @@ import { Plus, Trash2, Pencil, Search, Timer } from "lucide-react";
 export default function MockTestsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [page, _setPage] = useState(1);
+  const [page] = useState(1);
   const [search, setSearch] = useState("");
 
   const { data: testsData, isLoading } = useQuery({
@@ -95,7 +95,7 @@ export default function MockTestsPage() {
                       <Badge variant="outline" className="text-[10px]">
                         {test.examType.replace("_", " ")}
                       </Badge>
-                      {test.isFree && <Badge variant="secondary" className="text-[10px] bg-success/10 text-success">Free</Badge>}
+                      {test.accessTier === "FREE" && <Badge variant="secondary" className="text-[10px] bg-success/10 text-success">Free</Badge>}
                     </div>
                   </TableCell>
                   <TableCell>

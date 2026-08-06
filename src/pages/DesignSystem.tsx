@@ -15,6 +15,19 @@ import { ToasterSection } from "./design-system/sections/ToasterSection";
 import { PagePatternsSection } from "./design-system/sections/PagePatternsSection";
 import { TokenGovernanceSection } from "./design-system/sections/TokenGovernanceSection";
 
+const navItems = [
+  { id: "intro", label: "Introduction" },
+  { id: "governance", label: "Token Governance" },
+  { id: "colors", label: "Brand & Colors" },
+  { id: "semantic-status", label: "Semantic Status" },
+  { id: "subjects", label: "Subject System" },
+  { id: "sidebar-system", label: "Sidebar System" },
+  { id: "chart-system", label: "Chart System" },
+  { id: "interactive", label: "Interactive Components" },
+  { id: "toasts", label: "Toasts (Sonner)" },
+  { id: "patterns", label: "Page Patterns" }
+];
+
 export default function DesignSystem() {
   const [activeSection, setActiveSection] = useState("intro");
   const [isManualScroll, setIsManualScroll] = useState(false);
@@ -53,18 +66,6 @@ export default function DesignSystem() {
     }, 1000);
   };
 
-  const navItems = [
-    { id: "intro", label: "Introduction" },
-    { id: "governance", label: "Token Governance" },
-    { id: "colors", label: "Brand & Colors" },
-    { id: "semantic-status", label: "Semantic Status" },
-    { id: "subjects", label: "Subject System" },
-    { id: "sidebar-system", label: "Sidebar System" },
-    { id: "chart-system", label: "Chart System" },
-    { id: "interactive", label: "Interactive Components" },
-    { id: "toasts", label: "Toasts (Sonner)" },
-    { id: "patterns", label: "Page Patterns" },
-  ];
 
   return (
     <div className="design-system-root h-screen overflow-hidden bg-background bg-grid-pattern text-foreground flex flex-col font-sans">
