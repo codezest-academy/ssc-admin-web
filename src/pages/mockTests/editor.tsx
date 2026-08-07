@@ -50,7 +50,7 @@ export default function MockTestEditor() {
   }, [mockTest]);
 
   const mutation = useMutation({
-    mutationFn: (values: any) => {
+    mutationFn: (values: Record<string, unknown>) => {
       if (isEditing) {
         return updateMockTest(id!, values);
       }
@@ -210,7 +210,7 @@ export default function MockTestEditor() {
           <div className="flex flex-col items-start space-y-2 rounded-md border p-4 shadow-sm min-h-[88px]">
             <div className="w-full">
               <Label>Access Tier</Label>
-              <Select onValueChange={(val: any) => setAccessTier(val)} value={accessTier}>
+              <Select onValueChange={(val: string) => setAccessTier(val as "FREE" | "PRO" | "EXCLUSIVE")} value={accessTier}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select Tier" />
                 </SelectTrigger>

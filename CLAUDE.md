@@ -39,3 +39,10 @@ For the complete and absolute source of truth, ALWAYS review `docs/frontend-and-
 Whenever you need to render strings containing LaTeX math (`$$...$$`, `\[...\]`, or `\(...\)`), you MUST use the `QuestionRenderer` component from `@/components/ui/question-renderer`. Do NOT write custom math parsers, use `dangerouslySetInnerHTML` directly for math, or rely on client-side DOM mutation libraries like `auto-render`.
 * **Usage:** `<QuestionRenderer content={htmlString} />`
 * The component pre-processes the string for robust hydration and styling without React DOM mutation clashes.
+
+## 7. Strict TypeScript Typings (NO `any`)
+**CRITICAL RULE:** You MUST NEVER use the `any` type in TypeScript.
+* Use strict types (interfaces, types, generics) for all variables, function parameters, and return types.
+* If a type is truly unknown, use the `unknown` type and perform proper type narrowing.
+* Use `Record<string, unknown>` for generic objects.
+* Never silence TypeScript errors by casting to `any`. Use proper types or `unknown`.

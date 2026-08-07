@@ -24,7 +24,7 @@ export default function PracticeSetsPage() {
     queryKey: ["subjects"],
     queryFn: getSubjects,
   });
-  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as any)?.data || [];
+  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as unknown as { data: { id: string; name: string }[] })?.data || [];
 
   const { data: chapters } = useQuery({
     queryKey: ["chapters", subjectId],
@@ -88,7 +88,7 @@ export default function PracticeSetsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Subjects</SelectItem>
-            {subjects.map((sub: any) => (
+            {subjects.map((sub: { id: string; name: string }) => (
               <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
             ))}
           </SelectContent>
@@ -104,7 +104,7 @@ export default function PracticeSetsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Chapters</SelectItem>
-            {chapters?.map((chap: any) => (
+            {chapters?.map((chap: { id: string; name: string }) => (
               <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
             ))}
           </SelectContent>
@@ -140,7 +140,7 @@ export default function PracticeSetsPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              practiceSets.map((set: any) => (
+              practiceSets.map((set: import("@/api/practiceSets").PracticeSet) => (
                 <TableRow key={set.id}>
                   <TableCell>
                     <p className="text-sm font-medium">{set.title}</p>

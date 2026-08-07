@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSubjectBySlug } from "@/api/subjects";
+import type { Chapter } from "@/api/chapters";
 import { getChaptersBySubject, createChapter, updateChapter, deleteChapter } from "@/api/chapters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +40,7 @@ export default function ChaptersPage() {
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingChapter, setEditingChapter] = useState<any>(null);
+  const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
   const [editChapterName, setEditChapterName] = useState("");
   const [editIsActive, setEditIsActive] = useState(true);
 
@@ -60,7 +61,7 @@ export default function ChaptersPage() {
     onMutate: async (newChapter) => {
       await queryClient.cancelQueries({ queryKey: ["chapters", subject?.id] });
       const previousChapters = queryClient.getQueryData(["chapters", subject?.id]);
-      queryClient.setQueryData(["chapters", subject?.id], (old: any) => [
+      queryClient.setQueryData(["chapters", subject?.id], (old: Chapter[] | undefined) => [
         ...(old || []),
         { ...newChapter, id: "temp-id", isActive: true, _count: { lessons: 0 } },
       ]);
@@ -81,13 +82,13 @@ export default function ChaptersPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: any }) => updateChapter({ id, ...data }),
+    mutationFn: ({ id, data }: { id: string, data: Partial<Chapter> }) => updateChapter({ id, ...data } as Parameters<typeof updateChapter>[0]),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chapters", subject?.id] });
       setIsEditModalOpen(false);
       toast.success("Chapter updated successfully");
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to update chapter");
     },
   });
@@ -115,7 +116,7 @@ export default function ChaptersPage() {
     });
   };
 
-  const openEditModal = (chapter: any) => {
+  const openEditModal = (chapter: Chapter) => {
     setEditingChapter(chapter);
     setEditChapterName(chapter.name);
     setEditIsActive(chapter.isActive);

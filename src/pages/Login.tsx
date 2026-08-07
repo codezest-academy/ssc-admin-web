@@ -29,10 +29,14 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/login", { email, password, rememberMe });
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+        rememberMe,
+      });
       // Depending on the exact API response shape (Assuming it returns token and user info)
       const { token, user } = response.data.data;
-      
+
       if (user.role !== "SUPER_ADMIN" && user.role !== "CONTENT_CREATOR") {
         setError("Unauthorized access. Admin privileges required.");
         return;
@@ -42,7 +46,10 @@ export default function Login() {
       navigate("/dashboard");
     } catch (err: unknown) {
       const e = err as any;
-      setError(e.response?.data?.message || "Login failed. Please check your credentials.");
+      setError(
+        e.response?.data?.message ||
+          "Login failed. Please check your credentials.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -64,16 +71,20 @@ export default function Login() {
           <div className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl flex items-center justify-center shadow-2xl shadow-primary/20">
             <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white">Code Zest Academy</span>
+          <span className="text-xl font-bold tracking-tight text-white">
+            Code Zest Academy
+          </span>
         </div>
 
         {/* Bottom left Text */}
         <div className="max-w-md mt-auto relative z-10">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-tight text-white">
-            Powering the future of <span className="text-primary">SSC education.</span>
+            Powering the future of{" "}
+            <span className="text-primary">SSC education.</span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-            A comprehensive command center designed for speed, clarity, and reliability.
+            A comprehensive command center designed for speed, clarity, and
+            reliability.
           </p>
         </div>
       </div>
@@ -86,18 +97,27 @@ export default function Login() {
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">Code Zest Academy</span>
+            <span className="text-xl font-bold tracking-tight text-foreground">
+              Code Zest Academy
+            </span>
           </div>
 
           <div className="bg-card text-card-foreground border rounded-2xl p-8 sm:p-10 shadow-sm">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold tracking-tight">Log In</h2>
-              <p className="text-sm text-muted-foreground mt-2">Sign in to your admin account to continue</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Sign in to your admin account to continue
+              </p>
             </div>
-            
+
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Email Address</Label>
+                <Label
+                  htmlFor="email"
+                  className="text-xs font-semibold uppercase text-muted-foreground tracking-wider"
+                >
+                  Email Address
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -109,11 +129,19 @@ export default function Login() {
                   disabled={isLoading}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Password</Label>
-                  <a href="#" className="text-xs font-medium text-primary hover:underline">
+                  <Label
+                    htmlFor="password"
+                    className="text-xs font-semibold uppercase text-muted-foreground tracking-wider"
+                  >
+                    Password
+                  </Label>
+                  <a
+                    href="#"
+                    className="text-xs font-medium text-primary hover:underline"
+                  >
                     Forgot password?
                   </a>
                 </div>
@@ -140,16 +168,18 @@ export default function Login() {
                   </button>
                 </div>
               </div>
-              
+
               {error && (
                 <p className="text-sm font-medium text-destructive">{error}</p>
               )}
-              
+
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="remember" 
-                  checked={rememberMe} 
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)} 
+                <Checkbox
+                  id="remember"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) =>
+                    setRememberMe(checked as boolean)
+                  }
                 />
                 <Label
                   htmlFor="remember"
@@ -159,7 +189,11 @@ export default function Login() {
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full h-12 text-base font-bold rounded-lg" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full h-12 text-base font-bold rounded-lg"
+                disabled={isLoading}
+              >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>

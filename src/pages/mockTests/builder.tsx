@@ -31,7 +31,7 @@ export default function MockTestBuilder() {
     queryKey: ["subjects"],
     queryFn: getSubjects,
   });
-  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as any)?.data || [];
+  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as unknown as { data: { id: string; name: string }[] })?.data || [];
 
   // Local State
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
@@ -93,7 +93,7 @@ export default function MockTestBuilder() {
 
   // Mutations
   const createSectionMutation = useMutation({
-    mutationFn: (payload: any) => createSection(id!, payload),
+    mutationFn: (payload: Record<string, unknown>) => createSection(id!, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["mockTest", id] });
       setActiveSectionId(data.id);
@@ -237,7 +237,7 @@ export default function MockTestBuilder() {
                     <SelectValue placeholder="Subject" />
                   </SelectTrigger>
                   <SelectContent>
-                    {subjects.map((s: any) => (
+                    {subjects.map((s: { id: string; name: string }) => (
                       <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                     ))}
                   </SelectContent>

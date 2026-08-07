@@ -4,7 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProducts, deleteProduct } from "@/api/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -14,7 +21,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Loader2, MoreHorizontal, Pencil, Trash2, Settings } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Loader2,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Settings,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function ProductsPage() {
@@ -45,14 +60,16 @@ export default function ProductsPage() {
   };
 
   const filteredProducts = products?.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Products & Combos</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Products & Combos
+          </h1>
           <p className="text-muted-foreground mt-1">
             Manage subscription plans, combos, and purchasable items.
           </p>
@@ -89,14 +106,20 @@ export default function ProductsPage() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={5}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                   Loading products...
                 </TableCell>
               </TableRow>
             ) : filteredProducts?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={5}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   No products found. Create one to get started.
                 </TableCell>
               </TableRow>
@@ -113,17 +136,29 @@ export default function ProductsPage() {
                     <Badge variant="outline">{product.type}</Badge>
                   </TableCell>
                   <TableCell>
-                    {product.discountedPrice !== null && product.discountedPrice < product.price ? (
+                    {product.discountedPrice !== null &&
+                    product.discountedPrice < product.price ? (
                       <div className="flex flex-col">
-                        <span className="font-medium text-success">₹{product.discountedPrice}</span>
-                        <span className="text-xs text-muted-foreground line-through">₹{product.price}</span>
+                        <span className="font-medium text-success">
+                          ₹{product.discountedPrice}
+                        </span>
+                        <span className="text-xs text-muted-foreground line-through">
+                          ₹{product.price}
+                        </span>
                       </div>
                     ) : (
                       <span className="font-medium">₹{product.price}</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={product.isActive ? "default" : "secondary"} className={product.isActive ? "bg-success/10 text-success hover:bg-success/20 border-none" : ""}>
+                    <Badge
+                      variant={product.isActive ? "default" : "secondary"}
+                      className={
+                        product.isActive
+                          ? "bg-success/10 text-success hover:bg-success/20 border-none"
+                          : ""
+                      }
+                    >
                       {product.isActive ? "Active" : "Draft"}
                     </Badge>
                   </TableCell>
@@ -138,18 +173,26 @@ export default function ProductsPage() {
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate(`/products/${product.id}/edit`)} className="cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() =>
+                            navigate(`/products/${product.id}/edit`)
+                          }
+                          className="cursor-pointer"
+                        >
                           <Pencil className="mr-2 h-4 w-4" />
                           Edit Details
                         </DropdownMenuItem>
                         {product.type !== "SUBSCRIPTION" && (
-                          <DropdownMenuItem onClick={() => navigate(`/products/${product.id}`)} className="cursor-pointer">
+                          <DropdownMenuItem
+                            onClick={() => navigate(`/products/${product.id}`)}
+                            className="cursor-pointer"
+                          >
                             <Settings className="mr-2 h-4 w-4" />
                             Manage Items
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
                           onClick={() => handleDelete(product.id)}
                         >

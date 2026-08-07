@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProductById, createProduct, updateProduct, type ProductType } from "@/api/products";
+import {
+  getProductById,
+  createProduct,
+  updateProduct,
+  type ProductType,
+} from "@/api/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -44,7 +55,7 @@ export default function ProductEditor() {
   }, [product]);
 
   const mutation = useMutation({
-    mutationFn: (values: any) => {
+    mutationFn: (values: Record<string, unknown>) => {
       if (isEditing) {
         return updateProduct(id!, values);
       }
@@ -53,16 +64,16 @@ export default function ProductEditor() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.success(isEditing ? "Product updated" : "Product created");
-      
+
       if (!isEditing && data.type !== "SUBSCRIPTION") {
-        navigate(`/products/${data.id}`); 
+        navigate(`/products/${data.id}`);
       } else {
         navigate("/products");
       }
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "An error occurred");
-    }
+    },
   });
 
   const handleSave = () => {
@@ -88,13 +99,21 @@ export default function ProductEditor() {
   };
 
   if (initialLoading) {
-    return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>;
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 p-8">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/products")}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/products")}
+        >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
@@ -111,18 +130,18 @@ export default function ProductEditor() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 md:col-span-2">
             <Label>Product Name</Label>
-            <Input 
-              placeholder="e.g. Science Mastery Combo" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
+            <Input
+              placeholder="e.g. Science Mastery Combo"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
           <div className="space-y-2 md:col-span-2">
             <Label>Description</Label>
-            <Textarea 
-              placeholder="Detailed description of what is included..." 
-              value={description} 
+            <Textarea
+              placeholder="Detailed description of what is included..."
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
@@ -130,14 +149,19 @@ export default function ProductEditor() {
 
           <div className="space-y-2">
             <Label>Product Type</Label>
-            <Select onValueChange={(val: any) => setType(val)} value={type}>
+            <Select
+              onValueChange={(val: string) => setType(val as ProductType)}
+              value={type}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SUBSCRIPTION">Subscription</SelectItem>
                 <SelectItem value="COMBO">Combo (Mixed items)</SelectItem>
-                <SelectItem value="MOCK_TEST_SERIES">Mock Test Series</SelectItem>
+                <SelectItem value="MOCK_TEST_SERIES">
+                  Mock Test Series
+                </SelectItem>
                 <SelectItem value="COURSE">Course (Video Chapters)</SelectItem>
               </SelectContent>
             </Select>
@@ -145,31 +169,35 @@ export default function ProductEditor() {
 
           <div className="space-y-2">
             <Label>Validity (Days)</Label>
-            <Input 
-              type="number" 
-              placeholder="e.g. 365 (leave empty for lifetime)" 
-              value={validityDays} 
-              onChange={(e) => setValidityDays(e.target.value ? Number(e.target.value) : "")} 
+            <Input
+              type="number"
+              placeholder="e.g. 365 (leave empty for lifetime)"
+              value={validityDays}
+              onChange={(e) =>
+                setValidityDays(e.target.value ? Number(e.target.value) : "")
+              }
             />
           </div>
 
           <div className="space-y-2">
             <Label>Original Price (₹)</Label>
-            <Input 
-              type="number" 
-              placeholder="0" 
-              value={price} 
-              onChange={(e) => setPrice(Number(e.target.value))} 
+            <Input
+              type="number"
+              placeholder="0"
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
             />
           </div>
 
           <div className="space-y-2">
             <Label>Discounted Price (₹)</Label>
-            <Input 
-              type="number" 
-              placeholder="Optional sale price" 
-              value={discountedPrice} 
-              onChange={(e) => setDiscountedPrice(e.target.value ? Number(e.target.value) : "")} 
+            <Input
+              type="number"
+              placeholder="Optional sale price"
+              value={discountedPrice}
+              onChange={(e) =>
+                setDiscountedPrice(e.target.value ? Number(e.target.value) : "")
+              }
             />
           </div>
         </div>
@@ -191,10 +219,18 @@ export default function ProductEditor() {
         </div>
 
         <div className="flex justify-end gap-4 pt-4 border-t">
-          <Button type="button" variant="outline" onClick={() => navigate("/products")}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/products")}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={mutation.isPending} className="gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={mutation.isPending}
+            className="gap-2"
+          >
             {mutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             <Save className="w-4 h-4" />
             {isEditing ? "Save Changes" : "Create Product"}

@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getQuestionById, createQuestion, updateQuestion } from "@/api/questions";
-import type { CreateQuestionInput, QuestionOption, ExamType } from "@/api/questions";
+import {
+  getQuestionById,
+  createQuestion,
+  updateQuestion,
+} from "@/api/questions";
+import type {
+  CreateQuestionInput,
+  QuestionOption,
+  ExamType,
+} from "@/api/questions";
 import { getSubjects } from "@/api/subjects";
 import { getChaptersBySubject } from "@/api/chapters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -18,10 +32,21 @@ import { QuestionRenderer } from "@/components/ui/question-renderer";
 import { toast } from "sonner";
 import { ArrowLeft, Save, Loader2, FileText } from "lucide-react";
 
-const EXAM_TYPES: ExamType[] = ["SSC_CGL", "SSC_CHSL", "SSC_MTS", "SSC_CPO", "SSC_GD"];
+const EXAM_TYPES: ExamType[] = [
+  "SSC_CGL",
+  "SSC_CHSL",
+  "SSC_MTS",
+  "SSC_CPO",
+  "SSC_GD",
+];
 const OPTION_KEYS = ["A", "B", "C", "D"];
 
-const initialOptions: QuestionOption[] = OPTION_KEYS.map(key => ({ key, text: "", imageUrl: null, formatType: "TEXT" }));
+const initialOptions: QuestionOption[] = OPTION_KEYS.map((key) => ({
+  key,
+  text: "",
+  imageUrl: null,
+  formatType: "TEXT",
+}));
 
 export default function QuestionEditor() {
   const { questionId } = useParams();
@@ -31,22 +56,30 @@ export default function QuestionEditor() {
 
   const [subjectId, setSubjectId] = useState("");
   const [chapterId, setChapterId] = useState("");
-  const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">("MEDIUM");
+  const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">(
+    "MEDIUM",
+  );
   const [isPYQ, setIsPYQ] = useState(false);
   const [pyqYear, setPyqYear] = useState<number | "">("");
   const [examTypes, setExamTypes] = useState<ExamType[]>([]);
-  
+
   const [questionText, setQuestionText] = useState("");
   const [questionImageUrl, setQuestionImageUrl] = useState("");
-  
+
   const [options, setOptions] = useState<QuestionOption[]>(initialOptions);
   const [correctOption, setCorrectOption] = useState<string>("A");
-  
+
   const [explanation, setExplanation] = useState("");
   const [explanationImageUrl, setExplanationImageUrl] = useState("");
 
-  const { data: subjectsData } = useQuery({ queryKey: ["subjects"], queryFn: getSubjects });
-  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as any)?.data || [];
+  const { data: subjectsData } = useQuery({
+    queryKey: ["subjects"],
+    queryFn: getSubjects,
+  });
+  const subjects = Array.isArray(subjectsData)
+    ? subjectsData
+    : (subjectsData as unknown as { data: { id: string; name: string }[] })
+        ?.data || [];
 
   const { data: chapters } = useQuery({
     queryKey: ["chapters", subjectId],
@@ -73,23 +106,33 @@ export default function QuestionEditor() {
       setCorrectOption(existingQuestion.correctOption);
       setExplanation(existingQuestion.explanation || "");
       setExplanationImageUrl(existingQuestion.explanationImageUrl || "");
-      
+
       if (existingQuestion.options?.length === 4) {
-        setOptions(existingQuestion.options.map(opt => ({ ...opt, formatType: opt.formatType || "TEXT" })));
+        setOptions(
+          existingQuestion.options.map((opt) => ({
+            ...opt,
+            formatType: opt.formatType || "TEXT",
+          })),
+        );
       }
     }
   }, [existingQuestion]);
 
   const mutation = useMutation({
-    mutationFn: (data: CreateQuestionInput) => isEditing ? updateQuestion(questionId!, data) : createQuestion(data),
+    mutationFn: (data: CreateQuestionInput) =>
+      isEditing ? updateQuestion(questionId!, data) : createQuestion(data),
     onSuccess: () => {
-      toast.success(isEditing ? "Question updated successfully" : "Question created successfully");
+      toast.success(
+        isEditing
+          ? "Question updated successfully"
+          : "Question created successfully",
+      );
       queryClient.invalidateQueries({ queryKey: ["questions"] });
       navigate("/questions");
     },
-    onError: (err: any) => {
+    onError: (err: { response?: { data?: { message?: string } } }) => {
       toast.error(err.response?.data?.message || "Failed to save question");
-    }
+    },
   });
 
   const handleSave = () => {
@@ -97,9 +140,9 @@ export default function QuestionEditor() {
       toast.error("Please fill all required fields");
       return;
     }
-    
+
     // Validate options
-    if (options.some(opt => !opt.text.trim() && !opt.imageUrl)) {
+    if (options.some((opt) => !opt.text.trim() && !opt.imageUrl)) {
       toast.error("All 4 options must have text or an image");
       return;
     }
@@ -126,33 +169,59 @@ export default function QuestionEditor() {
   };
 
   const toggleExamType = (type: ExamType) => {
-    setExamTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
+    setExamTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
   };
 
-  const updateOption = (index: number, field: "text" | "imageUrl" | "formatType", value: string) => {
+  const updateOption = (
+    index: number,
+    field: "text" | "imageUrl" | "formatType",
+    value: string,
+  ) => {
     const newOptions = [...options];
     newOptions[index] = { ...newOptions[index], [field]: value };
     setOptions(newOptions);
   };
 
   if (isEditing && isFetching) {
-    return <div className="p-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>;
+    return (
+      <div className="p-12 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-8 pb-12 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/questions")}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/questions")}
+          >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">{isEditing ? "Edit Question" : "New Question"}</h2>
-            <p className="text-muted-foreground mt-1">Fill out the details below to configure the question.</p>
+            <h2 className="text-3xl font-bold tracking-tight">
+              {isEditing ? "Edit Question" : "New Question"}
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              Fill out the details below to configure the question.
+            </p>
           </div>
         </div>
-        <Button onClick={handleSave} disabled={mutation.isPending} className="gap-2">
-          {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+        <Button
+          onClick={handleSave}
+          disabled={mutation.isPending}
+          className="gap-2"
+        >
+          {mutation.isPending ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
           Save Question
         </Button>
       </div>
@@ -160,7 +229,6 @@ export default function QuestionEditor() {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* Main Editor Section (Left 60%) */}
         <div className="w-full lg:w-[60%] space-y-8">
-          
           {/* Categorization & Settings Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-card border rounded-xl p-6 space-y-4">
@@ -168,29 +236,52 @@ export default function QuestionEditor() {
               <div className="space-y-2">
                 <Label>Subject *</Label>
                 <Select value={subjectId} onValueChange={setSubjectId}>
-                  <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Subject" />
+                  </SelectTrigger>
                   <SelectContent>
-                    {subjects.map((sub: any) => (
-                      <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                    {subjects.map((sub: { id: string; name: string }) => (
+                      <SelectItem key={sub.id} value={sub.id}>
+                        {sub.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Chapter *</Label>
-                <Select value={chapterId} onValueChange={setChapterId} disabled={!subjectId}>
-                  <SelectTrigger><SelectValue placeholder={subjectId ? "Select Chapter" : "Select Subject first"} /></SelectTrigger>
+                <Select
+                  value={chapterId}
+                  onValueChange={setChapterId}
+                  disabled={!subjectId}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        subjectId ? "Select Chapter" : "Select Subject first"
+                      }
+                    />
+                  </SelectTrigger>
                   <SelectContent>
-                    {chapters?.map((chap: any) => (
-                      <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
+                    {chapters?.map((chap: { id: string; name: string }) => (
+                      <SelectItem key={chap.id} value={chap.id}>
+                        {chap.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Difficulty</Label>
-                <Select value={difficulty} onValueChange={(val: any) => setDifficulty(val)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={difficulty}
+                  onValueChange={(val: string) =>
+                    setDifficulty(val as "EASY" | "MEDIUM" | "HARD")
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="EASY">Easy</SelectItem>
                     <SelectItem value="MEDIUM">Medium</SelectItem>
@@ -203,22 +294,39 @@ export default function QuestionEditor() {
             <div className="bg-card border rounded-xl p-6 space-y-4">
               <h3 className="text-lg font-semibold">Tags & Target Exams</h3>
               <div className="flex items-center space-x-2">
-                <Checkbox id="isPYQ" checked={isPYQ} onCheckedChange={(val) => setIsPYQ(Boolean(val))} />
+                <Checkbox
+                  id="isPYQ"
+                  checked={isPYQ}
+                  onCheckedChange={(val) => setIsPYQ(Boolean(val))}
+                />
                 <Label htmlFor="isPYQ">Is Previous Year Question (PYQ)?</Label>
               </div>
               {isPYQ && (
                 <div className="space-y-2 pl-6">
                   <Label>PYQ Year</Label>
-                  <Input type="number" value={pyqYear} onChange={e => setPyqYear(e.target.value ? parseInt(e.target.value) : "")} placeholder="e.g. 2023" />
+                  <Input
+                    type="number"
+                    value={pyqYear}
+                    onChange={(e) =>
+                      setPyqYear(e.target.value ? parseInt(e.target.value) : "")
+                    }
+                    placeholder="e.g. 2023"
+                  />
                 </div>
               )}
               <div className="space-y-3 pt-4 border-t">
                 <Label>Relevant Exams</Label>
                 <div className="flex flex-wrap gap-2">
-                  {EXAM_TYPES.map(exam => (
+                  {EXAM_TYPES.map((exam) => (
                     <div key={exam} className="flex items-center space-x-1">
-                      <Checkbox id={`exam-${exam}`} checked={examTypes.includes(exam)} onCheckedChange={() => toggleExamType(exam)} />
-                      <Label htmlFor={`exam-${exam}`} className="text-xs">{exam.replace("SSC_", "")}</Label>
+                      <Checkbox
+                        id={`exam-${exam}`}
+                        checked={examTypes.includes(exam)}
+                        onCheckedChange={() => toggleExamType(exam)}
+                      />
+                      <Label htmlFor={`exam-${exam}`} className="text-xs">
+                        {exam.replace("SSC_", "")}
+                      </Label>
                     </div>
                   ))}
                 </div>
@@ -231,11 +339,19 @@ export default function QuestionEditor() {
             <h3 className="text-lg font-semibold">Question Details</h3>
             <div className="space-y-2">
               <Label>Question Text *</Label>
-              <RichTextEditor value={questionText} onChange={setQuestionText} placeholder="Enter your question here. Use formatting for math/emphasis." />
+              <RichTextEditor
+                value={questionText}
+                onChange={setQuestionText}
+                placeholder="Enter your question here. Use formatting for math/emphasis."
+              />
             </div>
             <div className="space-y-2">
               <Label>Question Image URL (Optional)</Label>
-              <Input value={questionImageUrl} onChange={e => setQuestionImageUrl(e.target.value)} placeholder="https://example.com/image.png" />
+              <Input
+                value={questionImageUrl}
+                onChange={(e) => setQuestionImageUrl(e.target.value)}
+                placeholder="https://example.com/image.png"
+              />
             </div>
           </div>
 
@@ -243,52 +359,92 @@ export default function QuestionEditor() {
           <div className="bg-card border rounded-xl p-6 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Answer Options *</h3>
-              <p className="text-sm text-muted-foreground">Select the correct option</p>
+              <p className="text-sm text-muted-foreground">
+                Select the correct option
+              </p>
             </div>
-            
-            <RadioGroup value={correctOption} onValueChange={setCorrectOption} className="space-y-6">
+
+            <RadioGroup
+              value={correctOption}
+              onValueChange={setCorrectOption}
+              className="space-y-6"
+            >
               {options.map((opt, i) => (
-                <div key={opt.key} className={`border rounded-lg p-4 transition-colors ${correctOption === opt.key ? 'bg-success/5 border-success/30' : 'bg-muted/30'}`}>
+                <div
+                  key={opt.key}
+                  className={`border rounded-lg p-4 transition-colors ${correctOption === opt.key ? "bg-success/5 border-success/30" : "bg-muted/30"}`}
+                >
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-3">
-                      <RadioGroupItem value={opt.key} id={`opt-${opt.key}`} className={correctOption === opt.key ? "text-success border-success" : ""} />
-                      <Label htmlFor={`opt-${opt.key}`} className="text-base font-bold">Option {opt.key}</Label>
-                      {correctOption === opt.key && <Badge variant="outline" className="bg-success text-success-foreground border-success">Correct Answer</Badge>}
+                      <RadioGroupItem
+                        value={opt.key}
+                        id={`opt-${opt.key}`}
+                        className={
+                          correctOption === opt.key
+                            ? "text-success border-success"
+                            : ""
+                        }
+                      />
+                      <Label
+                        htmlFor={`opt-${opt.key}`}
+                        className="text-base font-bold"
+                      >
+                        Option {opt.key}
+                      </Label>
+                      {correctOption === opt.key && (
+                        <Badge
+                          variant="outline"
+                          className="bg-success text-success-foreground border-success"
+                        >
+                          Correct Answer
+                        </Badge>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Select value={opt.formatType || "TEXT"} onValueChange={(val: any) => updateOption(i, "formatType", val)}>
+                      <Select
+                        value={opt.formatType || "TEXT"}
+                        onValueChange={(val: string) =>
+                          updateOption(i, "formatType", val)
+                        }
+                      >
                         <SelectTrigger className="w-[140px] h-8 text-xs bg-background">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="TEXT">Plain Text</SelectItem>
-                          <SelectItem value="RICH_TEXT">Rich Text / Math</SelectItem>
+                          <SelectItem value="RICH_TEXT">
+                            Rich Text / Math
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4 pl-7">
-                    {(!opt.formatType || opt.formatType === "TEXT") ? (
-                      <Textarea 
-                        value={opt.text} 
-                        onChange={e => updateOption(i, "text", e.target.value)} 
+                    {!opt.formatType || opt.formatType === "TEXT" ? (
+                      <Textarea
+                        value={opt.text}
+                        onChange={(e) =>
+                          updateOption(i, "text", e.target.value)
+                        }
                         placeholder={`Enter text for Option ${opt.key}`}
                         className="min-h-[80px]"
                       />
                     ) : (
                       <div className="bg-background">
-                        <RichTextEditor 
-                          value={opt.text} 
-                          onChange={(val) => updateOption(i, "text", val)} 
+                        <RichTextEditor
+                          value={opt.text}
+                          onChange={(val) => updateOption(i, "text", val)}
                           placeholder={`Enter rich text or KaTeX for Option ${opt.key}`}
                         />
                       </div>
                     )}
-                    <Input 
-                      value={opt.imageUrl || ""} 
-                      onChange={e => updateOption(i, "imageUrl", e.target.value)} 
-                      placeholder="Image URL (optional)" 
+                    <Input
+                      value={opt.imageUrl || ""}
+                      onChange={(e) =>
+                        updateOption(i, "imageUrl", e.target.value)
+                      }
+                      placeholder="Image URL (optional)"
                       className="h-8 text-sm"
                     />
                   </div>
@@ -300,13 +456,23 @@ export default function QuestionEditor() {
           {/* Explanation */}
           <div className="bg-card border rounded-xl p-6 space-y-4">
             <h3 className="text-lg font-semibold">Explanation (Optional)</h3>
-            <p className="text-sm text-muted-foreground mb-4">Shown to students after they attempt the question.</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Shown to students after they attempt the question.
+            </p>
             <div className="space-y-2">
-              <RichTextEditor value={explanation} onChange={setExplanation} placeholder="Explain why the correct answer is correct..." />
+              <RichTextEditor
+                value={explanation}
+                onChange={setExplanation}
+                placeholder="Explain why the correct answer is correct..."
+              />
             </div>
             <div className="space-y-2">
               <Label>Explanation Image URL (Optional)</Label>
-              <Input value={explanationImageUrl} onChange={e => setExplanationImageUrl(e.target.value)} placeholder="https://example.com/explain.png" />
+              <Input
+                value={explanationImageUrl}
+                onChange={(e) => setExplanationImageUrl(e.target.value)}
+                placeholder="https://example.com/explain.png"
+              />
             </div>
           </div>
         </div>
@@ -322,7 +488,6 @@ export default function QuestionEditor() {
               <Badge variant="secondary">Student View</Badge>
             </div>
             <div className="p-6 space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
-              
               {/* Question */}
               <div className="space-y-4">
                 {questionText ? (
@@ -330,17 +495,26 @@ export default function QuestionEditor() {
                     <QuestionRenderer content={questionText} />
                   </div>
                 ) : (
-                  <p className="text-muted-foreground italic text-sm">Question text will appear here...</p>
+                  <p className="text-muted-foreground italic text-sm">
+                    Question text will appear here...
+                  </p>
                 )}
                 {questionImageUrl && (
-                  <img src={questionImageUrl} alt="Question" className="max-w-full rounded-md border" />
+                  <img
+                    src={questionImageUrl}
+                    alt="Question"
+                    className="max-w-full rounded-md border"
+                  />
                 )}
               </div>
 
               {/* Options */}
               <div className="space-y-3">
-                {options.map(opt => (
-                  <div key={opt.key} className={`border rounded-lg p-3 flex gap-3 ${correctOption === opt.key ? 'border-primary ring-1 ring-primary/20' : ''}`}>
+                {options.map((opt) => (
+                  <div
+                    key={opt.key}
+                    className={`border rounded-lg p-3 flex gap-3 ${correctOption === opt.key ? "border-primary ring-1 ring-primary/20" : ""}`}
+                  >
                     <div className="flex-shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs font-medium bg-muted/50">
                       {opt.key}
                     </div>
@@ -350,10 +524,16 @@ export default function QuestionEditor() {
                           <QuestionRenderer content={opt.text} />
                         </div>
                       ) : (
-                        <span className="text-muted-foreground italic text-xs">Empty option</span>
+                        <span className="text-muted-foreground italic text-xs">
+                          Empty option
+                        </span>
                       )}
                       {opt.imageUrl && (
-                        <img src={opt.imageUrl} alt={`Option ${opt.key}`} className="max-w-full h-auto rounded border" />
+                        <img
+                          src={opt.imageUrl}
+                          alt={`Option ${opt.key}`}
+                          className="max-w-full h-auto rounded border"
+                        />
                       )}
                     </div>
                   </div>
@@ -372,7 +552,11 @@ export default function QuestionEditor() {
                     </div>
                   )}
                   {explanationImageUrl && (
-                    <img src={explanationImageUrl} alt="Explanation" className="max-w-full rounded-md border mt-2" />
+                    <img
+                      src={explanationImageUrl}
+                      alt="Explanation"
+                      className="max-w-full rounded-md border mt-2"
+                    />
                   )}
                 </div>
               )}

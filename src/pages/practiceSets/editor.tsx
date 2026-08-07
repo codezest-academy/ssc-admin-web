@@ -30,7 +30,7 @@ export default function PracticeSetEditor() {
     queryKey: ["subjects"],
     queryFn: getSubjects,
   });
-  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as any)?.data || [];
+  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as unknown as { data: { id: string; name: string }[] })?.data || [];
 
   const { data: chapters } = useQuery({
     queryKey: ["chapters", subjectId],
@@ -58,7 +58,7 @@ export default function PracticeSetEditor() {
   }, [practiceSet]);
 
   const mutation = useMutation({
-    mutationFn: (values: any) => {
+    mutationFn: (values: { title: string; subjectId: string; [key: string]: unknown }) => {
       if (isEditing) {
         return updatePracticeSet(id!, values);
       }
@@ -143,7 +143,7 @@ export default function PracticeSetEditor() {
                 <SelectValue placeholder="Select a subject" />
               </SelectTrigger>
               <SelectContent>
-                {subjects.map((sub: any) => (
+                {subjects.map((sub: { id: string; name: string }) => (
                   <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -176,7 +176,7 @@ export default function PracticeSetEditor() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none" disabled>Select a chapter...</SelectItem>
-                {chapters?.map((chap: any) => (
+                {chapters?.map((chap: { id: string; name: string }) => (
                   <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -198,7 +198,7 @@ export default function PracticeSetEditor() {
           <div className="flex flex-col items-start space-y-2 rounded-md border p-4 shadow-sm min-h-[88px]">
             <div className="w-full">
               <Label>Access Tier</Label>
-              <Select onValueChange={(val: any) => setAccessTier(val)} value={accessTier}>
+              <Select onValueChange={(val: string) => setAccessTier(val as "FREE" | "PRO" | "EXCLUSIVE")} value={accessTier}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select Tier" />
                 </SelectTrigger>

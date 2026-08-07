@@ -25,7 +25,7 @@ const navItems = [
   { id: "chart-system", label: "Chart System" },
   { id: "interactive", label: "Interactive Components" },
   { id: "toasts", label: "Toasts (Sonner)" },
-  { id: "patterns", label: "Page Patterns" }
+  { id: "patterns", label: "Page Patterns" },
 ];
 
 export default function DesignSystem() {
@@ -59,13 +59,12 @@ export default function DesignSystem() {
     setActiveSection(id);
     setIsManualScroll(true);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    
+
     // Reset manual scroll flag after animation completes
     setTimeout(() => {
       setIsManualScroll(false);
     }, 1000);
   };
-
 
   return (
     <div className="design-system-root h-screen overflow-hidden bg-background bg-grid-pattern text-foreground flex flex-col font-sans">
@@ -127,7 +126,10 @@ export default function DesignSystem() {
         </aside>
 
         {/* Main Content */}
-        <main id="main-scroll-container" className="flex-1 overflow-y-auto p-8 lg:p-12 pb-32">
+        <main
+          id="main-scroll-container"
+          className="flex-1 overflow-y-auto p-8 lg:p-12 pb-32"
+        >
           <div className="max-w-5xl mx-auto pb-32">
             <IntroSection />
             <TokenGovernanceSection />

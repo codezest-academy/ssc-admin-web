@@ -54,7 +54,7 @@ export default function ProductBuilder() {
       setIsAddItemModalOpen(false);
       setSelectedItemId("");
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to add item");
     }
   });
@@ -184,12 +184,12 @@ export default function ProductBuilder() {
                     <SelectValue placeholder="Choose an item..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {selectedItemType === "MOCK_TEST" && mockTests?.map((test: any) => (
+                    {selectedItemType === "MOCK_TEST" && mockTests?.map((test: { id: string; title: string }) => (
                       <SelectItem key={test.id} value={test.id}>
                         {test.title}
                       </SelectItem>
                     ))}
-                    {selectedItemType === "PRACTICE_SET" && practiceSets?.data?.map((set: any) => (
+                    {selectedItemType === "PRACTICE_SET" && practiceSets?.data?.map((set: { id: string; title: string }) => (
                       <SelectItem key={set.id} value={set.id}>
                         {set.title}
                       </SelectItem>

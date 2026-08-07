@@ -19,9 +19,9 @@ export default function MockTestsPage() {
     queryKey: ["mockTests", page, search],
     queryFn: getMockTests,
     // Add simple frontend filtering for search if API doesn't support it directly yet
-    select: (tests: any[]) => {
+    select: (tests: { id: string; title: string; isActive: boolean; accessTier: string; price?: number; _count?: { sections: number; attempts: number }; examType?: string; durationMinutes?: number; totalQuestions?: number; totalMarks?: number }[]) => {
       if (!search) return tests;
-      return tests.filter((t: any) => t.title.toLowerCase().includes(search.toLowerCase()));
+      return tests.filter((t: { id: string; title: string; [key: string]: unknown }) => t.title.toLowerCase().includes(search.toLowerCase()));
     }
   });
   
@@ -87,13 +87,13 @@ export default function MockTestsPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              mockTests.map((test: any) => (
+              mockTests.map((test: { id: string; title: string; isActive: boolean; accessTier: string; price?: number; _count?: { sections: number; attempts: number }; examType?: string; durationMinutes?: number; totalQuestions?: number; totalMarks?: number }) => (
                 <TableRow key={test.id}>
                   <TableCell>
                     <p className="text-sm font-medium">{test.title}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline" className="text-[10px]">
-                        {test.examType.replace("_", " ")}
+                        {test.examType!.replace("_", " ")}
                       </Badge>
                       {test.accessTier === "FREE" && <Badge variant="secondary" className="text-[10px] bg-success/10 text-success">Free</Badge>}
                     </div>

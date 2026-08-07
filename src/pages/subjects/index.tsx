@@ -1,12 +1,32 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSubjects, createSubject, updateSubject, deleteSubject } from "@/api/subjects";
+import {
+  getSubjects,
+  createSubject,
+  updateSubject,
+  deleteSubject,
+} from "@/api/subjects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, LayoutList } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Plus,
+  Loader2,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  LayoutList,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import type { Subject } from "@/api/subjects";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,14 +49,14 @@ import { Label } from "@/components/ui/label";
 
 export default function SubjectsPage() {
   const queryClient = useQueryClient();
-  
+
   // Create Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newSubjectName, setNewSubjectName] = useState("");
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingSubject, setEditingSubject] = useState<any>(null);
+  const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [editSubjectName, setEditSubjectName] = useState("");
   const [editIsActive, setEditIsActive] = useState(true);
 
@@ -53,19 +73,20 @@ export default function SubjectsPage() {
       setIsCreateModalOpen(false);
       toast.success("Subject created successfully");
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to create subject");
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: any }) => updateSubject({ id, ...data }),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Subject> }) =>
+      updateSubject({ id, ...data } as Parameters<typeof updateSubject>[0]),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
       setIsEditModalOpen(false);
       toast.success("Subject updated successfully");
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to update subject");
     },
   });
@@ -87,13 +108,13 @@ export default function SubjectsPage() {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editSubjectName.trim() || !editingSubject) return;
-    updateMutation.mutate({ 
-      id: editingSubject.id, 
-      data: { name: editSubjectName, isActive: editIsActive } 
+    updateMutation.mutate({
+      id: editingSubject.id,
+      data: { name: editSubjectName, isActive: editIsActive },
     });
   };
 
-  const openEditModal = (subject: any) => {
+  const openEditModal = (subject: Subject) => {
     setEditingSubject(subject);
     setEditSubjectName(subject.name);
     setEditIsActive(subject.isActive);
@@ -128,14 +149,20 @@ export default function SubjectsPage() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={4}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                   Loading subjects...
                 </TableCell>
               </TableRow>
             ) : subjects?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={4}
+                  className="h-32 text-center text-muted-foreground"
+                >
                   No subjects found. Create one to get started.
                 </TableCell>
               </TableRow>
@@ -147,7 +174,14 @@ export default function SubjectsPage() {
                     {subject.slug}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={subject.isActive ? "default" : "secondary"} className={subject.isActive ? "bg-success/10 text-success hover:bg-success/20 border-none" : ""}>
+                    <Badge
+                      variant={subject.isActive ? "default" : "secondary"}
+                      className={
+                        subject.isActive
+                          ? "bg-success/10 text-success hover:bg-success/20 border-none"
+                          : ""
+                      }
+                    >
                       {subject.isActive ? "Active" : "Draft"}
                     </Badge>
                   </TableCell>
@@ -163,20 +197,30 @@ export default function SubjectsPage() {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link to={`/subjects/${subject.slug}/chapters`} className="cursor-pointer">
+                          <Link
+                            to={`/subjects/${subject.slug}/chapters`}
+                            className="cursor-pointer"
+                          >
                             <LayoutList className="mr-2 h-4 w-4" />
                             Manage Chapters
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openEditModal(subject)} className="cursor-pointer">
+                        <DropdownMenuItem
+                          onClick={() => openEditModal(subject)}
+                          className="cursor-pointer"
+                        >
                           <Pencil className="mr-2 h-4 w-4" />
                           Edit Details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
                           onClick={() => {
-                            if (window.confirm(`Delete ${subject.name}? This will delete all chapters and lessons inside it.`)) {
+                            if (
+                              window.confirm(
+                                `Delete ${subject.name}? This will delete all chapters and lessons inside it.`,
+                              )
+                            ) {
                               deleteMutation.mutate(subject.id);
                             }
                           }}
@@ -201,7 +245,8 @@ export default function SubjectsPage() {
             <DialogHeader>
               <DialogTitle>Create New Subject</DialogTitle>
               <DialogDescription>
-                Add a new subject to the curriculum. The slug will be generated automatically.
+                Add a new subject to the curriculum. The slug will be generated
+                automatically.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -217,11 +262,20 @@ export default function SubjectsPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={createMutation.isPending || !newSubjectName.trim()}>
-                {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              <Button
+                type="submit"
+                disabled={createMutation.isPending || !newSubjectName.trim()}
+              >
+                {createMutation.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 Create Subject
               </Button>
             </DialogFooter>
@@ -256,15 +310,26 @@ export default function SubjectsPage() {
                   onCheckedChange={(val) => setEditIsActive(Boolean(val))}
                   disabled={updateMutation.isPending}
                 />
-                <Label htmlFor="edit-active" className="cursor-pointer">Active</Label>
+                <Label htmlFor="edit-active" className="cursor-pointer">
+                  Active
+                </Label>
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={updateMutation.isPending || !editSubjectName.trim()}>
-                {updateMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              <Button
+                type="submit"
+                disabled={updateMutation.isPending || !editSubjectName.trim()}
+              >
+                {updateMutation.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 Save Changes
               </Button>
             </DialogFooter>
