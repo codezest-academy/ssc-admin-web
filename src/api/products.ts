@@ -1,6 +1,8 @@
 import { api } from "@/lib/axios";
 
 export type ProductType = "SUBSCRIPTION" | "COMBO" | "MOCK_TEST_SERIES" | "COURSE";
+export type StudyPersona = "FULL_TIME_ASPIRANT" | "PART_TIME_ASPIRANT" | "REPEAT_ASPIRANT";
+
 
 export interface Product {
   id: string;
@@ -11,6 +13,7 @@ export interface Product {
   discountedPrice: number | null;
   validityDays: number | null;
   isActive: boolean;
+  recommendedFor: StudyPersona[];   // personas this product targets
   createdAt: string;
   updatedAt: string;
   items?: ProductItem[];

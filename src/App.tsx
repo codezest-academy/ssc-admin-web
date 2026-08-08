@@ -21,7 +21,9 @@ import ProductsPage from "./pages/products/index";
 import ProductEditor from "./pages/products/editor";
 import ProductBuilder from "./pages/products/builder";
 import PurchasesPage from "./pages/purchases/index";
+import UsersPage from "./pages/users/index";
 import DesignSystem from "./pages/DesignSystem";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -65,11 +67,12 @@ function App() {
               <Route path="products/:id/edit" element={<ProductEditor />} />
               <Route path="products/:id" element={<ProductBuilder />} />
               <Route path="sales" element={<PurchasesPage />} />
+              <Route path="users" element={<UsersPage />} />
             </Route>
 
             {/* Future Routes */}
-            {/* <Route path="users" element={<Users />} /> */}
             {/* <Route path="attempts" element={<Attempts />} /> */}
+
           </Route>
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

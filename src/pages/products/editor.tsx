@@ -6,7 +6,9 @@ import {
   createProduct,
   updateProduct,
   type ProductType,
+  type StudyPersona,
 } from "@/api/products";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +22,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Users } from "lucide-react";
+
 
 export default function ProductEditor() {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +38,8 @@ export default function ProductEditor() {
   const [discountedPrice, setDiscountedPrice] = useState<number | "">("");
   const [validityDays, setValidityDays] = useState<number | "">("");
   const [isActive, setIsActive] = useState(true);
+  const [recommendedFor, setRecommendedFor] = useState<StudyPersona[]>([]);
+
 
   const { data: product, isLoading: initialLoading } = useQuery({
     queryKey: ["product", id],
@@ -51,6 +56,8 @@ export default function ProductEditor() {
       setDiscountedPrice(product.discountedPrice ?? "");
       setValidityDays(product.validityDays ?? "");
       setIsActive(product.isActive);
+      setRecommendedFor(product.recommendedFor ?? []);
+
     }
   }, [product]);
 
@@ -94,7 +101,9 @@ export default function ProductEditor() {
       discountedPrice: discountedPrice === "" ? null : Number(discountedPrice),
       validityDays: validityDays === "" ? null : Number(validityDays),
       isActive,
+      recommendedFor,
     };
+
     mutation.mutate(payload);
   };
 
@@ -202,8 +211,46 @@ export default function ProductEditor() {
           </div>
         </div>
 
+        {/* Persona Targeting */}
+        <div className="pt-2">
+          <Label className="flex items-center gap-2 mb-3">
+            <Users className="w-4 h-4" />
+            Recommended For (Persona Targeting)
+          </Label>
+          <p className="text-xs text-muted-foreground mb-4">
+            Tag this product so it surfaces in persona-specific recommendations on the student dashboard.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            {(
+              [
+                { id: "FULL_TIME_ASPIRANT", label: "Full-Time Aspirant" },
+                { id: "PART_TIME_ASPIRANT", label: "Part-Time Aspirant" },
+                { id: "REPEAT_ASPIRANT", label: "Repeat Aspirant" },
+              ] as { id: StudyPersona; label: string }[]
+            ).map((persona) => (
+              <div key={persona.id} className="flex flex-row items-center space-x-3 rounded-md border p-3 shadow-sm min-w-[200px]">
+                <Checkbox
+                  id={persona.id}
+                  checked={recommendedFor.includes(persona.id)}
+                  onCheckedChange={(checked) => {
+                    setRecommendedFor((prev) =>
+                      checked
+                        ? [...prev, persona.id]
+                        : prev.filter((p) => p !== persona.id)
+                    );
+                  }}
+                />
+                <Label htmlFor={persona.id} className="cursor-pointer font-medium text-sm">
+                  {persona.label}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="pt-2">
           <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm h-[88px] w-full md:w-1/2">
+
             <Checkbox
               id="isActive"
               checked={isActive}
