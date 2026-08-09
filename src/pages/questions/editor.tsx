@@ -47,6 +47,7 @@ const initialOptions: QuestionOption[] = OPTION_KEYS.map((key) => ({
   key,
   text: "",
   imageUrl: null,
+  rationale: "",
   formatType: "TEXT",
 }));
 
@@ -178,7 +179,7 @@ export default function QuestionEditor() {
 
   const updateOption = (
     index: number,
-    field: "text" | "imageUrl" | "formatType",
+    field: "text" | "imageUrl" | "rationale" | "formatType",
     value: string,
   ) => {
     const newOptions = [...options];
@@ -459,6 +460,20 @@ export default function QuestionEditor() {
                       placeholder="Image URL (optional)"
                       className="h-8 text-sm"
                     />
+                    {correctOption !== opt.key && (
+                      <div className="space-y-1 mt-2 border-t pt-3">
+                        <Label className="text-xs text-muted-foreground flex items-center justify-between">
+                          <span>Trap Explanation / Rationale (Optional)</span>
+                          <span className="text-[10px] bg-warning/10 text-warning px-1.5 py-0.5 rounded border-none">Shown if selected</span>
+                        </Label>
+                        <Textarea
+                          value={opt.rationale || ""}
+                          onChange={(e) => updateOption(i, "rationale", e.target.value)}
+                          placeholder={`Explain why choosing Option ${opt.key} is a common mistake...`}
+                          className="min-h-[60px] text-sm bg-warning/5 border-warning/20 focus-visible:ring-warning/30"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -546,6 +561,12 @@ export default function QuestionEditor() {
                           alt={`Option ${opt.key}`}
                           className="max-w-full h-auto rounded border"
                         />
+                      )}
+                      {opt.rationale && (
+                        <div className="mt-2 p-2 bg-warning/10 border border-warning/20 rounded text-xs text-warning-text-on-tint">
+                          <span className="font-semibold block mb-0.5">Trap Explanation:</span>
+                          {opt.rationale}
+                        </div>
                       )}
                     </div>
                   </div>
