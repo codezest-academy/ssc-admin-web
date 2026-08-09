@@ -24,6 +24,7 @@ import PurchasesPage from "./pages/purchases/index";
 import UsersPage from "./pages/users/index";
 import ProfilePage from "./pages/profile/index";
 import DesignSystem from "./pages/DesignSystem";
+import FeedbackPage from "./pages/feedback/index";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +71,7 @@ function App() {
               <Route path="products/:id" element={<ProductBuilder />} />
               <Route path="sales" element={<PurchasesPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="feedback" element={<FeedbackPage />} />
             </Route>
 
             {/* Future Routes */}
