@@ -14,6 +14,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -58,7 +59,11 @@ const navGroups: NavGroup[] = [
     title: "MANAGEMENT",
     items: [
       { name: "Users",         href: "/users",         icon: Users },
-      { name: "Subjects",      href: "/subjects",      icon: BookOpen },
+      { name: "Subjects",      icon: BookOpen, children: [
+        { name: "All Subjects", href: "/subjects" },
+        { name: "Chapters",     href: "/chapters" },
+        { name: "Lessons",      href: "/lessons" }
+      ]},
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]
   },
@@ -91,6 +96,7 @@ const navGroups: NavGroup[] = [
 export function AppSidebar() {
   const location = useLocation();
   const { user } = useAuthStore();
+  const { state, setOpen } = useSidebar();
   const userRole = user?.role || "GUEST";
 
   // Filter navigation groups based on RBAC roles
@@ -155,10 +161,17 @@ export function AppSidebar() {
                       <Collapsible key={item.name} defaultOpen={isActive} className="group/collapsible">
                         <SidebarMenuItem>
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton tooltip={item.name} isActive={isActive} className="transition-transform [&>svg]:duration-200 hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0">
+                            <SidebarMenuButton 
+                              tooltip={item.name} 
+                              isActive={isActive} 
+                              onClick={() => {
+                                if (state === "collapsed") setOpen(true);
+                              }}
+                              className="transition-transform [&>svg]:duration-200 hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0"
+                            >
                               <item.icon />
-                              <span>{item.name}</span>
-                              <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                              <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
+                              <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
                           <CollapsibleContent>
@@ -187,7 +200,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild tooltip={item.name} isActive={isActive} className="transition-transform [&>svg]:duration-200 hover:[&>svg]:translate-x-0.5 focus-visible:[&>svg]:translate-x-0">
                         <Link to={item.href!}>
                           <item.icon />
-                          <span>{item.name}</span>
+                          <span className="group-data-[collapsible=icon]:hidden">{item.name}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

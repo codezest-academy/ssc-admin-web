@@ -353,7 +353,7 @@
 
   /* Floating layout wrapper */
   .app-shell-floating {
-    @apply p-3 gap-1.5 flex h-screen;
+    @apply p-3 gap-0 flex h-screen;
   }
   .sidebar-floating {
     @apply rounded-xl border border-sidebar-border overflow-hidden shrink-0;

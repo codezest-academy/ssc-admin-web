@@ -30,7 +30,7 @@ export default function AdminLayout() {
         <SidebarProvider className="app-shell-floating bg-transparent w-full">
           <AppSidebar />
           
-          <div className="flex flex-col flex-1 gap-1.5 min-w-0">
+          <div className="flex flex-col flex-1 gap-3 min-w-0">
             {/* Floating Navbar */}
             <header className="navbar-floating flex items-center justify-between px-5 h-14 flex-shrink-0">
               <SidebarTrigger className="-ml-2 mr-2 text-muted-foreground" />
