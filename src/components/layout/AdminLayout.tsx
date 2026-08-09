@@ -109,7 +109,7 @@ export default function AdminLayout() {
 
             {/* Floating Content Panel */}
             <div className="content-floating">
-              <main className="p-6">
+              <main className="h-full overflow-y-auto p-6">
                 <Outlet />
               </main>
             </div>

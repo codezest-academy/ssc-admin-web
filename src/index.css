@@ -362,7 +362,7 @@
     @apply rounded-xl border border-border bg-card flex-shrink-0;
   }
   .content-floating {
-    @apply rounded-xl border border-border/80 bg-background flex-1 overflow-auto;
+    @apply rounded-xl border border-border/80 bg-background flex-1 overflow-hidden;
   }
 
   /* Luminous active states — constrained glow */

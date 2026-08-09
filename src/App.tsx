@@ -23,7 +23,7 @@ import ProductBuilder from "./pages/products/builder";
 import PurchasesPage from "./pages/purchases/index";
 import UsersPage from "./pages/users/index";
 import ProfilePage from "./pages/profile/index";
-import DesignSystem from "./pages/DesignSystem";
+import DesignSystemLayout from "./pages/design-system/DesignSystemLayout";
 import FeedbackPage from "./pages/feedback/index";
 import CategoriesPage from "./pages/categories/index";
 import ArticlesPage from "./pages/articles/index";
@@ -45,7 +45,7 @@ function App() {
         <Router>
           <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/design-system" element={<DesignSystem />} />
+          <Route path="/design-system" element={<DesignSystemLayout />} />
           
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
@@ -75,6 +75,8 @@ function App() {
               <Route path="sales" element={<PurchasesPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="feedback" element={<FeedbackPage />} />
+              <Route path="chapters" element={<ChaptersPage />} />
+              <Route path="lessons" element={<LessonsPage />} />
               
               {/* CMS Routes */}
               <Route path="categories" element={<CategoriesPage />} />
