@@ -42,3 +42,12 @@ export const toggleUserStatus = async (userId: string): Promise<AdminUser> => {
   const { data } = await api.patch(`/users/${userId}/toggle-status`);
   return data.data;
 };
+
+export const updateProfile = async (payload: { name: string }): Promise<AdminUser> => {
+  const { data } = await api.patch("/users/me", payload);
+  return data.data;
+};
+
+export const updatePassword = async (payload: { currentPassword: string; newPassword: string }): Promise<void> => {
+  await api.patch("/users/me/password", payload);
+};

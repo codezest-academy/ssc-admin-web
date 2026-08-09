@@ -13,6 +13,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User as UserIcon, Mail, Shield, KeyRound, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { updateProfile, updatePassword } from "@/api/users";
+import { AxiosError } from "axios";
 
 export default function ProfilePage() {
   const { user } = useAuthStore();
@@ -32,11 +34,19 @@ export default function ProfilePage() {
     e.preventDefault();
     setIsUpdatingProfile(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsUpdatingProfile(false);
+    try {
+      const data = await updateProfile({ name });
+      useAuthStore.getState().setUser({
+        ...user!,
+        name: data.name
+      });
       toast.success("Profile updated successfully!");
-    }, 1000);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
   };
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -49,14 +59,18 @@ export default function ProfilePage() {
 
     setIsUpdatingPassword(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsUpdatingPassword(false);
+    try {
+      await updatePassword({ currentPassword, newPassword });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       toast.success("Password updated successfully!");
-    }, 1000);
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error.response?.data?.message || "Failed to update password");
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   return (
@@ -128,8 +142,11 @@ export default function ProfilePage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  disabled
                 />
+                <p className="text-xs text-muted-foreground">
+                  Email addresses cannot be changed currently.
+                </p>
               </div>
               
               <div className="pt-4 mt-auto">
