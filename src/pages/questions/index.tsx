@@ -34,7 +34,6 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -44,8 +43,11 @@ import {
   FileUp,
   SlidersHorizontal,
   Search,
+  Download,
 } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import Papa from "papaparse";
+import { downloadCSVTemplate } from "@/utils/csv";
 
 export default function QuestionsPage() {
   const navigate = useNavigate();
@@ -56,8 +58,12 @@ export default function QuestionsPage() {
   const [chapterId, setChapterId] = useState<string>("all");
 
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [importJson, setImportJson] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  
+  const [importSubjectId, setImportSubjectId] = useState<string>("");
+  const [importChapterId, setImportChapterId] = useState<string>("");
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [parsedQuestions, setParsedQuestions] = useState<CreateQuestionInput[]>([]);
 
   const { data: subjectsData } = useQuery({
     queryKey: ["subjects"],
@@ -72,6 +78,12 @@ export default function QuestionsPage() {
     queryKey: ["chapters", subjectId],
     queryFn: () => getChaptersBySubject(subjectId),
     enabled: subjectId !== "all",
+  });
+
+  const { data: importChapters } = useQuery({
+    queryKey: ["chapters", importSubjectId],
+    queryFn: () => getChaptersBySubject(importSubjectId),
+    enabled: !!importSubjectId,
   });
 
   const { data: questionsData, isLoading } = useQuery({
@@ -99,17 +111,67 @@ export default function QuestionsPage() {
     },
   });
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCsvFile(file);
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        try {
+          const questions: CreateQuestionInput[] = results.data.map((row: any) => {
+            return {
+              subjectId: importSubjectId, // placeholders, re-mapped on submit
+              chapterId: importChapterId,
+              questionText: row["Question Text"] || "",
+              options: [
+                { key: "A", text: row["Option A"] || "", formatType: "TEXT" },
+                { key: "B", text: row["Option B"] || "", formatType: "TEXT" },
+                { key: "C", text: row["Option C"] || "", formatType: "TEXT" },
+                { key: "D", text: row["Option D"] || "", formatType: "TEXT" },
+              ],
+              correctOption: (row["Correct Option"]?.toUpperCase() || "A") as "A"|"B"|"C"|"D",
+              explanation: row["Explanation"] || "",
+              difficulty: (row["Difficulty"]?.toUpperCase() || "MEDIUM") as "EASY"|"MEDIUM"|"HARD",
+              isPYQ: row["Is PYQ"]?.toUpperCase() === "TRUE",
+              pyqYear: row["PYQ Year"] ? parseInt(row["PYQ Year"]) : undefined,
+              tags: row["Tags (comma separated)"] ? row["Tags (comma separated)"].split(",").map((t: string) => t.trim()) : [],
+              examTypes: ["SSC_CGL"],
+              language: "EN",
+              isActive: true,
+            };
+          });
+          setParsedQuestions(questions);
+        } catch (err) {
+          toast.error("Failed to parse CSV format.");
+        }
+      },
+    });
+  };
+
   const handleBulkImport = async () => {
+    if (!importSubjectId || !importChapterId) {
+      toast.error("Please select a subject and chapter first.");
+      return;
+    }
+    if (parsedQuestions.length === 0) {
+      toast.error("No valid questions found in CSV.");
+      return;
+    }
     try {
       setIsImporting(true);
-      const parsed: CreateQuestionInput[] = JSON.parse(importJson);
-      if (!Array.isArray(parsed)) {
-        throw new Error("JSON must be an array of questions");
-      }
-      const res = await bulkImportQuestions(parsed);
+      const finalQuestions = parsedQuestions.map(q => ({
+        ...q,
+        subjectId: importSubjectId,
+        chapterId: importChapterId
+      }));
+      const res = await bulkImportQuestions(finalQuestions);
       toast.success(`Successfully imported ${res.count} questions`);
       setIsImportModalOpen(false);
-      setImportJson("");
+      setCsvFile(null);
+      setParsedQuestions([]);
       queryClient.invalidateQueries({ queryKey: ["questions"] });
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
@@ -149,34 +211,70 @@ export default function QuestionsPage() {
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Bulk Import Questions</DialogTitle>
+                <DialogTitle>Bulk Import Questions (CSV)</DialogTitle>
               </DialogHeader>
               <div className="py-4 space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  Paste a JSON array of questions matching the
-                  `CreateQuestionInput` schema.
-                </p>
-                <Textarea
-                  value={importJson}
-                  onChange={(e) => setImportJson(e.target.value)}
-                  placeholder={
-                    '[ { "subjectId": "...", "questionText": "..." } ]'
-                  }
-                  className="h-64 font-mono text-sm"
-                />
+                <div className="flex justify-between items-center bg-muted/30 p-3 rounded-lg border border-dashed">
+                  <div>
+                    <p className="text-sm font-medium">Download CSV Template</p>
+                    <p className="text-xs text-muted-foreground">Use this template to format your questions correctly.</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={downloadCSVTemplate} className="gap-2">
+                    <Download className="w-4 h-4" /> Template
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Subject</label>
+                    <Select value={importSubjectId} onValueChange={setImportSubjectId}>
+                      <SelectTrigger><SelectValue placeholder="Select Subject" /></SelectTrigger>
+                      <SelectContent>
+                        {subjects.map((sub: { id: string; name: string }) => (
+                          <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Chapter</label>
+                    <Select value={importChapterId} onValueChange={setImportChapterId} disabled={!importSubjectId}>
+                      <SelectTrigger><SelectValue placeholder="Select Chapter" /></SelectTrigger>
+                      <SelectContent>
+                        {importChapters?.map((chap: { id: string; name: string }) => (
+                          <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <label className="text-sm font-medium">Upload CSV</label>
+                  <Input type="file" accept=".csv" onChange={handleFileUpload} />
+                  {csvFile && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Parsed {parsedQuestions.length} questions ready for import.
+                    </p>
+                  )}
+                </div>
               </div>
               <DialogFooter>
                 <Button
                   variant="outline"
-                  onClick={() => setIsImportModalOpen(false)}
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    setCsvFile(null);
+                    setParsedQuestions([]);
+                  }}
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleBulkImport}
-                  disabled={isImporting || !importJson.trim()}
+                  disabled={isImporting || parsedQuestions.length === 0 || !importSubjectId || !importChapterId}
                 >
-                  {isImporting ? "Importing..." : "Run Import"}
+                  {isImporting ? "Importing..." : `Import ${parsedQuestions.length} Questions`}
                 </Button>
               </DialogFooter>
             </DialogContent>

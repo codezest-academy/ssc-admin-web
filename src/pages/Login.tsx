@@ -35,14 +35,14 @@ export default function Login() {
         rememberMe,
       });
       // Depending on the exact API response shape (Assuming it returns token and user info)
-      const { token, user } = response.data.data;
+      const { accessToken, user } = response.data.data;
 
       if (user.role !== "SUPER_ADMIN" && user.role !== "CONTENT_CREATOR") {
         setError("Unauthorized access. Admin privileges required.");
         return;
       }
 
-      setAuth(user, token);
+      setAuth(user, accessToken);
       navigate("/dashboard");
     } catch (err: unknown) {
       const e = err as any;
