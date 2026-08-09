@@ -25,6 +25,9 @@ import UsersPage from "./pages/users/index";
 import ProfilePage from "./pages/profile/index";
 import DesignSystem from "./pages/DesignSystem";
 import FeedbackPage from "./pages/feedback/index";
+import CategoriesPage from "./pages/categories/index";
+import ArticlesPage from "./pages/articles/index";
+import ArticleEditor from "./pages/articles/editor";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +75,12 @@ function App() {
               <Route path="sales" element={<PurchasesPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="feedback" element={<FeedbackPage />} />
+              
+              {/* CMS Routes */}
+              <Route path="categories" element={<CategoriesPage />} />
+              <Route path="articles" element={<ArticlesPage />} />
+              <Route path="articles/new" element={<ArticleEditor />} />
+              <Route path="articles/:id/edit" element={<ArticleEditor />} />
             </Route>
 
             {/* Future Routes */}

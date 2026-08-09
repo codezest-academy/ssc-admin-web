@@ -74,6 +74,13 @@ const navGroups: NavGroup[] = [
     ]
   },
   {
+    title: "CMS",
+    items: [
+      { name: "Categories",    href: "/categories",    icon: BookOpen }, // Or FolderTree, I'll just reuse BookOpen and ClipboardList for simplicity
+      { name: "Articles",      href: "/articles",      icon: ClipboardList },
+    ]
+  },
+  {
     title: "REVENUE",
     items: [
       { name: "Sales",         href: "/sales",         icon: IndianRupee },
