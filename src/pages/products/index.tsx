@@ -24,13 +24,13 @@ import {
 import {
   Plus,
   Search,
-  Loader2,
   MoreHorizontal,
   Pencil,
   Trash2,
   Settings,
 } from "lucide-react";
 import { toast } from "sonner";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function ProductsPage() {
   const navigate = useNavigate();
@@ -62,6 +62,10 @@ export default function ProductsPage() {
   const filteredProducts = products?.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
 
   return (
     <div className="space-y-6 max-w-full w-full">
@@ -104,17 +108,7 @@ export default function ProductsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                  Loading products...
-                </TableCell>
-              </TableRow>
-            ) : filteredProducts?.length === 0 ? (
+            {filteredProducts?.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={5}

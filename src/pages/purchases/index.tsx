@@ -11,7 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Loader2, IndianRupee } from "lucide-react";
+import { Search, IndianRupee } from "lucide-react";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function PurchasesPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,6 +66,10 @@ export default function PurchasesPage() {
       ?.filter((p) => p.status === "SUCCESS")
       .reduce((sum, p) => sum + p.amountPaid, 0) || 0;
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <div className="space-y-6 max-w-full w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -114,17 +119,7 @@ export default function PurchasesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                  Loading transactions...
-                </TableCell>
-              </TableRow>
-            ) : filteredPurchases?.length === 0 ? (
+            {filteredPurchases?.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={6}

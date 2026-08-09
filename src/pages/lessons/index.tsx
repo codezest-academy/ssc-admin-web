@@ -33,6 +33,7 @@ import {
   PlayCircle,
   FileText,
   FileBadge,
+  ExternalLink,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -425,6 +426,17 @@ export default function LessonsPage() {
                                   >
                                     <Pencil className="mr-2 h-4 w-4" />
                                     Edit Details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      const baseUrl = import.meta.env.VITE_CLIENT_URL || 'http://localhost:3000';
+                                      window.open(`${baseUrl}/dashboard/lessons/${lesson.slug}`, '_blank');
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Preview in App
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem

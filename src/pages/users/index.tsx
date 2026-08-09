@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
-  Loader2,
   MoreHorizontal,
   ShieldCheck,
   UserX,
@@ -37,6 +36,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -95,6 +95,10 @@ export default function UsersPage() {
       u.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <div className="space-y-6 max-w-full w-full">
       {/* Header */}
@@ -122,11 +126,7 @@ export default function UsersPage() {
       </div>
 
       {/* Table */}
-      {isLoading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-        </div>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground border-2 border-dashed border-border rounded-xl">
           {searchQuery ? "No users match your search." : "No users yet."}
         </div>

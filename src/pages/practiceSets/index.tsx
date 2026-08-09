@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Plus, Trash2, Pencil, Search, SlidersHorizontal, ClipboardList } from "lucide-react";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function PracticeSetsPage() {
   const navigate = useNavigate();
@@ -55,6 +56,10 @@ export default function PracticeSetsPage() {
       toast.error("Failed to delete practice set");
     }
   });
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
 
   return (
     <div className="space-y-6 max-w-full w-full">
@@ -126,11 +131,7 @@ export default function PracticeSetsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">Loading practice sets...</TableCell>
-              </TableRow>
-            ) : practiceSets.length === 0 ? (
+            {practiceSets.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-12">
                   <div className="flex flex-col items-center gap-2">

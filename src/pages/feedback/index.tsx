@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 interface Feedback {
   id: string;
@@ -65,6 +66,10 @@ export default function FeedbackPage() {
     }
   };
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -104,13 +109,7 @@ export default function FeedbackPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
-                  Loading feedback...
-                </TableCell>
-              </TableRow>
-            ) : feedback.length === 0 ? (
+            {feedback.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
                   No feedback found.

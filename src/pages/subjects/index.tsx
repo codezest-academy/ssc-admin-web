@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 import type { Subject } from "@/api/subjects";
 import {
   DropdownMenu,
@@ -121,6 +122,10 @@ export default function SubjectsPage() {
     setIsEditModalOpen(true);
   };
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     <div className="space-y-6 max-w-full w-full">
       <div className="flex items-center justify-between">
@@ -147,17 +152,7 @@ export default function SubjectsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                  Loading subjects...
-                </TableCell>
-              </TableRow>
-            ) : subjects?.length === 0 ? (
+            {subjects?.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
