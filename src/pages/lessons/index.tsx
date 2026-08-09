@@ -8,7 +8,10 @@ import {
   createLesson,
   updateLesson,
   deleteLesson,
+  reorderLessons,
 } from "@/api/lessons";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 import type { LessonType } from "@/api/lessons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +56,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { GripVertical } from "lucide-react";
 
 export default function LessonsPage() {
   const { chapterId } = useParams<{ chapterId: string }>();
@@ -186,6 +190,50 @@ export default function LessonsPage() {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: reorderLessons,
+    onMutate: async (updates) => {
+      await queryClient.cancelQueries({ queryKey: ["lessons", chapterId] });
+      const previous = queryClient.getQueryData<Lesson[]>(["lessons", chapterId]);
+      if (previous) {
+        const newLessons = [...previous];
+        updates.forEach(update => {
+          const l = newLessons.find(c => c.id === update.id);
+          if (l) l.order = update.order;
+        });
+        newLessons.sort((a, b) => a.order - b.order);
+        queryClient.setQueryData(["lessons", chapterId], newLessons);
+      }
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(["lessons", chapterId], context?.previous);
+      toast.error("Failed to reorder lessons");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["lessons", chapterId] });
+    },
+  });
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination || !lessons) return;
+    const startIndex = result.source.index;
+    const endIndex = result.destination.index;
+    if (startIndex === endIndex) return;
+
+    const items = Array.from(lessons);
+    const [reorderedItem] = items.splice(startIndex, 1);
+    items.splice(endIndex, 0, reorderedItem);
+
+    // Update orders locally for optimistic UI
+    const updates = items.map((item, index) => ({
+      id: item.id,
+      order: index,
+    }));
+
+    reorderMutation.mutate(updates);
+  };
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim() || !chapter) return;
@@ -279,6 +327,7 @@ export default function LessonsPage() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="w-[50px]"></TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Lesson Title</TableHead>
               <TableHead>Access</TableHead>
@@ -286,103 +335,122 @@ export default function LessonsPage() {
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {isLessonsLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                  Loading lessons...
-                </TableCell>
-              </TableRow>
-            ) : lessons?.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-32 text-center text-muted-foreground"
-                >
-                  No lessons found. Create one to get started.
-                </TableCell>
-              </TableRow>
-            ) : (
-              lessons?.map((lesson) => (
-                <TableRow key={lesson.id}>
-                  <TableCell>
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-muted">
-                      {getLessonIcon(lesson.type)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">{lesson.title}</TableCell>
-                  <TableCell>
-                    {lesson.accessTier === "FREE" ? (
-                      <Badge
-                        variant="outline"
-                        className="text-success border-success/30 bg-success/10"
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="lessons" direction="vertical">
+              {(provided) => (
+                <TableBody {...provided.droppableProps} ref={provided.innerRef}>
+                  {isLessonsLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={6}
+                        className="h-32 text-center text-muted-foreground"
                       >
-                        Free Preview
-                      </Badge>
-                    ) : lesson.accessTier === "PRO" ? (
-                      <Badge variant="secondary">Pro</Badge>
-                    ) : (
-                      <Badge
-                        variant="secondary"
-                        className="bg-primary/20 text-primary"
+                        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                        Loading lessons...
+                      </TableCell>
+                    </TableRow>
+                  ) : lessons?.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={6}
+                        className="h-32 text-center text-muted-foreground"
                       >
-                        Exclusive
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={lesson.isActive ? "default" : "secondary"}
-                      className={
-                        lesson.isActive
-                          ? "bg-success/10 text-success hover:bg-success/20 border-none"
-                          : ""
-                      }
-                    >
-                      {lesson.isActive ? "Active" : "Draft"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => openEditModal(lesson)}
-                          className="cursor-pointer"
-                        >
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Edit Details
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
-                          onClick={() => {
-                            if (window.confirm(`Delete ${lesson.title}?`)) {
-                              deleteMutation.mutate(lesson.id);
-                            }
-                          }}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Lesson
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
+                        No lessons found. Create one to get started.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    lessons?.map((lesson, index) => (
+                      <Draggable key={lesson.id} draggableId={lesson.id} index={index}>
+                        {(provided, snapshot) => (
+                          <TableRow
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={snapshot.isDragging ? "bg-accent opacity-90" : ""}
+                            style={{ ...provided.draggableProps.style, display: snapshot.isDragging ? 'table' : '' }}
+                          >
+                            <TableCell className="w-[50px] cursor-grab active:cursor-grabbing" {...provided.dragHandleProps}>
+                              <GripVertical className="h-4 w-4 text-muted-foreground" />
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-muted">
+                                {getLessonIcon(lesson.type)}
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-medium">{lesson.title}</TableCell>
+                            <TableCell>
+                              {lesson.accessTier === "FREE" ? (
+                                <Badge
+                                  variant="outline"
+                                  className="text-success border-success/30 bg-success/10"
+                                >
+                                  Free Preview
+                                </Badge>
+                              ) : lesson.accessTier === "PRO" ? (
+                                <Badge variant="secondary">Pro</Badge>
+                              ) : (
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-primary/20 text-primary"
+                                >
+                                  Exclusive
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={lesson.isActive ? "default" : "secondary"}
+                                className={
+                                  lesson.isActive
+                                    ? "bg-success/10 text-success hover:bg-success/20 border-none"
+                                    : ""
+                                }
+                              >
+                                {lesson.isActive ? "Active" : "Draft"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <span className="sr-only">Open menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => openEditModal(lesson)}
+                                    className="cursor-pointer"
+                                  >
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    Edit Details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+                                    onClick={() => {
+                                      if (window.confirm(`Delete ${lesson.title}?`)) {
+                                        deleteMutation.mutate(lesson.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete Lesson
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Draggable>
+                    ))
+                  )}
+                  {provided.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </Table>
       </div>
 

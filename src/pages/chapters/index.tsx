@@ -3,7 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSubjectBySlug } from "@/api/subjects";
 import type { Chapter } from "@/api/chapters";
-import { getChaptersBySubject, createChapter, updateChapter, deleteChapter } from "@/api/chapters";
+import { getChaptersBySubject, createChapter, updateChapter, deleteChapter, reorderChapters } from "@/api/chapters";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -29,6 +31,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { GripVertical } from "lucide-react";
 
 export default function ChaptersPage() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
@@ -102,6 +105,50 @@ export default function ChaptersPage() {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: reorderChapters,
+    onMutate: async (updates) => {
+      await queryClient.cancelQueries({ queryKey: ["chapters", subject?.id] });
+      const previous = queryClient.getQueryData<Chapter[]>(["chapters", subject?.id]);
+      if (previous) {
+        const newChapters = [...previous];
+        updates.forEach(update => {
+          const ch = newChapters.find(c => c.id === update.id);
+          if (ch) ch.order = update.order;
+        });
+        newChapters.sort((a, b) => a.order - b.order);
+        queryClient.setQueryData(["chapters", subject?.id], newChapters);
+      }
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(["chapters", subject?.id], context?.previous);
+      toast.error("Failed to reorder chapters");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["chapters", subject?.id] });
+    },
+  });
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination || !chapters) return;
+    const startIndex = result.source.index;
+    const endIndex = result.destination.index;
+    if (startIndex === endIndex) return;
+
+    const items = Array.from(chapters);
+    const [reorderedItem] = items.splice(startIndex, 1);
+    items.splice(endIndex, 0, reorderedItem);
+
+    // Update orders locally for optimistic UI
+    const updates = items.map((item, index) => ({
+      id: item.id,
+      order: index,
+    }));
+
+    reorderMutation.mutate(updates);
+  };
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newChapterName.trim() || !subject) return;
@@ -166,78 +213,98 @@ export default function ChaptersPage() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="w-[50px]"></TableHead>
               <TableHead>Chapter Name</TableHead>
               <TableHead>Lessons</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {isChaptersLoading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
-                  <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                  Loading chapters...
-                </TableCell>
-              </TableRow>
-            ) : chapters?.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
-                  No chapters found. Create one to get started.
-                </TableCell>
-              </TableRow>
-            ) : (
-              chapters?.map((chapter) => (
-                <TableRow key={chapter.id}>
-                  <TableCell className="font-medium">{chapter.name}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {chapter._count?.lessons || 0} lessons
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={chapter.isActive ? "default" : "secondary"} className={chapter.isActive ? "bg-success/10 text-success hover:bg-success/20 border-none" : ""}>
-                      {chapter.isActive ? "Active" : "Draft"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link to={`/chapters/${chapter.id}/lessons`} className="cursor-pointer">
-                            <Layers className="mr-2 h-4 w-4" />
-                            Manage Lessons
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openEditModal(chapter)} className="cursor-pointer">
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Edit Details
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
-                          onClick={() => {
-                            if (window.confirm(`Delete ${chapter.name}? This will delete all lessons inside it.`)) {
-                              deleteMutation.mutate(chapter.id);
-                            }
-                          }}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Chapter
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="chapters" direction="vertical">
+              {(provided) => (
+                <TableBody {...provided.droppableProps} ref={provided.innerRef}>
+                  {isChaptersLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                        Loading chapters...
+                      </TableCell>
+                    </TableRow>
+                  ) : chapters?.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                        No chapters found. Create one to get started.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    chapters?.map((chapter, index) => (
+                      <Draggable key={chapter.id} draggableId={chapter.id} index={index}>
+                        {(provided, snapshot) => (
+                          <TableRow 
+                            ref={provided.innerRef} 
+                            {...provided.draggableProps}
+                            className={snapshot.isDragging ? "bg-accent opacity-90" : ""}
+                            style={{ ...provided.draggableProps.style, display: snapshot.isDragging ? 'table' : '' }}
+                          >
+                            <TableCell className="w-[50px] cursor-grab active:cursor-grabbing" {...provided.dragHandleProps}>
+                              <GripVertical className="h-4 w-4 text-muted-foreground" />
+                            </TableCell>
+                            <TableCell className="font-medium">{chapter.name}</TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {chapter._count?.lessons || 0} lessons
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={chapter.isActive ? "default" : "secondary"} className={chapter.isActive ? "bg-success/10 text-success hover:bg-success/20 border-none" : ""}>
+                                {chapter.isActive ? "Active" : "Draft"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <span className="sr-only">Open menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem asChild>
+                                    <Link to={`/chapters/${chapter.id}/lessons`} className="cursor-pointer">
+                                      <Layers className="mr-2 h-4 w-4" />
+                                      Manage Lessons
+                                    </Link>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => openEditModal(chapter)} className="cursor-pointer">
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    Edit Details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem 
+                                    className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+                                    onClick={() => {
+                                      if (window.confirm(`Delete ${chapter.name}? This will delete all lessons inside it.`)) {
+                                        deleteMutation.mutate(chapter.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete Chapter
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Draggable>
+                    ))
+                  )}
+                  {provided.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </Table>
       </div>
 

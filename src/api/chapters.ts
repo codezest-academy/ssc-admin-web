@@ -37,3 +37,7 @@ export const updateChapter = async ({ id, ...data }: { id: string; name?: string
 export const deleteChapter = async (id: string): Promise<void> => {
   await api.delete(`/chapters/${id}`);
 };
+
+export const reorderChapters = async (updates: { id: string; order: number }[]): Promise<void> => {
+  await api.patch("/chapters/reorder", { updates });
+};

@@ -65,3 +65,7 @@ export const updateLesson = async ({
 export const deleteLesson = async (id: string): Promise<void> => {
   await api.delete(`/lessons/${id}`);
 };
+
+export const reorderLessons = async (updates: { id: string; order: number }[]): Promise<void> => {
+  await api.patch("/lessons/reorder", { updates });
+};
