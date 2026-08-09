@@ -152,11 +152,11 @@ export default function ProductsPage() {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={product.isActive ? "default" : "secondary"}
+                      variant="outline"
                       className={
                         product.isActive
                           ? "bg-success/10 text-success hover:bg-success/20 border-none"
-                          : ""
+                          : "bg-warning/10 text-warning-text-on-tint hover:bg-warning/20 border-none"
                       }
                     >
                       {product.isActive ? "Active" : "Draft"}

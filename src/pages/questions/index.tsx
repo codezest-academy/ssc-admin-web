@@ -303,12 +303,13 @@ export default function QuestionsPage() {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={
+                      variant="outline"
+                      className={
                         q.difficulty === "HARD"
-                          ? "destructive"
+                          ? "bg-destructive/10 text-destructive-text-on-tint border-none"
                           : q.difficulty === "MEDIUM"
-                            ? "default"
-                            : "secondary"
+                            ? "bg-warning/10 text-warning-text-on-tint border-none"
+                            : "bg-success/10 text-success border-none"
                       }
                     >
                       {q.difficulty}

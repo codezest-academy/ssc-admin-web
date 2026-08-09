@@ -251,15 +251,21 @@ export default function PracticeSetBuilder() {
                                 ></p>
                                 <div className="flex gap-2 mt-2">
                                   <Badge
-                                    variant="secondary"
-                                    className="text-[10px]"
+                                    variant="outline"
+                                    className={
+                                      q.difficulty === "HARD"
+                                        ? "bg-destructive/10 text-destructive-text-on-tint border-none text-[10px]"
+                                        : q.difficulty === "MEDIUM"
+                                          ? "bg-warning/10 text-warning-text-on-tint border-none text-[10px]"
+                                          : "bg-success/10 text-success border-none text-[10px]"
+                                    }
                                   >
                                     {q.difficulty}
                                   </Badge>
                                   {q.isPYQ && (
                                     <Badge
                                       variant="outline"
-                                      className="text-[10px]"
+                                      className="bg-primary/10 text-primary border-primary/20 text-[10px]"
                                     >
                                       PYQ
                                     </Badge>

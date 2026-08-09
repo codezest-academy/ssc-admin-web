@@ -107,7 +107,14 @@ export default function MockTestsPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={test.isActive ? "default" : "secondary"}>
+                    <Badge 
+                      variant="outline"
+                      className={
+                        test.isActive
+                          ? "bg-success/10 text-success border-none hover:bg-success/20"
+                          : "bg-warning/10 text-warning-text-on-tint border-none hover:bg-warning/20"
+                      }
+                    >
                       {test.isActive ? "Active" : "Draft"}
                     </Badge>
                   </TableCell>

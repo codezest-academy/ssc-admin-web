@@ -155,7 +155,14 @@ export default function PracticeSetsPage() {
                     <span className="font-medium">{set.questionCount}</span> questions
                   </TableCell>
                   <TableCell>
-                    <Badge variant={set.isActive ? "default" : "secondary"}>
+                    <Badge 
+                      variant="outline"
+                      className={
+                        set.isActive
+                          ? "bg-success/10 text-success border-none hover:bg-success/20"
+                          : "bg-warning/10 text-warning-text-on-tint border-none hover:bg-warning/20"
+                      }
+                    >
                       {set.isActive ? "Active" : "Draft"}
                     </Badge>
                   </TableCell>
