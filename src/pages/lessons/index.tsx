@@ -26,11 +26,12 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
-  ArrowLeft,
+  ChevronRight,
   PlayCircle,
   FileText,
   FileBadge,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -51,6 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function LessonsPage() {
   const { chapterId } = useParams<{ chapterId: string }>();
@@ -140,13 +142,12 @@ export default function LessonsPage() {
       );
       return { previousLessons };
     },
-    onError: (
-      error: unknown,
-      _variables: unknown,
-      context: unknown
-    ) => {
+    onError: (error: unknown, _variables: unknown, context: unknown) => {
       const err = error as { response?: { data?: { message?: string } } };
-      queryClient.setQueryData(["lessons", chapterId], (context as { previousLessons: unknown })?.previousLessons);
+      queryClient.setQueryData(
+        ["lessons", chapterId],
+        (context as { previousLessons: unknown })?.previousLessons,
+      );
       toast.error(err.response?.data?.message || "Failed to update lesson");
     },
     onSettled: () => {
@@ -221,11 +222,7 @@ export default function LessonsPage() {
   };
 
   if (isChapterLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   if (!chapter) {
@@ -252,12 +249,19 @@ export default function LessonsPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
+    <div className="space-y-6 max-w-full w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link
+              to={`/subjects/${chapter.subjectId}/chapters`}
+              className="hover:text-primary transition-colors"
+            >
+              Chapters
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-medium">Lessons</span>
+          </div>
           <h1 className="text-3xl font-bold tracking-tight">
             {chapter.name} - Lessons
           </h1>

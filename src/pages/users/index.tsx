@@ -41,22 +41,22 @@ import { formatDistanceToNow } from "date-fns";
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const PERSONA_LABELS: Record<StudyPersona, { label: string; className: string }> = {
-  FULL_TIME_ASPIRANT: { label: "Full-Time", className: "text-info bg-info/10" },
-  PART_TIME_ASPIRANT: { label: "Part-Time", className: "text-warning bg-warning/10" },
-  REPEAT_ASPIRANT: { label: "Repeat", className: "text-subject-quant bg-subject-quant/10" },
+  FULL_TIME_ASPIRANT: { label: "Full-Time", className: "text-[var(--info-text-on-tint)] bg-info/15" },
+  PART_TIME_ASPIRANT: { label: "Part-Time", className: "text-[var(--warning-text-on-tint)] bg-warning/15" },
+  REPEAT_ASPIRANT: { label: "Repeat", className: "text-subject-quant bg-subject-quant/15" },
 };
 
 const TIER_CLASSES: Record<string, string> = {
   FREE: "text-muted-foreground bg-muted",
-  PRO: "text-success bg-success/10",
-  ELITE: "text-warning bg-warning/10",
+  PRO: "text-success bg-success/15",
+  ELITE: "text-[var(--warning-text-on-tint)] bg-warning/15",
 };
 
 const ROLE_CLASSES: Record<string, string> = {
-  SUPER_ADMIN: "text-destructive bg-destructive/10",
-  ADMIN: "text-warning bg-warning/10",
-  STAFF: "text-info bg-info/10",
-  STUDENT: "text-muted-foreground bg-muted",
+  SUPER_ADMIN: "text-[var(--destructive-text-on-tint)] bg-destructive/15",
+  ADMIN: "text-[var(--warning-text-on-tint)] bg-warning/15",
+  STAFF: "text-[var(--subject-ga-text-on-tint)] bg-subject-ga/15",
+  STUDENT: "text-[var(--info-text-on-tint)] bg-info/15",
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ export default function UsersPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -131,7 +131,7 @@ export default function UsersPage() {
           {searchQuery ? "No users match your search." : "No users yet."}
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden bg-card shadow-sm">
+        <div className="rounded-xl overflow-hidden surface-elevated">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/40">
@@ -149,7 +149,7 @@ export default function UsersPage() {
               {filtered.map((user) => (
                 <TableRow
                   key={user.id}
-                  className={!user.isActive ? "opacity-50" : undefined}
+                  className={`table-row-interactive ${!user.isActive ? "opacity-50" : ""}`}
                 >
                   <TableCell>
                     <div className="flex flex-col">
@@ -163,24 +163,24 @@ export default function UsersPage() {
                   </TableCell>
 
                   <TableCell>
-                    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${ROLE_CLASSES[user.role] ?? "text-muted-foreground bg-muted"}`}>
+                    <span className={`badge-status ${ROLE_CLASSES[user.role] ?? "text-muted-foreground bg-muted"}`}>
                       {user.role.replace("_", " ")}
                     </span>
                   </TableCell>
 
                   <TableCell>
-                    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${TIER_CLASSES[user.subscriptionTier] ?? ""}`}>
+                    <span className={`badge-status ${TIER_CLASSES[user.subscriptionTier] ?? ""}`}>
                       {user.subscriptionTier}
                     </span>
                   </TableCell>
 
                   <TableCell>
                     {user.studyPersona ? (
-                      <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${PERSONA_LABELS[user.studyPersona]?.className ?? ""}`}>
+                      <span className={`badge-status ${PERSONA_LABELS[user.studyPersona]?.className ?? ""}`}>
                         {PERSONA_LABELS[user.studyPersona]?.label}
                       </span>
                     ) : (
-                      <span className="text-xs text-muted-foreground italic">
+                      <span className="text-xs text-muted-foreground font-medium italic">
                         {user.onboardingComplete ? "—" : "Not onboarded"}
                       </span>
                     )}
@@ -194,13 +194,13 @@ export default function UsersPage() {
 
                   <TableCell>
                     {user.onboardingComplete ? (
-                      <Badge variant="outline" className="text-success border-success/20 bg-success/5 text-xs">
+                      <span className="badge-status text-success border border-success/30 bg-success/15 shadow-sm">
                         ✓ Done
-                      </Badge>
+                      </span>
                     ) : (
-                      <Badge variant="outline" className="text-muted-foreground text-xs">
+                      <span className="badge-status text-[var(--warning-text-on-tint)] border border-warning/30 bg-warning/15 shadow-sm">
                         Pending
-                      </Badge>
+                      </span>
                     )}
                   </TableCell>
 

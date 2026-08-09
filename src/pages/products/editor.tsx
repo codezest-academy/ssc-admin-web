@@ -22,8 +22,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Loader2, Users } from "lucide-react";
-
+import { ChevronRight, Save, Loader2, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import { EditorSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function ProductEditor() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +40,6 @@ export default function ProductEditor() {
   const [validityDays, setValidityDays] = useState<number | "">("");
   const [isActive, setIsActive] = useState(true);
   const [recommendedFor, setRecommendedFor] = useState<StudyPersona[]>([]);
-
 
   const { data: product, isLoading: initialLoading } = useQuery({
     queryKey: ["product", id],
@@ -57,7 +57,6 @@ export default function ProductEditor() {
       setValidityDays(product.validityDays ?? "");
       setIsActive(product.isActive);
       setRecommendedFor(product.recommendedFor ?? []);
-
     }
   }, [product]);
 
@@ -108,23 +107,21 @@ export default function ProductEditor() {
   };
 
   if (initialLoading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <EditorSkeleton />;
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 p-8">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/products")}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
+      <div>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+          <Link to="/products" className="hover:text-primary transition-colors">
+            Products
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-foreground font-medium">
+            {isEditing ? "Edit Product" : "Create Product"}
+          </span>
+        </div>
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             {isEditing ? "Edit Product" : "Create Product"}
@@ -218,7 +215,8 @@ export default function ProductEditor() {
             Recommended For (Persona Targeting)
           </Label>
           <p className="text-xs text-muted-foreground mb-4">
-            Tag this product so it surfaces in persona-specific recommendations on the student dashboard.
+            Tag this product so it surfaces in persona-specific recommendations
+            on the student dashboard.
           </p>
           <div className="flex flex-wrap gap-4">
             {(
@@ -228,7 +226,10 @@ export default function ProductEditor() {
                 { id: "REPEAT_ASPIRANT", label: "Repeat Aspirant" },
               ] as { id: StudyPersona; label: string }[]
             ).map((persona) => (
-              <div key={persona.id} className="flex flex-row items-center space-x-3 rounded-md border p-3 shadow-sm min-w-[200px]">
+              <div
+                key={persona.id}
+                className="flex flex-row items-center space-x-3 rounded-md border p-3 shadow-sm min-w-[200px]"
+              >
                 <Checkbox
                   id={persona.id}
                   checked={recommendedFor.includes(persona.id)}
@@ -236,11 +237,14 @@ export default function ProductEditor() {
                     setRecommendedFor((prev) =>
                       checked
                         ? [...prev, persona.id]
-                        : prev.filter((p) => p !== persona.id)
+                        : prev.filter((p) => p !== persona.id),
                     );
                   }}
                 />
-                <Label htmlFor={persona.id} className="cursor-pointer font-medium text-sm">
+                <Label
+                  htmlFor={persona.id}
+                  className="cursor-pointer font-medium text-sm"
+                >
                   {persona.label}
                 </Label>
               </div>
@@ -250,7 +254,6 @@ export default function ProductEditor() {
 
         <div className="pt-2">
           <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm h-[88px] w-full md:w-1/2">
-
             <Checkbox
               id="isActive"
               checked={isActive}

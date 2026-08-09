@@ -42,34 +42,34 @@ export default function Dashboard() {
       label: "Total Students",
       value: metrics.totalStudents,
       icon: Users,
-      color: "text-blue-500",
-      bg: "bg-blue-100",
+      color: "text-subject-english-text-on-tint",
+      bg: "bg-subject-english/10",
     },
     {
       label: "Active Exams",
       value: metrics.activeExams,
       icon: GraduationCap,
-      color: "text-emerald-500",
-      bg: "bg-emerald-100",
+      color: "text-subject-reason-text-on-tint",
+      bg: "bg-subject-reason/10",
     },
     {
       label: "Questions Bank",
       value: metrics.totalQuestions,
       icon: FileQuestion,
-      color: "text-amber-500",
-      bg: "bg-amber-100",
+      color: "text-warning-text-on-tint",
+      bg: "bg-warning/10",
     },
     {
       label: "Total Test Attempts",
       value: metrics.totalAttempts,
       icon: Activity,
-      color: "text-purple-500",
-      bg: "bg-purple-100",
+      color: "text-subject-ga-text-on-tint",
+      bg: "bg-subject-ga/10",
     },
   ];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6 max-w-full w-full pb-12">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground mt-2">
@@ -80,25 +80,20 @@ export default function Dashboard() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="p-6 pb-2 flex items-center justify-between">
-              <h3 className="tracking-tight text-sm font-medium text-muted-foreground">
+          <div key={stat.label} className="surface-glass rounded-xl p-5">
+            <div className="flex justify-between items-start">
+              <p className="text-xs font-medium text-muted-foreground">
                 {stat.label}
-              </h3>
-              <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.bg}`}
-              >
-                <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              </div>
+              </p>
+              <stat.icon className={`w-4 h-4 ${stat.color}`} />
             </div>
-            <div className="p-6 pt-0">
-              <div className="text-3xl font-bold">
-                {stat.value.toLocaleString()}
-              </div>
-            </div>
+            <p className="text-3xl font-semibold mt-2 tracking-tight">
+              {stat.value.toLocaleString()}
+            </p>
+            {/* Trend placeholder - to be wired to real data next */}
+            <p className="text-xs mt-1 font-medium text-success">
+              ↑ 12% vs last week
+            </p>
           </div>
         ))}
       </div>
@@ -152,7 +147,7 @@ export default function Dashboard() {
                           >
                             Submitted
                           </Badge>
-                          <span className="text-xs font-semibold text-slate-700">
+                          <span className="text-xs font-semibold text-foreground">
                             {attempt.marksObtained !== null
                               ? `${attempt.marksObtained} Marks`
                               : "Evaluating..."}

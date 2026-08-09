@@ -6,6 +6,7 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -35,6 +36,17 @@
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
+  --color-warning-text-on-tint: var(--warning-text-on-tint);
+  --color-info-text-on-tint: var(--info-text-on-tint);
+  --color-destructive-text-on-tint: var(--destructive-text-on-tint);
+
+  /* Subject on-tint text tokens — for text on bg-subject-X/10 tinted backgrounds */
+  --color-subject-english-text-on-tint: var(--subject-english-text-on-tint);
+  --color-subject-reason-text-on-tint: var(--subject-reason-text-on-tint);
+  --color-subject-ga-text-on-tint: var(--subject-ga-text-on-tint);
+  --color-subject-quant-text-on-tint: var(--subject-quant-text-on-tint);
+  --color-subject-science-text-on-tint: var(--subject-science-text-on-tint);
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
@@ -72,143 +84,186 @@
 
 @layer base {
   :root {
-    /* ── Core surfaces ───────────────────────────────────────── */
-    --background:          oklch(0.96 0.01 250);  /* Deeper Alabaster for card contrast */
-    --foreground:          oklch(0.18 0.02 250);
+    /* Core surfaces: Azure Frost Tinted */
+    --background: oklch(0.99 0.01 260);
+    --foreground: oklch(0.14 0.02 260);
 
-    --card:                oklch(1 0 0);          /* Pure Opaque White */
-    --card-foreground:     oklch(0.18 0.02 250);
+    --card: oklch(1 0 0); /* Keep pure white for contrast against background */
+    --card-foreground: oklch(0.14 0.02 260);
 
-    --popover:             oklch(1 0 0);
-    --popover-foreground:  oklch(0.18 0.02 250);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.14 0.02 260);
 
-    /* ── Brand primary: CodeZest Indigo ──────────────────────── */
-    --primary:             oklch(0.55 0.20 275);
-    --primary-foreground:  oklch(1 0 0);
+    /* Brand primary: Azure Blue, high trust corporate education */
+    --primary: oklch(0.50 0.16 260);
+    --primary-foreground: oklch(1 0 0);
 
-    /* ── Secondary ───────────────────────────────────────────── */
-    --secondary:           oklch(0.94 0.02 250);
-    --secondary-foreground: oklch(0.20 0.04 250);
+    /* Secondary */
+    --secondary: oklch(0.96 0.02 260);
+    --secondary-foreground: oklch(0.14 0.02 260);
 
-    /* ── Muted ───────────────────────────────────────────────── */
-    --muted:               oklch(0.96 0.01 250);
-    --muted-foreground:    oklch(0.53 0.02 250); /* Shifted from 0.55 to 0.53 to clear WCAG 4.5:1 against muted background */
+    /* Muted (True Neutral) */
+    --muted: oklch(0.96 0.02 260);
+    --muted-foreground: oklch(0.44 0.03 260);
 
-    /* ── Accent (hover surfaces) ─────────────────────────────── */
-    --accent:              oklch(0.94 0.04 250);
-    --accent-foreground:   oklch(0.40 0.15 250);
+    /* Accent */
+    --accent: oklch(0.94 0.02 260);
+    --accent-foreground: oklch(0.14 0.02 260);
 
-    /* ── Semantic status ─────────────────────────────────────── */
-    --destructive:         oklch(0.55 0.20 26);
+    /* Semantic status */
+    --destructive: oklch(0.55 0.2 26);
     --destructive-foreground: oklch(1 0 0);
 
-    --success:             oklch(0.60 0.15 145);
-    --success-foreground:  oklch(1 0 0);
+    --success: oklch(0.6 0.15 145);
+    --success-foreground: oklch(1 0 0);
 
-    --warning:             oklch(0.80 0.15 80);
-    --warning-foreground:  oklch(0.25 0.05 80);
+    --warning: oklch(0.75 0.16 65);
+    --warning-foreground: oklch(0.28 0.06 65); /* 6.41:1 shifted warning */
 
-    --info:                oklch(0.60 0.15 250);
-    --info-foreground:     oklch(1 0 0);
+    --info: oklch(0.6 0.15 250);
+    --info-foreground: oklch(1 0 0);
 
-    /* ── Subject Colors (L=0.65, C=0.18) ─────────────────────── */
-    --subject-quant:       oklch(0.65 0.18 45);   /* Orange */
-    --subject-english:     oklch(0.65 0.18 250);  /* Blue */
-    --subject-ga:          oklch(0.65 0.18 300);  /* Purple */
-    --subject-reason:      oklch(0.65 0.18 145);  /* Green */
-    --subject-science:     oklch(0.65 0.18 190);  /* Teal */
+    /* Text-on-Tint: for text sitting on /10 tinted backgrounds */
+    --warning-text-on-tint: oklch(0.38 0.13 65);   /* 9.11:1 */
+    --info-text-on-tint: oklch(0.38 0.15 250);      /* ~8.2:1 */
+    --destructive-text-on-tint: oklch(0.38 0.15 26); /* ~8.5:1 */
 
-    /* ── Chart Colors (Shifted to prevent clash with Subject/Primary) ── */
-    --chart-1:             oklch(0.65 0.18 220);
-    --chart-2:             oklch(0.65 0.18 15);
-    --chart-3:             oklch(0.65 0.18 100);
-    --chart-4:             oklch(0.65 0.18 260);
-    --chart-5:             oklch(0.65 0.18 320);
+    /* Subject on-tint text tokens */
+    /* RULE: Do NOT use base subject tokens as text on their own /10 tint */
+    --subject-english-text-on-tint: oklch(0.40 0.16 250); /* 8.2:1 */
+    --subject-reason-text-on-tint:  oklch(0.38 0.14 145); /* 8.4:1 */
+    --subject-ga-text-on-tint:      oklch(0.42 0.16 300); /* 8.0:1 */
+    --subject-quant-text-on-tint:   oklch(0.42 0.16 45);  /* 8.1:1 */
+    --subject-science-text-on-tint: oklch(0.40 0.14 190); /* 8.1:1 */
 
-    /* ── Borders / Inputs / Ring ─────────────────────────────── */
-    --border:              oklch(0.93 0.005 250); /* Subtle structural border fallback */
-    --input:               oklch(0.85 0.01 250);  /* Darker input border for better visibility */
-    --ring:                oklch(0.55 0.20 275);
+    /* Subject Colors: L=0.65 C=0.18 visual parity family */
+    --subject-quant: oklch(0.65 0.18 45);
+    --subject-english: oklch(0.65 0.18 250);
+    --subject-ga: oklch(0.65 0.18 300);
+    --subject-reason: oklch(0.65 0.18 145);
+    --subject-science: oklch(0.65 0.18 190);
 
-    --radius: 0.25rem;
+    /* Chart Colors */
+    --chart-1: oklch(0.65 0.18 220);
+    --chart-2: oklch(0.65 0.18 15);
+    --chart-3: oklch(0.65 0.18 100);
+    --chart-4: oklch(0.65 0.18 260);
+    --chart-5: oklch(0.65 0.18 320);
 
-    /* ── Sidebar token family ────────────────────────────────── */
-    --sidebar:             oklch(0.97 0.01 250);
-    --sidebar-foreground:  oklch(0.20 0.02 250);
-    --sidebar-primary:     oklch(0.55 0.20 275);
+    /* Borders / Inputs / Ring */
+    --border: oklch(0.90 0.02 260); /* Soft blueish border */
+    --input: oklch(0.90 0.02 260);
+    --ring: oklch(0.50 0.16 260); /* Brand primary */
+
+    /* Radius: 0.5rem for structured corporate-brand feel */
+    --radius: 0.5rem;
+
+    /* Sidebar: Premium Brand Tinted Frost (Intensified for visibility) */
+    --sidebar:                    oklch(0.96 0.03 260);
+    --sidebar-foreground:         oklch(0.14 0.02 260);
+    --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent:      oklch(0.94 0.02 250);
-    --sidebar-accent-foreground: oklch(0.30 0.05 250);
-    --sidebar-border:      oklch(0.90 0.01 250);
+    --sidebar-accent:             oklch(0.92 0.04 260);
+    --sidebar-accent-foreground:  oklch(0.14 0.02 260);
+    --sidebar-border:             oklch(0.85 0.03 260);
+
+    /* Sidebar — active state (light) */
+    --sidebar-active-bg:          oklch(0.94 0.06 260); /* primary-50 approx */
+    --sidebar-active-fg:          oklch(0.40 0.16 260); /* primary-700 approx */
+    --sidebar-active-border:      oklch(0.80 0.10 260); /* primary-200 approx */
+
+    /* Sidebar — shadow (light) */
+    --sidebar-shadow:             0 1px 2px 0 rgb(0 0 0 / 0.04),
+                                  0 4px 12px -2px rgb(0 0 0 / 0.06),
+                                  0 12px 24px -8px rgb(0 0 0 / 0.05);
   }
 
   .dark {
-    /* ── Core surfaces ───────────────────────────────────────── */
-    --background:          oklch(0.18 0.02 250);  /* Deep Slate */
-    --foreground:          oklch(0.98 0.01 250);
+    /* Core surfaces: Deep Azure tinted grey */
+    --background: oklch(0.14 0.01 260);
+    --foreground: oklch(0.97 0.01 260);
 
-    --card:                oklch(0.22 0.02 250);  /* Lifted for dark mode elevation */
-    --card-foreground:     oklch(0.98 0.01 250);
+    --card: oklch(0.16 0.015 260);
+    --card-foreground: oklch(0.97 0.01 260);
 
-    --popover:             oklch(0.22 0.02 250);
-    --popover-foreground:  oklch(0.98 0.01 250);
+    --popover: oklch(0.16 0.015 260);
+    --popover-foreground: oklch(0.97 0.01 260);
 
-    /* ── Brand primary ───────────────────────────────────────── */
-    --primary:             oklch(0.65 0.18 275);
-    --primary-foreground:  oklch(0.98 0.01 250);
+    /* Brand primary: luminous Azure on dark */
+    --primary: oklch(0.60 0.16 260);
+    --primary-foreground: oklch(0.15 0 0);
 
-    /* ── Secondary ───────────────────────────────────────────── */
-    --secondary:           oklch(0.28 0.03 250);
-    --secondary-foreground: oklch(0.98 0.01 250);
+    /* Secondary */
+    --secondary: oklch(0.22 0.02 260);
+    --secondary-foreground: oklch(0.97 0.01 260);
 
-    /* ── Muted ───────────────────────────────────────────────── */
-    --muted:               oklch(0.25 0.03 250);
-    --muted-foreground:    oklch(0.65 0.02 250);
+    /* Muted */
+    --muted: oklch(0.20 0.02 260);
+    --muted-foreground: oklch(0.65 0.03 260);
 
-    /* ── Accent ──────────────────────────────────────────────── */
-    --accent:              oklch(0.28 0.04 250);
-    --accent-foreground:   oklch(0.90 0.05 250);
+    /* Accent */
+    --accent: oklch(0.24 0.03 260);
+    --accent-foreground: oklch(0.95 0.01 260);
 
-    /* ── Semantic status ─────────────────────────────────────── */
-    --destructive:         oklch(0.50 0.16 26);
-    --destructive-foreground: oklch(0.98 0.01 250);
+    /* Semantic status */
+    --destructive: oklch(0.5 0.16 26);
+    --destructive-foreground: oklch(0.97 0.01 265);
 
-    --success:             oklch(0.55 0.12 145);
-    --success-foreground:  oklch(0.98 0.01 250);
+    --success: oklch(0.55 0.12 145);
+    --success-foreground: oklch(0.97 0.01 265);
 
-    --warning:             oklch(0.70 0.14 80);
-    --warning-foreground:  oklch(0.20 0.05 80);
+    --warning: oklch(0.7 0.14 80);
+    --warning-foreground: oklch(0.2 0.05 80);
 
-    --info:                oklch(0.55 0.15 250);
-    --info-foreground:     oklch(0.98 0.01 250);
+    --info: oklch(0.55 0.15 250);
+    --info-foreground: oklch(0.97 0.01 265);
 
-    /* ── Subject Colors (Slightly adjusted L for dark mode) ──── */
-    --subject-quant:       oklch(0.60 0.18 45);
-    --subject-english:     oklch(0.60 0.18 250);
-    --subject-ga:          oklch(0.60 0.18 300);
-    --subject-reason:      oklch(0.60 0.18 145);
-    --subject-science:     oklch(0.60 0.18 190);
+    /* Text-on-Tint for Dark Mode: Brightened for contrast against dark badges */
+    --warning-text-on-tint: oklch(0.85 0.14 80);
+    --info-text-on-tint: oklch(0.85 0.15 250);
+    --destructive-text-on-tint: oklch(0.85 0.16 26);
+    --subject-english-text-on-tint: oklch(0.85 0.18 250);
+    --subject-reason-text-on-tint:  oklch(0.85 0.18 145);
+    --subject-ga-text-on-tint:      oklch(0.85 0.18 300);
+    --subject-quant-text-on-tint:   oklch(0.85 0.18 45);
+    --subject-science-text-on-tint: oklch(0.85 0.18 190);
 
-    /* ── Chart Colors (Shifted to prevent clash with Subject/Primary) ── */
-    --chart-1:             oklch(0.60 0.18 220);
-    --chart-2:             oklch(0.60 0.18 15);
-    --chart-3:             oklch(0.60 0.18 100);
-    --chart-4:             oklch(0.60 0.18 260);
-    --chart-5:             oklch(0.60 0.18 320);
+    /* Subject Colors: slightly lower L for dark mode */
+    --subject-quant: oklch(0.6 0.18 45);
+    --subject-english: oklch(0.6 0.18 250);
+    --subject-ga: oklch(0.6 0.18 300);
+    --subject-reason: oklch(0.6 0.18 145);
+    --subject-science: oklch(0.6 0.18 190);
 
-    /* ── Borders / Inputs / Ring ─────────────────────────────── */
-    --border:              oklch(0.28 0.02 250); /* Explicit border for dark mode card elevation */
-    --input:               oklch(0.35 0.02 250); /* Brighter input border for dark mode */
-    --ring:                oklch(0.65 0.18 275);
+    /* Chart Colors */
+    --chart-1: oklch(0.6 0.18 220);
+    --chart-2: oklch(0.6 0.18 15);
+    --chart-3: oklch(0.6 0.18 100);
+    --chart-4: oklch(0.6 0.18 260);
+    --chart-5: oklch(0.6 0.18 320);
 
-    /* ── Sidebar token family ────────────────────────────────── */
-    --sidebar:             oklch(0.20 0.02 250);
-    --sidebar-foreground:  oklch(0.90 0.01 250);
-    --sidebar-primary:     oklch(0.65 0.18 275);
-    --sidebar-primary-foreground: oklch(0.98 0.01 250);
-    --sidebar-accent:      oklch(0.25 0.03 250);
-    --sidebar-accent-foreground: oklch(0.90 0.02 250);
-    --sidebar-border:      oklch(0.25 0.02 250);
+    /* Borders / Inputs / Ring */
+    --border: oklch(0.26 0 0);
+    --input: oklch(0.32 0 0);
+    --ring: oklch(0.60 0.16 260);
+
+    /* Sidebar: Premium Brand Tinted Dark */
+    --sidebar:                    oklch(0.14 0.01 260);
+    --sidebar-foreground:         oklch(0.90 0 0);
+    --sidebar-primary:            oklch(0.60 0.16 260); /* Brand primary */
+    --sidebar-primary-foreground: oklch(0.13 0 0);
+    --sidebar-accent:             oklch(0.20 0.02 260);
+    --sidebar-accent-foreground:  oklch(0.90 0 0);
+    --sidebar-border:             oklch(0.24 0.02 260);
+
+    /* Sidebar — active state (dark) */
+    --sidebar-active-bg:          oklch(0.18 0.04 260); /* primary-950 approx */
+    --sidebar-active-fg:          oklch(0.80 0.10 260); /* primary-300 approx */
+    --sidebar-active-border:      oklch(0.25 0.10 260); /* primary-800 approx */
+
+    /* Sidebar — shadow (dark) */
+    --sidebar-shadow:             0 1px 2px 0 rgb(0 0 0 / 0.3),
+                                  0 4px 16px -2px rgb(0 0 0 / 0.4);
   }
 }
 
@@ -221,11 +276,16 @@
     font-family: "Inter", sans-serif !important;
     font-size: 14px !important; /* Standard admin dense size */
   }
+  h1, h2 {
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  }
 }
 
 /* Accessibility: respect user's reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -236,7 +296,10 @@
 @layer utilities {
   /* Subtle dot grid for Admin */
   .bg-grid-pattern {
-    background-image: radial-gradient(color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px);
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--foreground) 4%, transparent) 1px,
+      transparent 1px
+    );
     background-size: 24px 24px;
   }
   @media print {
@@ -244,6 +307,8 @@
       background-image: none !important;
     }
   }
+
+  /* Allow shadow-sm for elevation on pure white backgrounds */
 
   /* Progress bar stripe animation */
   .animate-progress-stripe {
@@ -260,6 +325,70 @@
     background-size: 1rem 1rem;
     animation: progress-stripe 1s linear infinite;
   }
+  /* Interactive table row — hairline-consistent with flat system */
+  .table-row-interactive {
+    @apply transition-colors duration-150 hover:bg-muted/70;
+  }
+
+  /* Pill status component */
+  .badge-status {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  /* Card elevation — border sharpness + hairline shadow */
+  .surface-elevated {
+    @apply bg-card border border-border/80 shadow-sm;
+  }
+
+  /* Static ambient mesh — removed for flat corporate aesthetic */
+  .bg-mesh {
+    position: relative;
+    isolation: isolate;
+  }
+  @media print {
+    .bg-mesh::before {
+      display: none;
+    }
+  }
+
+  /* Floating layout wrapper */
+  .app-shell-floating {
+    @apply p-3 gap-3 flex h-screen;
+  }
+  .sidebar-floating {
+    @apply rounded-xl border border-sidebar-border overflow-hidden shrink-0;
+  }
+  .navbar-floating {
+    @apply rounded-xl border border-border bg-card flex-shrink-0;
+  }
+  .content-floating {
+    @apply rounded-xl border border-border/80 bg-background flex-1 overflow-auto;
+  }
+
+  /* Luminous active states — constrained glow */
+  .glow-primary {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+      0 4px 16px -2px color-mix(in oklab, var(--primary) 35%, transparent);
+  }
+  .sidebar-nav-active {
+    @apply relative text-sidebar-primary rounded-md;
+    background-color: color-mix(in oklab, var(--sidebar-primary) 10%, transparent);
+  }
+  .sidebar-nav-active::before {
+    content: "";
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-sidebar-primary rounded-full;
+  }
+
+  /* Glass — explicitly scoped to dashboard summary cards only */
+  /* Scope: dashboard/summary KPI tiles ONLY. Do not apply to data tables,
+       list rows, or any surface with >~8 elements or scroll content —
+       see contrast note in theme-system.md. */
+  .surface-glass {
+    @apply bg-card/70 border border-border/60;
+    backdrop-blur: blur(16px);
+    backdrop-filter: blur(16px);
+  }
 }
 
 @keyframes progress-stripe {
@@ -269,4 +398,37 @@
   to {
     background-position: 0 0;
   }
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }

@@ -9,9 +9,9 @@ export function ColorsSection() {
         <div className="bg-background text-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Background</div>
         <div className="bg-card text-card-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Card</div>
         <div className="bg-muted text-muted-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Muted</div>
-        <div className="bg-primary text-primary-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Primary (Cobalt)</div>
+        <div className="bg-primary text-primary-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Primary (Indigo)</div>
         <div className="bg-secondary text-secondary-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Secondary</div>
-        <div className="bg-accent text-accent-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Accent</div>
+        <div className="bg-accent text-accent-foreground p-6 rounded-xl border flex flex-col font-medium h-28 justify-end">Accent (Premium Gold)</div>
       </div>
     </section>
   );

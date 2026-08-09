@@ -1,7 +1,7 @@
 # UX/UI Guidelines — Admin Web
 
 **Date:** 2026-07-26
-**Updated:** 2026-07-28
+**Updated:** 2026-08-09
 **Status:** 🟢 Active
 **Author:** CVS Charan
 
@@ -26,7 +26,7 @@ Defines the design principles, component conventions, and interaction patterns f
 
 ### Primary Brand Color
 
-`--primary = oklch(0.55 0.20 275)` → **CodeZest Indigo**
+`--primary = oklch(0.52 0.26 265)` → **CodeZest Royal Indigo**
 
 Used for: active sidebar nav, primary CTA buttons, focus rings.
 *Why Indigo?* It promotes focus, calm, and professional trust—essential for long study/admin sessions.
@@ -40,7 +40,7 @@ Used for: active sidebar nav, primary CTA buttons, focus rings.
 - **30%** — Structure: `text-foreground`, `border-border`, `bg-muted`
 - **10%** — Brand accent: `bg-primary`, `text-primary` — CTAs and active states only
 
-See `theme-system.md` for full token reference.
+See `theme-system.md` for full token reference and the new "Academy Warm" palette constraints.
 
 ---
 
@@ -56,11 +56,15 @@ Admin relies on a **strict 8-point grid** to maintain horizontal and vertical rh
 
 ## Layout Conventions
 
-### Admin Shell
+### Admin Shell: Floating Panels
 
-- **Sidebar**: Collapsible. Expanded = 256px (icon + label). Collapsed = 64px (icon only + tooltip). State persisted in `localStorage` key `ssc-admin-sidebar-collapsed`.
-- **Top Bar**: Sticky 64px. Contains search, mode toggle, bell, avatar dropdown.
-- **Main Content**: `p-6`, `bg-muted/10`.
+The entire layout leverages floating panels for crisp visual separation.
+
+- **App Shell**: `app-shell-floating` wraps the viewport with `p-3 gap-3 flex h-screen` and `bg-background` (warm ivory).
+- **Sidebar**: `sidebar-floating`. Solid white panel (`bg-sidebar`), clear border (`border-sidebar-border`). Expanded = 256px (`w-64`). Collapsed = 64px (`w-16`). Persists in `localStorage` (`ssc-admin-sidebar-collapsed`).
+- **Navbar**: `navbar-floating`. Top-right floating bar (`h-14`) containing search, mode toggle, bell, and avatar.
+- **Main Content**: `content-floating`. Flex-1 scrollable pane holding the core page views.
+- **Mobile**: Sidebar becomes a `Sheet` component triggered by a hamburger menu in the navbar.
 
 ### Tables vs Cards
 
@@ -72,8 +76,8 @@ Admin relies on a **strict 8-point grid** to maintain horizontal and vertical rh
 
 ### Backgrounds & Gradients
 
-- **Grid Pattern:** When applying a subtle dot grid pattern (`bg-grid-pattern`) to admin backgrounds, the opacity must be capped at a **strict ceiling of 2–4%**. It must be visually tested against dense data (like the Question Bank table) to ensure it introduces zero visual noise.
-- **Gradients:** Ambient decorative gradients are **strictly forbidden** in the Admin UI.
+- **No Ambient Gradients:** Ambient decorative gradients are **strictly forbidden** in the Admin UI.
+- **Flat Panels:** Rely on background colors (`bg-card`, `bg-sidebar`) and subtle borders, not shadows or gradients, for visual separation.
 
 ---
 
@@ -126,14 +130,16 @@ Create and Edit open a **Dialog modal**. Exceptions: Question Editor, Practice S
 
 ### Animations & Reduced Motion
 
-- All animations (such as the `animate-progress-stripe` progress bar) must respect `prefers-reduced-motion: reduce`.
+- All animations must respect `prefers-reduced-motion: reduce`.
 - The global `index.css` sets all animation durations to `0.01ms` when this flag is detected. Ensure custom keyframes do not override this accessibility safeguard.
 
-### Status Badges
+### Status Badges (Text on Tint)
+
+Always use the `-text-on-tint` tokens for text sitting on a `/10` tinted background.
 
 ```
 EASY   → bg-success/10 text-success
-MEDIUM → bg-warning/10 text-warning
+MEDIUM → bg-warning/10 text-warning-text-on-tint
 HARD   → bg-destructive/10 text-destructive
 active → bg-success/10 text-success
 inactive → bg-destructive/10 text-destructive

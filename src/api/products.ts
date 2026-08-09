@@ -28,22 +28,22 @@ export interface ProductItem {
 
 export const getProducts = async (): Promise<Product[]> => {
   const { data } = await api.get("/products");
-  return data;
+  return data.data;
 };
 
 export const getProductById = async (id: string): Promise<Product> => {
   const { data } = await api.get(`/products/${id}`);
-  return data;
+  return data.data;
 };
 
 export const createProduct = async (productData: Partial<Product>): Promise<Product> => {
   const { data } = await api.post("/products", productData);
-  return data;
+  return data.data;
 };
 
 export const updateProduct = async (id: string, productData: Partial<Product>): Promise<Product> => {
   const { data } = await api.patch(`/products/${id}`, productData);
-  return data;
+  return data.data;
 };
 
 export const deleteProduct = async (id: string): Promise<void> => {
@@ -52,7 +52,7 @@ export const deleteProduct = async (id: string): Promise<void> => {
 
 export const addProductItem = async (productId: string, itemData: { itemType: string, itemId: string }): Promise<ProductItem> => {
   const { data } = await api.post(`/products/${productId}/items`, itemData);
-  return data;
+  return data.data;
 };
 
 export const removeProductItem = async (productId: string, itemId: string): Promise<void> => {

@@ -30,7 +30,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { QuestionRenderer } from "@/components/ui/question-renderer";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Loader2, FileText } from "lucide-react";
+import { ChevronRight, Save, Loader2, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { EditorSkeleton } from "@/components/ui/loading-skeletons";
 
 const EXAM_TYPES: ExamType[] = [
   "SSC_CGL",
@@ -185,24 +187,25 @@ export default function QuestionEditor() {
   };
 
   if (isEditing && isFetching) {
-    return (
-      <div className="p-12 flex justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <EditorSkeleton />;
   }
 
   return (
-    <div className="space-y-8 pb-12 max-w-[1400px] mx-auto">
+    <div className="space-y-8 pb-12 max-w-full">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/questions")}
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
+        <div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link
+              to="/questions"
+              className="hover:text-primary transition-colors"
+            >
+              Question Bank
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-medium">
+              {isEditing ? "Edit Question" : "New Question"}
+            </span>
+          </div>
           <div>
             <h2 className="text-3xl font-bold tracking-tight">
               {isEditing ? "Edit Question" : "New Question"}
@@ -212,18 +215,27 @@ export default function QuestionEditor() {
             </p>
           </div>
         </div>
-        <Button
-          onClick={handleSave}
-          disabled={mutation.isPending}
-          className="gap-2"
-        >
-          {mutation.isPending ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4" />
-          )}
-          Save Question
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/questions")}
+            disabled={mutation.isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={mutation.isPending}
+            className="gap-2"
+          >
+            {mutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            Save Question
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">

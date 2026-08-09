@@ -3,14 +3,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSubjects } from "@/api/subjects";
 import { getChaptersBySubject } from "@/api/chapters";
-import { getPracticeSetById, createPracticeSet, updatePracticeSet } from "@/api/practiceSets";
+import {
+  getPracticeSetById,
+  createPracticeSet,
+  updatePracticeSet,
+} from "@/api/practiceSets";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ChevronRight, Save, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { EditorSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function PracticeSetEditor() {
   const { id } = useParams<{ id: string }>();
@@ -23,14 +35,19 @@ export default function PracticeSetEditor() {
   const [scope, setScope] = useState<"subject" | "chapter">("subject");
   const [chapterId, setChapterId] = useState("none");
   const [order, setOrder] = useState<number>(0);
-  const [accessTier, setAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">("FREE");
+  const [accessTier, setAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">(
+    "FREE",
+  );
   const [isActive, setIsActive] = useState(true);
 
   const { data: subjectsData } = useQuery({
     queryKey: ["subjects"],
     queryFn: getSubjects,
   });
-  const subjects = Array.isArray(subjectsData) ? subjectsData : (subjectsData as unknown as { data: { id: string; name: string }[] })?.data || [];
+  const subjects = Array.isArray(subjectsData)
+    ? subjectsData
+    : (subjectsData as unknown as { data: { id: string; name: string }[] })
+        ?.data || [];
 
   const { data: chapters } = useQuery({
     queryKey: ["chapters", subjectId],
@@ -58,7 +75,11 @@ export default function PracticeSetEditor() {
   }, [practiceSet]);
 
   const mutation = useMutation({
-    mutationFn: (values: { title: string; subjectId: string; [key: string]: unknown }) => {
+    mutationFn: (values: {
+      title: string;
+      subjectId: string;
+      [key: string]: unknown;
+    }) => {
       if (isEditing) {
         return updatePracticeSet(id!, values);
       }
@@ -66,8 +87,10 @@ export default function PracticeSetEditor() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["practiceSets"] });
-      toast.success(isEditing ? "Practice set updated" : "Practice set created");
-      
+      toast.success(
+        isEditing ? "Practice set updated" : "Practice set created",
+      );
+
       // If it's a new practice set, ask if they want to build it now
       if (!isEditing) {
         navigate(`/practice-sets/${data.id}`); // Go straight to builder
@@ -77,7 +100,7 @@ export default function PracticeSetEditor() {
     },
     onError: () => {
       toast.error("An error occurred");
-    }
+    },
   });
 
   const handleSave = () => {
@@ -106,15 +129,24 @@ export default function PracticeSetEditor() {
   };
 
   if (initialLoading) {
-    return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>;
+    return <EditorSkeleton />;
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/practice-sets")}>
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
+      <div>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+          <Link
+            to="/practice-sets"
+            className="hover:text-primary transition-colors"
+          >
+            Practice Sets
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-foreground font-medium">
+            {isEditing ? "Edit Practice Set" : "Create Practice Set"}
+          </span>
+        </div>
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             {isEditing ? "Edit Practice Set" : "Create Practice Set"}
@@ -128,10 +160,10 @@ export default function PracticeSetEditor() {
       <div className="space-y-6 bg-card p-6 rounded-xl border">
         <div className="space-y-2">
           <Label>Title</Label>
-          <Input 
-            placeholder="e.g. Algebra Weekly Test 1" 
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
+          <Input
+            placeholder="e.g. Algebra Weekly Test 1"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
@@ -144,7 +176,9 @@ export default function PracticeSetEditor() {
               </SelectTrigger>
               <SelectContent>
                 {subjects.map((sub: { id: string; name: string }) => (
-                  <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                  <SelectItem key={sub.id} value={sub.id}>
+                    {sub.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -152,16 +186,23 @@ export default function PracticeSetEditor() {
 
           <div className="space-y-2">
             <Label>Test Scope</Label>
-            <Select onValueChange={(val: "subject" | "chapter") => {
-              setScope(val);
-              if (val === 'subject') setChapterId('none');
-            }} value={scope}>
+            <Select
+              onValueChange={(val: "subject" | "chapter") => {
+                setScope(val);
+                if (val === "subject") setChapterId("none");
+              }}
+              value={scope}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select scope" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="subject">Subject Level (Full Test)</SelectItem>
-                <SelectItem value="chapter">Chapter Level (Topic Test)</SelectItem>
+                <SelectItem value="subject">
+                  Subject Level (Full Test)
+                </SelectItem>
+                <SelectItem value="chapter">
+                  Chapter Level (Topic Test)
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -170,14 +211,26 @@ export default function PracticeSetEditor() {
         {scope === "chapter" && (
           <div className="space-y-2">
             <Label>Chapter</Label>
-            <Select onValueChange={setChapterId} value={chapterId} disabled={!subjectId}>
+            <Select
+              onValueChange={setChapterId}
+              value={chapterId}
+              disabled={!subjectId}
+            >
               <SelectTrigger>
-                <SelectValue placeholder={subjectId ? "Select a chapter" : "Select a subject first"} />
+                <SelectValue
+                  placeholder={
+                    subjectId ? "Select a chapter" : "Select a subject first"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none" disabled>Select a chapter...</SelectItem>
+                <SelectItem value="none" disabled>
+                  Select a chapter...
+                </SelectItem>
                 {chapters?.map((chap: { id: string; name: string }) => (
-                  <SelectItem key={chap.id} value={chap.id}>{chap.name}</SelectItem>
+                  <SelectItem key={chap.id} value={chap.id}>
+                    {chap.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -187,18 +240,25 @@ export default function PracticeSetEditor() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <Label>Display Order</Label>
-            <Input 
-              type="number" 
-              value={order} 
-              onChange={(e) => setOrder(Number(e.target.value))} 
+            <Input
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
             />
-            <p className="text-[0.8rem] text-muted-foreground">Order in lists (0 is first)</p>
+            <p className="text-[0.8rem] text-muted-foreground">
+              Order in lists (0 is first)
+            </p>
           </div>
 
           <div className="flex flex-col items-start space-y-2 rounded-md border p-4 shadow-sm min-h-[88px]">
             <div className="w-full">
               <Label>Access Tier</Label>
-              <Select onValueChange={(val: string) => setAccessTier(val as "FREE" | "PRO" | "EXCLUSIVE")} value={accessTier}>
+              <Select
+                onValueChange={(val: string) =>
+                  setAccessTier(val as "FREE" | "PRO" | "EXCLUSIVE")
+                }
+                value={accessTier}
+              >
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select Tier" />
                 </SelectTrigger>
@@ -230,10 +290,18 @@ export default function PracticeSetEditor() {
         </div>
 
         <div className="flex justify-end gap-4 pt-4 border-t">
-          <Button type="button" variant="outline" onClick={() => navigate("/practice-sets")}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/practice-sets")}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={mutation.isPending} className="gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={mutation.isPending}
+            className="gap-2"
+          >
             {mutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             <Save className="w-4 h-4" />
             {isEditing ? "Save Changes" : "Create & Build"}

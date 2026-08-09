@@ -22,6 +22,7 @@ import ProductEditor from "./pages/products/editor";
 import ProductBuilder from "./pages/products/builder";
 import PurchasesPage from "./pages/purchases/index";
 import UsersPage from "./pages/users/index";
+import ProfilePage from "./pages/profile/index";
 import DesignSystem from "./pages/DesignSystem";
 
 const queryClient = new QueryClient({
@@ -45,6 +46,7 @@ function App() {
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="profile" element={<ProfilePage />} />
             
             {/* RBAC Protected Content Management Routes */}
             <Route element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN", "STAFF"]} />}>

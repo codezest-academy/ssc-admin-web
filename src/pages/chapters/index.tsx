@@ -7,7 +7,7 @@ import { getChaptersBySubject, createChapter, updateChapter, deleteChapter } fro
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ArrowLeft, Layers } from "lucide-react";
+import { Plus, Loader2, MoreHorizontal, Pencil, Trash2, ChevronRight, Layers } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 export default function ChaptersPage() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
@@ -124,11 +125,7 @@ export default function ChaptersPage() {
   };
 
   if (isSubjectLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   if (!subject) {
@@ -142,12 +139,18 @@ export default function ChaptersPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => navigate("/subjects")}>
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
+    <div className="space-y-6 max-w-full w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link to="/subjects" className="hover:text-primary transition-colors">
+              Subjects
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-medium">
+              Chapters
+            </span>
+          </div>
           <h1 className="text-3xl font-bold tracking-tight">{subject.name} Chapters</h1>
           <p className="text-muted-foreground mt-1">
             Manage chapters for {subject.name}.

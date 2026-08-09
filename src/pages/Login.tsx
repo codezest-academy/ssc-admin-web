@@ -82,7 +82,7 @@ export default function Login() {
             Powering the future of{" "}
             <span className="text-primary">SSC education.</span>
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+          <p className="text-lg text-white/70 leading-relaxed font-medium">
             A comprehensive command center designed for speed, clarity, and
             reliability.
           </p>

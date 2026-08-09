@@ -22,5 +22,5 @@ export interface Purchase {
 
 export const getAllPurchases = async (): Promise<Purchase[]> => {
   const { data } = await api.get("/payments/admin/purchases");
-  return data;
+  return data.data;
 };

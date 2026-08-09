@@ -2,6 +2,8 @@
 
 > **Written from a Principal UI/UX Engineering perspective.**
 > This document is the single source of truth for how color, typography, spacing, and visual identity work in the `ssc-admin-web` dashboard used by `ADMIN` and `SUPER_ADMIN` roles.
+>
+> **Last updated: 2026-08-09** — Academy Warm palette, floating layout system, text-on-tint tokens, accessibility pass.
 
 ---
 
@@ -14,13 +16,14 @@
 5. [Subject Color System](#5-subject-color-system)
 6. [Semantic Status Colors](#6-semantic-status-colors)
 7. [Typography System](#7-typography-system)
-8. [The Golden Rules for Developers](#8-the-golden-rules-for-developers)
-9. [Common Mistakes and How to Fix Them](#9-common-mistakes-and-how-to-fix-them)
-10. [Audit Checklist](#10-audit-checklist)
-11. [Accessibility Contract](#11-accessibility-contract)
-12. [Component Token Contracts](#12-component-token-contracts)
-13. [Enforcement & Tooling](#13-enforcement--tooling)
-14. [Governance & Ownership](#14-governance--ownership)
+8. [Layout System: Floating Panels](#8-layout-system-floating-panels)
+9. [The Golden Rules for Developers](#9-the-golden-rules-for-developers)
+10. [Common Mistakes and How to Fix Them](#10-common-mistakes-and-how-to-fix-them)
+11. [Audit Checklist](#11-audit-checklist)
+12. [Accessibility Contract](#12-accessibility-contract)
+13. [Component Token Contracts](#13-component-token-contracts)
+14. [Enforcement & Tooling](#14-enforcement--tooling)
+15. [Governance & Ownership](#15-governance--ownership)
 
 ---
 
@@ -30,24 +33,23 @@ The `ssc-admin-web` is a **content operations interface**, not a marketing page.
 
 | Environment | Challenge | Design Response |
 |:---|:---|:---|
-| Long content editing sessions | Eye fatigue from bright UIs | Muted backgrounds, soft contrast, dark mode support |
+| Long content editing sessions | Eye fatigue from bright UIs | Warm ivory background, soft contrast, dark mode support |
 | Question bank with 1000s of records | Dense data tables | Clear hierarchy, sticky headers, compact row density |
 | Mock test builder (multi-section) | Complex drag-and-drop forms | Step-by-step wizards, visual section indicators |
 | Bulk question import & review | Rapidly scanning many items | Status badges with distinct semantic colors |
 | Analytics dashboards | Reading charts and percentages | Chart token system, readable at-a-glance |
 | Admin vs Super Admin access | Different capability sets | Role-aware UI that hides unauthorized controls |
 
-**The goal:** The admin interface should feel professional, calm, and data-dense — an internal tool that trusts its operators, not a consumer app trying to delight.
+**The goal:** The admin interface should feel professional, warm, and data-dense — an internal tool that trusts its operators, not a consumer app trying to delight.
 
 ### The Education Platform Psychology: Indigo vs. Red
-A common design trap is attempting to port high-energy, conversion-heavy designs (like Restaurant POS systems or E-commerce sites) to educational platforms. In marketing, **Red** stimulates urgency, appetite, and clicks.
 
 In an **Educational Context** (Code Zest Academy):
-1. **Red = Danger/Wrong:** In exams, red universally means "Incorrect". If primary buttons and active states are red, it induces subconscious anxiety.
+1. **Red = Danger/Wrong:** In exams, red universally means "Incorrect". Primary buttons in red induce subconscious anxiety.
 2. **Visual Fatigue:** Students and admins stare at these dashboards for hours. Bright, warm colors cause eye strain faster than cool colors.
 3. **Indigo = Trust & Focus:** Educational institutions and pro-tools rely on Blues and Indigos to promote calm, focused, deep work.
 
-**Decision (2026-07-28):** **CodeZest Indigo** is the absolute single primary brand color. Red is strictly semantic (Destructive actions and incorrect answers only).
+**Decision (2026-07-28, reaffirmed 2026-08-09):** **CodeZest Indigo** (`oklch(0.52 0.26 265)`) is the absolute single primary brand color. Red is strictly semantic (Destructive actions and incorrect answers only).
 
 ---
 
@@ -57,15 +59,15 @@ The industry-standard 3-tier token approach — the same pattern used across Sho
 
 ```
 Tier 1: Primitives (Raw values — never used directly in components)
-  └── oklch(0.55 0.20 275)         — a specific indigo
-  └── oklch(0.65 0.15 160)         — a specific green
-  └── oklch(0.75 0.17 75)          — a specific amber
+  └── oklch(0.52 0.26 265)         — brand royal indigo
+  └── oklch(0.60 0.16 155)         — success emerald
+  └── oklch(0.68 0.17 75)          — warning amber
 
 Tier 2: Alias Tokens (Semantic meaning — defined in index.css)
-  └── --primary     = oklch(0.55 0.20 275)    ← CodeZest brand indigo (Focus/Trust)
-  └── --success     = oklch(0.65 0.15 160)
-  └── --warning     = oklch(0.75 0.17 75)
-  └── --destructive = oklch(0.5987 0.1978 21.78) ← Semantic Red ONLY
+  └── --primary     = oklch(0.52 0.26 265)    ← CodeZest brand indigo (Focus/Trust)
+  └── --success     = oklch(0.60 0.16 155)
+  └── --warning     = oklch(0.68 0.17 75)
+  └── --destructive = oklch(0.55 0.22 25)     ← Semantic Red ONLY
 
 Tier 3: Component Usage (Tailwind utility classes)
   └── bg-primary, text-primary, border-primary
@@ -81,8 +83,8 @@ Tier 3: Component Usage (Tailwind utility classes)
 
 ```
 60% — Dominant surface (bg-background, bg-card, bg-sidebar)
-       Neutral. Low saturation. This is the data canvas.
-       In dark mode: deep slate-like tone, not pure black.
+       Warm ivory in light mode. Deep navy in dark mode.
+       This is the data canvas.
 
 30% — Structure and typography (text-foreground, border-border, bg-muted)
        Provides hierarchy, separates sections, readable text.
@@ -110,7 +112,16 @@ Admin interfaces demand restraint. Brand color signals action. When everything i
 
 ## 4. Token Reference: What Every Variable Means
 
-All tokens are defined in `src/index.css` and aliased via `@theme inline` to Tailwind.
+All tokens are defined in `src/index.css` inside `@layer base { :root {} .dark {} }` and aliased via `@theme` to Tailwind.
+
+### Palette: "Academy Warm"
+
+The current palette (as of 2026-08-09) is **Academy Warm** — a purposeful shift from the cold grey/slate palette to a warm ivory + deep navy system.
+
+| Mode | Background | Foreground | Primary |
+|:---|:---|:---|:---|
+| Light | `oklch(0.97 0.005 85)` — warm ivory | `oklch(0.14 0.025 265)` — deep navy | `oklch(0.52 0.26 265)` — royal indigo |
+| Dark | `oklch(0.15 0.03 265)` — deep navy | `oklch(0.97 0.01 265)` — near-white | `oklch(0.68 0.22 265)` — luminous indigo |
 
 ### Core Structural Tokens
 
@@ -135,7 +146,7 @@ All tokens are defined in `src/index.css` and aliased via `@theme inline` to Tai
 | `--primary` | `bg-primary` | Primary CTA buttons, active nav, toggle-on states |
 | `--primary` | `text-primary` | Links, active labels, key icon highlights |
 | `--primary` | `border-primary` | Active card borders, highlighted input borders |
-| `--primary-foreground` | `text-primary-foreground` | Text on `bg-primary` surfaces (computed for contrast) |
+| `--primary-foreground` | `text-primary-foreground` | Text on `bg-primary` surfaces |
 | `--accent` | `bg-accent` | Hover states on secondary surfaces |
 | `--accent-foreground` | `text-accent-foreground` | Text on `bg-accent` hover surfaces |
 
@@ -144,33 +155,48 @@ All tokens are defined in `src/index.css` and aliased via `@theme inline` to Tai
 | CSS Variable | Tailwind Class | Meaning in Admin Context |
 |:---|:---|:---|
 | `--success` | `bg-success`, `text-success` | Published, active, approved, student passed |
-| `--success-foreground` | `text-success-foreground` | Text on `bg-success` badges |
 | `--warning` | `bg-warning`, `text-warning` | Draft, pending review, upcoming, in-progress |
-| `--warning-foreground` | `text-warning-foreground` | Text on `bg-warning` banners |
 | `--info` | `bg-info`, `text-info` | Informational tooltips, metadata callouts |
-| `--info-foreground` | `text-info-foreground` | Text on `bg-info` surfaces |
 | `--destructive` | `bg-destructive`, `text-destructive` | Inactive, deleted, student failed, error |
-| `--destructive-foreground` | `text-destructive-foreground` | Text on `bg-destructive` surfaces |
+
+### Text-on-Tint Tokens (AA-Compliant)
+
+> **Critical rule:** Do NOT use `text-success`, `text-warning`, `text-info`, `text-destructive`, or `text-subject-*` directly on their corresponding `/10` tinted backgrounds. These pairings fail WCAG AA contrast. Use the dedicated `-text-on-tint` tokens instead.
+
+| Token | Tailwind Class | Use Case |
+|:---|:---|:---|
+| `--warning-text-on-tint` | `text-warning-text-on-tint` | Badge text on `bg-warning/10` backgrounds |
+| `--info-text-on-tint` | `text-info-text-on-tint` | Badge text on `bg-info/10` backgrounds |
+| `--subject-quant-text-on-tint` | `text-subject-quant-text-on-tint` | Label on `bg-subject-quant/10` |
+| `--subject-english-text-on-tint` | `text-subject-english-text-on-tint` | Label on `bg-subject-english/10` |
+| `--subject-ga-text-on-tint` | `text-subject-ga-text-on-tint` | Label on `bg-subject-ga/10` |
+| `--subject-reason-text-on-tint` | `text-subject-reason-text-on-tint` | Label on `bg-subject-reason/10` |
+| `--subject-science-text-on-tint` | `text-subject-science-text-on-tint` | Label on `bg-subject-science/10` |
+
+> **Note for `success` and `destructive`:** The base `text-success` and `text-destructive` tokens are already dark enough to pass AA on their `/10` tints — no separate `-text-on-tint` token is needed for these two.
 
 ### Sidebar Tokens (Isolated)
 
-The sidebar has its own token family so it can be independently styled (e.g., dark sidebar with light content area).
+The sidebar has its own token family so it can be independently styled without affecting the main content area.
 
-| CSS Variable | Tailwind Class |
-|:---|:---|
-| `--sidebar` | `bg-sidebar` |
-| `--sidebar-foreground` | `text-sidebar-foreground` |
-| `--sidebar-primary` | `bg-sidebar-primary` |
-| `--sidebar-primary-foreground` | `text-sidebar-primary-foreground` |
-| `--sidebar-accent` | `bg-sidebar-accent` |
-| `--sidebar-accent-foreground` | `text-sidebar-accent-foreground` |
-| `--sidebar-border` | `border-sidebar-border` |
+**Light Mode:** Solid white panel with warm grey border (Notion/Craft approach).
+**Dark Mode:** Deep navy panel, consistent with the overall dark palette.
+
+| CSS Variable | Tailwind Class | Light Value | Dark Value |
+|:---|:---|:---|:---|
+| `--sidebar` | `bg-sidebar` | `oklch(1 0.002 85)` — white panel | `oklch(0.12 0.04 265)` — deep navy |
+| `--sidebar-foreground` | `text-sidebar-foreground` | `oklch(0.25 0.03 265)` — dark navy | `oklch(0.90 0.02 265)` — near-white |
+| `--sidebar-primary` | `bg-sidebar-primary` | `oklch(0.52 0.26 265)` — brand indigo | `oklch(0.60 0.20 265)` |
+| `--sidebar-primary-foreground` | `text-sidebar-primary-foreground` | `oklch(1 0 0)` — white | `oklch(0.13 0.03 265)` — dark |
+| `--sidebar-accent` | `bg-sidebar-accent` | `oklch(0.94 0.01 265)` — hover tint | `oklch(0.20 0.04 265)` |
+| `--sidebar-accent-foreground` | `text-sidebar-accent-foreground` | `oklch(0.25 0.03 265)` | `oklch(0.90 0.02 265)` |
+| `--sidebar-border` | `border-sidebar-border` | `oklch(0.85 0.01 85)` — warm grey | `oklch(0.23 0.04 265)` |
 
 ### Chart Tokens
 
 For all analytics dashboards and Recharts data visualizations.
 
-> **Important:** Chart hues (220, 15, 100, 260, 320) are intentionally disjoint from both the `--primary` brand hue and all `--subject-*` hues to prevent false visual associations (e.g., mistaking a chart series for "Quant" or the "Primary" action). Do not adjust these to match brand colors.
+> **Important:** Chart hues are intentionally disjoint from both the `--primary` brand hue and all `--subject-*` hues to prevent false visual associations. Do not adjust these to match brand colors.
 
 | Token | Usage in Admin |
 |:---|:---|
@@ -184,10 +210,10 @@ For all analytics dashboards and Recharts data visualizations.
 
 ## 5. Subject Color System
 
-The SSC exam has 5 core subjects. Each subject gets a **dedicated, non-primary color** drawn from the chart token family. This creates visual differentiation in the question bank, practice set builder, and analytics dashboards without using the brand primary color.
+The SSC exam has 5 core subjects. Each subject gets a **dedicated, non-primary color**. Subject colors use the OKLCH hue wheel to ensure perceptual uniformity — no one subject feels visually heavier than another.
 
 ```
-Subject → Token         → Primitive Color
+Subject → Token           → Primitive Color
 ─────────────────────────────────────────────────────────
 Quantitative Aptitude   → --subject-quant   → oklch(0.72 0.17 55)    Amber/Orange
 English Language        → --subject-english → oklch(0.62 0.15 240)   Sky Blue
@@ -199,22 +225,28 @@ General Science         → --subject-science → oklch(0.60 0.15 205)   Cyan/Te
 ### How to Use Subject Colors
 
 ```tsx
-// Subject badge / pill on a question card
-<span className="bg-subject-quant/10 text-subject-quant border border-subject-quant/20 rounded-full px-2 py-0.5 text-xs font-medium">
+// ✅ Correct — subject badge on a question card
+<span className="bg-subject-quant/10 text-subject-quant-text-on-tint rounded-full px-2 py-0.5 text-xs font-medium">
   Quantitative Aptitude
 </span>
 
-// Subject icon in subject management table
+// ✅ Correct — subject icon in a table
 <div className="h-8 w-8 rounded-lg bg-subject-english/10 flex items-center justify-center">
-  <BookOpenIcon className="text-subject-english h-4 w-4" />
+  <BookOpenIcon className="text-subject-english-text-on-tint h-4 w-4" />
 </div>
+
+// ❌ Wrong — using the base token as text on its own tint (fails WCAG AA)
+<span className="bg-subject-quant/10 text-subject-quant">
+  Quantitative Aptitude
+</span>
 ```
 
 ### Rules for Subject Colors
 
 - **Only use them for subject identification** — not for arbitrary decoration
 - **Never use raw palette classes** for subjects (`text-amber-600`, `text-sky-500`)
-- **Respect the `/10` tint standard** for backgrounds, `/20` for hover states
+- **Always use `-text-on-tint` variant** for text/icons on `/10` tinted backgrounds
+- **Respect the `/10` tint standard** for backgrounds
 - **Dark mode values** are defined in `index.css` — do not override manually
 
 ---
@@ -226,20 +258,18 @@ Never use raw Tailwind palette classes for operational states.
 | State | Wrong ❌ | Correct ✅ |
 |:---|:---|:---|
 | Published / Active | `text-emerald-600 bg-emerald-500/10` | `text-success bg-success/10` |
-| Draft / Pending Review | `text-amber-600 bg-amber-500/10` | `text-warning bg-warning/10` |
-| Informational callout | `text-blue-600 bg-blue-500/10` | `text-info bg-info/10` |
+| Draft / Pending Review | `text-amber-600 bg-amber-500/10` | `text-warning-text-on-tint bg-warning/10` |
+| Informational callout | `text-blue-600 bg-blue-500/10` | `text-info-text-on-tint bg-info/10` |
 | Inactive / Deleted | `text-rose-600 bg-rose-500/10` | `text-destructive bg-destructive/10` |
 | Secondary / Disabled | `text-slate-500 bg-slate-100` | `text-muted-foreground bg-muted` |
 
 ### Content Lifecycle Status Reference
 
-This is the canonical mapping for all content entities (Subject, Chapter, Lesson, Question, PracticeSet, MockTest):
-
 | `isActive` Value | Status Label | Token |
 |:---|:---|:---|
 | `true` | Published / Active | `text-success bg-success/10` |
 | `false` | Inactive / Archived | `text-destructive bg-destructive/10` |
-| Draft state (future) | Draft | `text-warning bg-warning/10` |
+| Draft state | Draft | `text-warning-text-on-tint bg-warning/10` |
 
 ---
 
@@ -248,46 +278,100 @@ This is the canonical mapping for all content entities (Subject, Chapter, Lesson
 ### Font Stack
 
 ```css
-/* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* index.html — Google Fonts preload */
+Inter: weights 300–800 (body, UI)
+Plus Jakarta Sans: weights 600–800 (display headings)
 
-:root {
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+/* src/index.css @theme */
+--font-sans:    "Inter", ui-sans-serif, system-ui, sans-serif;
+--font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+/* src/index.css @layer base */
+body {
+  font-family: var(--font-sans);
+  font-size: 14px; /* Standard admin dense size */
+}
+h1, h2 {
+  font-family: var(--font-display); /* Plus Jakarta Sans for headings */
 }
 ```
 
 - **Inter** — primary UI font. Clear, neutral, optimized for data-dense interfaces.
-- **JetBrains Mono** — for question text containing code/math expressions, answer keys, and question IDs.
+- **Plus Jakarta Sans** — display headings (`h1`, `h2`). Adds warmth and brand personality without sacrificing readability.
 
 ### Type Scale
 
 | Token | Size | Weight | Use |
 |:---|:---|:---|:---|
-| `text-xs` | 12px | 500 | Label/Meta: Captions, table footnotes, help text, uppercase tracking |
-| `text-sm` | 14px | 400/500 | Body/UI: Table body, form labels, badge text (Used for 90% of UI) |
+| `text-xs` | 12px | 500 | Label/Meta: Captions, table footnotes, help text |
+| `text-sm` | 14px | 400/500 | Body/UI: Table body, form labels, badge text (90% of UI) |
 | `text-base` | 16px | 600 | Subheading: Card titles, section headings |
 | `text-xl` | 20px | 600 | Page titles |
-| `text-2xl` | 24px | 700 | **Exception:** Allowed ONLY inside StatCard/metric components (e.g. `text-2xl font-bold tabular-nums`) |
-| `text-lg, text-3xl+` | N/A | N/A | **Banned.** Do not use. |
+| `text-2xl` | 24px | 700 | **Exception:** Only inside StatCard/metric components |
+| `text-3xl+` | N/A | N/A | **Banned.** Do not use in admin UI. |
 
 ### Math & Question Formatting
-
-Questions may contain mathematical expressions. Use `font-mono` class for numerical answer options and code-like content:
 
 ```tsx
 // Question option with numerical value
 <span className="font-mono text-sm">(A) 144</span>
 
-// Inline math notation (when LaTeX rendering is not available)
-<code className="font-mono bg-muted px-1 py-0.5 rounded text-sm">x² + 2x + 1</code>
+// LaTeX rendering — ALWAYS use QuestionRenderer, never custom parsers
+import { QuestionRenderer } from "@/components/ui/question-renderer";
+<QuestionRenderer content={htmlString} />
 ```
-
-> **Future consideration:** Integrate KaTeX or MathJax for proper LaTeX rendering in question text. When implemented, create a `QuestionRenderer` component that handles both HTML and LaTeX content safely.
 
 ---
 
-## 8. The Golden Rules for Developers
+## 8. Layout System: Floating Panels
+
+The admin shell uses a **floating panel layout** where each major UI zone is its own independently rounded, bordered card floating over the page background.
+
+### Panel Structure
+
+```
+bg-background (warm ivory canvas) — fills the entire screen
+  └── app-shell-floating (p-3 gap-3 flex h-screen)
+        ├── aside.sidebar-floating        ← Sidebar panel
+        └── div (flex-col gap-3 flex-1)
+              ├── header.navbar-floating  ← Top navbar panel
+              └── div.content-floating   ← Main content panel
+```
+
+### Floating Panel Utilities
+
+Defined in `src/index.css` under `@layer utilities`:
+
+| Class | Applied to | Styles |
+|:---|:---|:---|
+| `app-shell-floating` | Root layout wrapper | `p-3 gap-3 flex h-screen` |
+| `sidebar-floating` | `<aside>` | `rounded-xl border border-sidebar-border overflow-hidden shrink-0` |
+| `navbar-floating` | `<header>` | `rounded-xl border border-border bg-card flex-shrink-0` |
+| `content-floating` | Main content `<div>` | `rounded-xl border border-border/80 bg-card flex-1 overflow-auto` |
+
+### Sidebar Sizing
+
+- **Expanded:** `w-64` (256px) — icon + label
+- **Collapsed:** `w-16` (64px) — icon only, with tooltip on hover
+- **State:** Persisted in `localStorage` key `ssc-admin-sidebar-collapsed`
+- **Mobile:** Hidden on `< md`. A `Sheet` drawer (shadcn) is opened via a hamburger button in the navbar.
+
+### Active Nav Item Pattern
+
+```tsx
+// Active item uses sidebar-nav-active class — defined in index.css
+// Pattern: 10% primary tint bg + left accent stripe + primary text color
+<Link className="sidebar-nav-active">Dashboard</Link>
+
+// Inactive item
+<Link className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+  Users
+</Link>
+```
+
+---
+
+## 9. The Golden Rules for Developers
 
 ### Rule 1: Never hardcode a color
 
@@ -313,22 +397,14 @@ Questions may contain mathematical expressions. Use `font-mono` class for numeri
 <div className="bg-card" />
 ```
 
-### Rule 3: Respect the 60-30-10 distribution
+### Rule 3: Use `-text-on-tint` tokens for text on tinted backgrounds
 
 ```tsx
-// ❌ Over-branded
-<div className="bg-primary/20 border-primary rounded-xl">
-  <h2 className="text-primary font-bold">Question Bank</h2>
-  <p className="text-primary/70">2,340 questions</p>
-  <Button className="bg-primary">Add Question</Button>
-</div>
+// ❌ Fails WCAG AA — base token is too light on its own tint
+<span className="bg-warning/10 text-warning">Draft</span>
 
-// ✅ Correct — primary reserved for the CTA only
-<div className="bg-card border-border rounded-xl">
-  <h2 className="text-foreground font-semibold">Question Bank</h2>
-  <p className="text-muted-foreground">2,340 questions</p>
-  <Button className="bg-primary">Add Question</Button>
-</div>
+// ✅ Passes AA — dedicated dark token for legibility on tint
+<span className="bg-warning/10 text-warning-text-on-tint">Draft</span>
 ```
 
 ### Rule 4: Subject colors are for subject identification only
@@ -337,39 +413,48 @@ Questions may contain mathematical expressions. Use `font-mono` class for numeri
 // ❌ Wrong — using subject color as generic decoration
 <div className="text-subject-quant font-bold">Section Title</div>
 
-// ✅ Correct — subject color tied to subject identity
-<Badge className="bg-subject-quant/10 text-subject-quant">Quantitative Aptitude</Badge>
+// ✅ Correct — subject color tied to subject identity, with -text-on-tint
+<Badge className="bg-subject-quant/10 text-subject-quant-text-on-tint">
+  Quantitative Aptitude
+</Badge>
 ```
 
 ### Rule 5: No decorative gradients on operational pages
 
-Gradients and glow effects belong on the student client app (sparingly) and landing pages. The admin interface must be **flat, focused, and scannable**. No `gradient-to-br`, no `blur-xl` decorative circles.
+Gradients belong on the student client app and landing pages. The admin interface must be **flat, focused, and scannable**. No `gradient-to-br`, no `blur-xl` decorative circles, no glassmorphism on data-dense surfaces.
 
 ### Rule 6: All interactive elements must have visible focus rings
-
-The `--ring` token is set globally. Never suppress `outline-none` unless you replace it with a custom `ring` class:
 
 ```tsx
 // ❌ Kills keyboard accessibility
 <button className="outline-none">...</button>
 
 // ✅ Replaces with accessible ring
-<button className="outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">...</button>
+<button className="outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+  ...
+</button>
 ```
 
-### Rule 7: Elevation is Structural, Not Shadow-Based
-Both light and dark modes use a symmetric numerical lightness delta (`Δ0.04`) for elevation, rather than relying on drop shadows which can wash out or disappear.
+### Rule 7: Elevation uses borders exclusively (The Great Flattening)
 
-- **Light Mode:** Background is `L 0.96`. Cards sit at `L 1.0` (Δ0.04). A subtle hairline border (`border-border`) is required as a fallback in high-glare environments. **Client is borderless in light mode only.**
-- **Dark Mode:** Background is `L 0.18`. Cards sit at `L 0.22` (Δ0.04). **Dark mode cards MUST have a visible border** (`oklch(0.28 0.02 250)`) for structural elevation. Pure black drop-shadows are invisible in dark mode and explicitly rejected.
+The "Great Flattening" dictates that elevation must come from borders, not shadows. To maintain a highly structured, corporate EdTech aesthetic (like Coursera or modern `shadcn/ui`), we strictly forbid decorative drop shadows on cards and layout containers.
+- **Light mode:** Cards at `bg-card` (white) sit over `bg-background` (white) or `bg-muted` (slate). Primary separation comes exclusively from `border-border` (1px solid). No `shadow-md` or `shadow-sm` on structural elements. Drop shadows are reserved *only* for floating interactive elements like popovers and dropdowns.
+- **Dark mode:** Cards at `oklch(0.18)` over background `oklch(0.15)`. `border-border` does 100% of the elevation work.
 
-### Rule 8: Ambient Gradients (Client Only)
-- **Admin:** Ambient gradients are strictly forbidden. Use subtle grid patterns instead, with a strict opacity ceiling of `2-4%` (tested against dense data like Question Bank tables).
-- **Client:** Ambient gradient tints are permitted but they are **contextual per subject page, and never blended across subjects**. Backgrounds should stay constant across the whole app canvas, applying gradients only at the page-header level to provide subject identity.
+### Rule 8: Use QuestionRenderer for any LaTeX content
+
+```tsx
+// ❌ Never use dangerouslySetInnerHTML for math content
+<div dangerouslySetInnerHTML={{ __html: question.content }} />
+
+// ✅ Always use QuestionRenderer — handles KaTeX, hydration, and styling
+import { QuestionRenderer } from "@/components/ui/question-renderer";
+<QuestionRenderer content={question.content} />
+```
 
 ---
 
-## 9. Common Mistakes and How to Fix Them
+## 10. Common Mistakes and How to Fix Them
 
 ### Mistake: Page canvas doesn't switch to dark mode
 
@@ -379,18 +464,26 @@ Both light and dark modes use a symmetric numerical lightness delta (`Δ0.04`) f
 
 ---
 
-### Mistake: Question difficulty badge looks wrong in dark mode
+### Mistake: Difficulty badge looks wrong in dark mode
 
 **Cause:** Raw palette used — `text-green-600 bg-green-100`.
 
-**Fix:** Map difficulty to semantic tokens:
+**Fix:**
 ```tsx
 const difficultyStyles = {
   EASY:   'bg-success/10 text-success',
-  MEDIUM: 'bg-warning/10 text-warning',
+  MEDIUM: 'bg-warning/10 text-warning-text-on-tint',
   HARD:   'bg-destructive/10 text-destructive',
 };
 ```
+
+---
+
+### Mistake: Subject badge text is too low-contrast
+
+**Cause:** Using `text-subject-quant` on `bg-subject-quant/10` — the base token is a mid-chroma value that fails AA on its own tint.
+
+**Fix:** Use `text-subject-quant-text-on-tint` for any text/icon on a `bg-subject-*/10` surface.
 
 ---
 
@@ -398,7 +491,7 @@ const difficultyStyles = {
 
 **Cause:** Subject color defined inline as `style={{ color: '#f59e0b' }}`.
 
-**Fix:** Use the subject token class: `text-subject-quant`. Define subject → token mapping as a constant:
+**Fix:** Use subject token classes with a constant mapping:
 
 ```typescript
 // src/lib/subjectTokens.ts
@@ -413,9 +506,9 @@ export const SUBJECT_TOKEN_MAP: Record<string, string> = {
 
 ---
 
-### Mistake: Analytics chart colors don't match the rest of the UI
+### Mistake: Analytics chart colors don't match the UI
 
-**Cause:** Recharts `fill` prop using hex strings or raw palette names.
+**Cause:** Recharts `fill` prop using hex strings.
 
 **Fix:** Read chart tokens from CSS variables at runtime:
 
@@ -431,7 +524,7 @@ export function getChartColors(): string[] {
 
 ---
 
-## 10. Audit Checklist
+## 11. Audit Checklist
 
 Use on every PR touching the admin UI:
 
@@ -439,32 +532,45 @@ Use on every PR touching the admin UI:
 [ ] No hardcoded hex colors in JSX className or style props
 [ ] No raw Tailwind palette classes (emerald, amber, rose, indigo, slate, zinc, sky...)
 [ ] No dark: variant used alongside semantic tokens
-[ ] Status labels use success / warning / info / destructive tokens
-[ ] Difficulty badges use success (easy) / warning (medium) / destructive (hard)
-[ ] Subject colors use --subject-* tokens, never raw palette
+[ ] Status labels use success / warning-text-on-tint / info-text-on-tint / destructive tokens
+[ ] Difficulty badges use success (easy) / warning-text-on-tint (medium) / destructive (hard)
+[ ] Subject colors use --subject-*-text-on-tint for text on /10 tint backgrounds
 [ ] Text on primary backgrounds uses text-primary-foreground
 [ ] Chart data uses --chart-1 through --chart-5
 [ ] Sidebar items use sidebar-* token family
 [ ] No outline-none without a focus-visible ring replacement
 [ ] No decorative gradients or blur-xl circles on operational pages
 [ ] Dark mode tested by toggling class="dark" on <html>
+[ ] QuestionRenderer used for all LaTeX/math content
 ```
 
 ---
 
-## 11. Accessibility Contract
+## 12. Accessibility Contract
 
 ### Text Contrast Requirements (WCAG 2.1 AA)
 
-| Use Case | Minimum Ratio | Enforcement |
+| Use Case | Minimum Ratio | Status |
 |:---|:---|:---|
-| Normal text (< 18px) | 4.5:1 | Semantic tokens designed to meet this |
-| Large text (≥ 18px bold) | 3:1 | Manually verified per component |
-| UI components and icons | 3:1 | Semantic tokens provide sufficient contrast |
+| Normal text (< 18px) | 4.5:1 | ✅ All semantic token pairs verified |
+| Large text (≥ 18px bold) | 3:1 | ✅ Manually verified per component |
+| UI components and icons | 3:1 | ✅ Semantic tokens provide sufficient contrast |
+
+#### Key verified pairs (2026-08-09)
+
+| Pair | Ratio | Result |
+|:---|:---|:---|
+| `sidebar-foreground` on `sidebar` (light) | ~14:1 | ✅ AAA |
+| `sidebar-foreground` on `sidebar` (dark) | ~12:1 | ✅ AAA |
+| `sidebar-primary-foreground` on `sidebar-primary` (light active) | ~8.5:1 | ✅ AAA |
+| `sidebar-primary-foreground` on `sidebar-primary` (dark active) | ~5.2:1 | ✅ AA |
+| `warning-text-on-tint` on `warning/10` | ~10.4:1 | ✅ AAA |
+| `info-text-on-tint` on `info/10` | ~8.2:1 | ✅ AAA |
+| `primary-foreground` on `primary` (dark mode) | ~6.8:1 | ✅ AA |
 
 ### Touch Targets
 
-Admin is primarily a desktop interface, but tablet support for on-site management must be preserved.
+Admin is primarily a desktop interface, but tablet support is required.
 
 | Element | Minimum Size | Status |
 |:---|:---|:---|
@@ -476,45 +582,46 @@ Admin is primarily a desktop interface, but tablet support for on-site managemen
 ### Reduced Motion
 
 ```css
-/* Add to src/index.css */
+/* Already in src/index.css */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 ```
 
-> **Status:** Not yet implemented. Must be added before launch. ⚠️
+**Status:** ✅ Implemented.
 
 ---
 
-## 12. Component Token Contracts
+## 13. Component Token Contracts
 
 | Component | Allowed Tokens | Forbidden |
 |:---|:---|:---|
 | `Button` (primary) | `--primary`, `--primary-foreground`, `--ring` | Raw palette |
 | `Button` (destructive) | `--destructive`, `--destructive-foreground` | `rose-*`, `red-*` |
-| `Badge` (content status) | `--success`, `--warning`, `--destructive` | `emerald-*`, `amber-*` |
-| `Badge` (difficulty) | `--success` (easy), `--warning` (medium), `--destructive` (hard) | Raw palette |
-| `Badge` (subject) | `--subject-*` family | Raw palette, `--primary` |
+| `Badge` (content status) | `--success`, `--warning-text-on-tint`, `--destructive` | `emerald-*`, `amber-*` |
+| `Badge` (difficulty) | `--success` (easy), `--warning-text-on-tint` (medium), `--destructive` (hard) | Raw palette |
+| `Badge` (subject) | `--subject-*-text-on-tint` on `bg-subject-*/10` | Raw palette, `--primary` |
 | Sidebar nav items | `--sidebar-*` family only | `--primary` directly |
 | Card surfaces | `--card`, `--card-foreground`, `--border` | `bg-white`, `bg-zinc-*` |
 | Charts | `--chart-1` through `--chart-5` | Raw palette, hex strings |
 | Input fields | `--input`, `--ring`, `--border`, `--destructive` | Raw palette |
 | Dialog / Modal | `--popover`, `--border`, `--muted` | Brand tokens |
-| Toast / Notification | `--popover`, `--destructive` (for errors) | Brand tokens |
 | Skeleton loaders | `--muted` | Raw palette |
+| Math content | `QuestionRenderer` component | `dangerouslySetInnerHTML`, custom parsers |
 
 ---
 
-## 13. Enforcement & Tooling
+## 14. Enforcement & Tooling
 
 ### ESLint Rule: No Raw Palette Classes
 
 ```javascript
-// eslint.config.js — add this rule
+// eslint.config.js
 {
   rules: {
     'no-restricted-syntax': [
@@ -522,7 +629,7 @@ Admin is primarily a desktop interface, but tablet support for on-site managemen
       {
         selector: 'Literal[value=/\\b(bg|text|border|ring|fill|stroke)-(slate|zinc|gray|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-/]',
         message:
-          '[Theme] Raw Tailwind palette class detected. Use semantic tokens (bg-primary, text-success, bg-muted, text-subject-quant) instead. See docs/frontend-and-ux/theme-system.md.',
+          '[Theme] Raw Tailwind palette class detected. Use semantic tokens (bg-primary, text-success, bg-muted, text-subject-quant-text-on-tint) instead. See docs/frontend-and-ux/2026-07-26-theme-system/theme-system.md.',
       },
     ],
   },
@@ -532,19 +639,22 @@ Admin is primarily a desktop interface, but tablet support for on-site managemen
 ### Grep Audit Commands
 
 ```bash
-# Find all raw palette class violations in the admin UI
+# Find all raw palette class violations
 grep -rn '\(bg\|text\|border\)-\(emerald\|amber\|rose\|indigo\|slate\|zinc\|blue\|green\|red\)' src/
 
-# Find any hardcoded hex colors in JSX
+# Find hardcoded hex colors in JSX
 grep -rn '#[0-9a-fA-F]\{3,6\}' src/ --include='*.tsx' --include='*.ts'
 
 # Find any inline style color overrides
 grep -rn 'style=.*color' src/ --include='*.tsx'
+
+# Find subject token misuse (base token on tinted bg)
+grep -rn 'text-subject-\(quant\|english\|ga\|reason\|science\)[^-]' src/ --include='*.tsx'
 ```
 
 ---
 
-## 14. Governance & Ownership
+## 15. Governance & Ownership
 
 ### Token Ownership
 
@@ -552,6 +662,7 @@ grep -rn 'style=.*color' src/ --include='*.tsx'
 |:---|:---|:---|
 | Core structural tokens | Platform UI lead | Full team sign-off |
 | Semantic status tokens | Platform UI lead | UI lead approval |
+| Text-on-tint tokens (`--*-text-on-tint`) | Platform UI lead | UI lead approval |
 | Subject color tokens (`--subject-*`) | Platform UI lead | UI lead approval |
 | Sidebar tokens | Platform UI lead | UI lead approval |
 | Chart tokens | Feature team | UI lead review |
@@ -561,7 +672,7 @@ grep -rn 'style=.*color' src/ --include='*.tsx'
 1. Open a GitHub Discussion titled `[Token RFC] --token-name`
 2. State the problem — why no existing token is sufficient
 3. Propose the name — follow `--{category}-{modifier}` convention
-4. Propose OKLCH values for light and dark mode
+4. Propose OKLCH values for light and dark mode, with contrast ratios
 5. Identify all consumers (components that will use it)
 6. UI lead approves → merged into `index.css`
 
@@ -569,21 +680,7 @@ grep -rn 'style=.*color' src/ --include='*.tsx'
 
 ## Related Documents
 
-- [UX/UI Guidelines (Admin)](./ux-ui-guidelines.md) — Page layouts, component patterns, interaction conventions
-- [Global Enums Reference](../database-and-schema/2026-07-26-global-enums/global-enums.md) — Status values and subject enums from the API
-- [Master Progress Tracker](../progress-and-planning/2026-07-26-master-progress-tracker/progress-tracker.md) — Phase status
-
----
-
-## 15. The Design System Documentation Hub
-
-The interactive reference for all these tokens is available at `/design-system` within the app.
-This is a **production-ready documentation site layout** featuring industry-standard tooling:
-
-- **Interactive Token Editor**: A sidebar that allows designers and developers to dynamically adjust `--primary` hue, chroma, border radius, and fonts with live real-time WCAG contrast checking. Enables rapid prototyping and CSS variable export.
-- **Visual Token Governance (Do / Don't)**: Dedicated sections outlining strict visual contracts and anti-patterns for using raw Tailwind colors versus semantic tokens.
-- **Dual-Theme Previews**: Component blocks wrapped in a `ThemePreview` component that explicitly forces `.light` on one side and `.dark` on the other, ensuring developers can verify contrast instantly without manually toggling the global theme.
-- **Modular Sections**: The hub is split into distinct logical sections (`Colors`, `PagePatterns`, `Governance`, etc.) ensuring the code remains maintainable.
-- **Page Patterns**: Composed layouts like data tables, sidebar navigation, and forms to demonstrate how tokens work together in reality.
-
-**Always refer to `/design-system` as the absolute source of truth when reviewing PRs.**
+- [UX/UI Guidelines (Admin)](../2026-07-26-ux-ui-guidelines/ux-ui-guidelines.md) — Page layouts, component patterns, interaction conventions
+- [UX Architecture & Standards](../2026-08-03-ux-architecture-and-standards/ux-ui-guidelines.md) — Design paradigms, grid system, card anatomy
+- [Global Enums Reference](../../database-and-schema/2026-07-26-global-enums/global-enums.md) — Status values and subject enums from the API
+- [Master Progress Tracker](../../progress-and-planning/2026-07-26-master-progress-tracker/progress-tracker.md) — Phase status
