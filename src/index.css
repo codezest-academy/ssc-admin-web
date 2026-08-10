@@ -159,7 +159,7 @@
     --radius: 0.5rem;
 
     /* Sidebar: Azure Frost — subtle but distinctly brand-tinted */
-    --sidebar:                    oklch(0.96 0.04 260); /* light azure — visible but not heavy */
+    --sidebar:                    oklch(0.97 0.035 260); /* very light azure — barely-there brand frost */
     --sidebar-foreground:         oklch(0.16 0.03 260);
     --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
