@@ -158,19 +158,19 @@
     /* Radius: 0.5rem for structured corporate-brand feel */
     --radius: 0.5rem;
 
-    /* Sidebar: Azure Frost — distinctly brand-tinted, premium hierarchy */
-    --sidebar:                    oklch(0.94 0.06 260); /* ~#e8eef8 — clear blue tint */
-    --sidebar-foreground:         oklch(0.18 0.03 260); /* deeper for contrast on tint */
+    /* Sidebar: Azure Frost — subtle but distinctly brand-tinted */
+    --sidebar:                    oklch(0.96 0.04 260); /* light azure — visible but not heavy */
+    --sidebar-foreground:         oklch(0.16 0.03 260);
     --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent:             oklch(0.90 0.08 260); /* hover: slightly darker frost */
-    --sidebar-accent-foreground:  oklch(0.18 0.03 260);
-    --sidebar-border:             oklch(0.84 0.06 260); /* border follows the tint */
+    --sidebar-accent:             oklch(0.92 0.05 260); /* hover: slightly more tinted */
+    --sidebar-accent-foreground:  oklch(0.16 0.03 260);
+    --sidebar-border:             oklch(0.87 0.04 260); /* border stays in the blue family */
 
     /* Sidebar — active state (light) */
-    --sidebar-active-bg:          oklch(0.88 0.10 260); /* richer active tint */
-    --sidebar-active-fg:          oklch(0.38 0.18 260); /* primary-700 */
-    --sidebar-active-border:      oklch(0.60 0.18 260); /* vivid left accent bar */
+    --sidebar-active-bg:          oklch(0.90 0.07 260);
+    --sidebar-active-fg:          oklch(0.38 0.18 260);
+    --sidebar-active-border:      oklch(0.55 0.18 260);
 
     /* Sidebar — shadow (light) */
     --sidebar-shadow:             0 1px 2px 0 rgb(0 0 0 / 0.04),
