@@ -114,7 +114,7 @@ export default function DesignSystemLayout() {
           </div>
         </aside>
 
-        {/* ── Right column: Navbar + Content ── */}
+        {/* ── Middle column: Navbar + Content ── */}
         <div className="flex flex-col flex-1 gap-3 min-w-0">
 
           {/* Floating Navbar */}
@@ -139,9 +139,8 @@ export default function DesignSystemLayout() {
           </header>
 
           {/* Floating Content Panel */}
-          <div className="content-floating flex overflow-hidden">
-            {/* Scrollable main content */}
-            <main id="ds-main-scroll" className="flex-1 overflow-y-auto p-8 lg:p-10">
+          <div className="content-floating overflow-hidden">
+            <main id="ds-main-scroll" className="h-full overflow-y-auto p-8 lg:p-10">
               <div className="max-w-5xl mx-auto pb-32">
                 <IntroSection />
                 <TokenGovernanceSection />
@@ -155,11 +154,13 @@ export default function DesignSystemLayout() {
                 <PagePatternsSection />
               </div>
             </main>
-
-            {/* Token Editor right panel */}
-            <TokenEditorSidebar />
           </div>
         </div>
+
+        {/* ── Token Editor (floating right sidebar) ── */}
+        <aside className="sidebar-floating bg-card flex flex-col shrink-0 overflow-hidden w-fit">
+          <TokenEditorSidebar />
+        </aside>
 
       </div>
     </TooltipProvider>

@@ -121,7 +121,7 @@ export function TokenEditorSidebar() {
 
   if (isCollapsed) {
     return (
-      <aside className="w-12 shrink-0 border-r border-border bg-card flex flex-col items-center py-4 transition-all duration-300 h-full sticky top-0">
+      <div className="w-12 flex flex-col items-center py-4 transition-all duration-300 h-full">
         <Button
           variant="ghost"
           size="icon"
@@ -166,12 +166,12 @@ export function TokenEditorSidebar() {
             <Type className="h-4 w-4" />
           </Button>
         </div>
-      </aside>
+      </div>
     );
   }
 
   return (
-    <aside className="w-80 shrink-0 border-r border-border bg-card overflow-y-auto flex flex-col transition-all duration-300 h-full sticky top-0">
+    <div className="flex flex-col overflow-y-auto h-full transition-all duration-300">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-start justify-between">
         <div>
@@ -361,6 +361,6 @@ export function TokenEditorSidebar() {
           Reset to Defaults
         </Button>
       </div>
-    </aside>
+    </div>
   );
 }
