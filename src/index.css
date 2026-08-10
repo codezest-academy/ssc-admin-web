@@ -158,17 +158,17 @@
     /* Radius: 0.5rem for structured corporate-brand feel */
     --radius: 0.5rem;
 
-    /* Sidebar: Refined Slate Frost — cool, desaturated grey-blue */
-    --sidebar:                    oklch(0.96 0.015 255); /* elegant cool grey with slight depth */
-    --sidebar-foreground:         oklch(0.20 0.02 255);
+    /* Sidebar: Pure White & Unified (Vercel / Apple style) */
+    --sidebar:                    oklch(1 0 0); /* pure white, exactly matching cards */
+    --sidebar-foreground:         oklch(0.14 0.02 260); /* sharp dark text */
     --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent:             oklch(0.93 0.02 255); /* hover: slightly darker slate */
-    --sidebar-accent-foreground:  oklch(0.18 0.02 255);
-    --sidebar-border:             oklch(0.88 0.02 255); /* cohesive border */
+    --sidebar-accent:             oklch(0.96 0.01 255); /* very subtle cool grey hover */
+    --sidebar-accent-foreground:  oklch(0.14 0.02 260);
+    --sidebar-border:             oklch(0.90 0.02 255); /* crisp light border */
 
     /* Sidebar — active state (light) */
-    --sidebar-active-bg:          oklch(0.92 0.025 255);
+    --sidebar-active-bg:          oklch(0.95 0.02 255);
     --sidebar-active-fg:          oklch(0.38 0.18 260);
     --sidebar-active-border:      oklch(0.55 0.18 260);
 
