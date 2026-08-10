@@ -245,6 +245,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
           className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-[var(--sidebar-shadow)]"
+          style={{ backgroundColor: "var(--sidebar)", color: "var(--sidebar-foreground)" }}
         >
           {children}
         </div>

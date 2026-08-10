@@ -357,6 +357,8 @@
   }
   .sidebar-floating {
     @apply rounded-xl border border-sidebar-border overflow-hidden shrink-0;
+    background-color: var(--sidebar);
+    color: var(--sidebar-foreground);
   }
   .navbar-floating {
     @apply rounded-xl border border-border bg-card flex-shrink-0;
