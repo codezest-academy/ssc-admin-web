@@ -158,19 +158,19 @@
     /* Radius: 0.5rem for structured corporate-brand feel */
     --radius: 0.5rem;
 
-    /* Sidebar: Premium Brand Tinted Frost (Intensified for visibility) */
-    --sidebar:                    oklch(0.96 0.03 260);
-    --sidebar-foreground:         oklch(0.14 0.02 260);
+    /* Sidebar: Azure Frost — distinctly brand-tinted, premium hierarchy */
+    --sidebar:                    oklch(0.94 0.06 260); /* ~#e8eef8 — clear blue tint */
+    --sidebar-foreground:         oklch(0.18 0.03 260); /* deeper for contrast on tint */
     --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent:             oklch(0.92 0.04 260);
-    --sidebar-accent-foreground:  oklch(0.14 0.02 260);
-    --sidebar-border:             oklch(0.85 0.03 260);
+    --sidebar-accent:             oklch(0.90 0.08 260); /* hover: slightly darker frost */
+    --sidebar-accent-foreground:  oklch(0.18 0.03 260);
+    --sidebar-border:             oklch(0.84 0.06 260); /* border follows the tint */
 
     /* Sidebar — active state (light) */
-    --sidebar-active-bg:          oklch(0.94 0.06 260); /* primary-50 approx */
-    --sidebar-active-fg:          oklch(0.40 0.16 260); /* primary-700 approx */
-    --sidebar-active-border:      oklch(0.80 0.10 260); /* primary-200 approx */
+    --sidebar-active-bg:          oklch(0.88 0.10 260); /* richer active tint */
+    --sidebar-active-fg:          oklch(0.38 0.18 260); /* primary-700 */
+    --sidebar-active-border:      oklch(0.60 0.18 260); /* vivid left accent bar */
 
     /* Sidebar — shadow (light) */
     --sidebar-shadow:             0 1px 2px 0 rgb(0 0 0 / 0.04),
@@ -247,19 +247,19 @@
     --input: oklch(0.32 0 0);
     --ring: oklch(0.60 0.16 260);
 
-    /* Sidebar: Premium Brand Tinted Dark */
-    --sidebar:                    oklch(0.14 0.01 260);
-    --sidebar-foreground:         oklch(0.90 0 0);
-    --sidebar-primary:            oklch(0.60 0.16 260); /* Brand primary */
+    /* Sidebar: Azure Frost Dark — deeper brand-tinted dark */
+    --sidebar:                    oklch(0.16 0.03 260); /* slightly more blue than bg */
+    --sidebar-foreground:         oklch(0.92 0.01 260);
+    --sidebar-primary:            oklch(0.60 0.16 260);
     --sidebar-primary-foreground: oklch(0.13 0 0);
-    --sidebar-accent:             oklch(0.20 0.02 260);
-    --sidebar-accent-foreground:  oklch(0.90 0 0);
-    --sidebar-border:             oklch(0.24 0.02 260);
+    --sidebar-accent:             oklch(0.22 0.04 260); /* hover: visibly distinct */
+    --sidebar-accent-foreground:  oklch(0.92 0.01 260);
+    --sidebar-border:             oklch(0.26 0.04 260);
 
     /* Sidebar — active state (dark) */
-    --sidebar-active-bg:          oklch(0.18 0.04 260); /* primary-950 approx */
-    --sidebar-active-fg:          oklch(0.80 0.10 260); /* primary-300 approx */
-    --sidebar-active-border:      oklch(0.25 0.10 260); /* primary-800 approx */
+    --sidebar-active-bg:          oklch(0.20 0.06 260);
+    --sidebar-active-fg:          oklch(0.78 0.12 260);
+    --sidebar-active-border:      oklch(0.50 0.16 260); /* vivid primary accent bar */
 
     /* Sidebar — shadow (dark) */
     --sidebar-shadow:             0 1px 2px 0 rgb(0 0 0 / 0.3),
