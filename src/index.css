@@ -158,17 +158,17 @@
     /* Radius: 0.5rem for structured corporate-brand feel */
     --radius: 0.5rem;
 
-    /* Sidebar: Azure Frost — subtle but distinctly brand-tinted */
-    --sidebar:                    oklch(0.97 0.035 260); /* very light azure — barely-there brand frost */
-    --sidebar-foreground:         oklch(0.16 0.03 260);
+    /* Sidebar: Refined Slate Frost — cool, desaturated grey-blue */
+    --sidebar:                    oklch(0.96 0.015 255); /* elegant cool grey with slight depth */
+    --sidebar-foreground:         oklch(0.20 0.02 255);
     --sidebar-primary:            oklch(0.50 0.16 260);
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent:             oklch(0.92 0.05 260); /* hover: slightly more tinted */
-    --sidebar-accent-foreground:  oklch(0.16 0.03 260);
-    --sidebar-border:             oklch(0.87 0.04 260); /* border stays in the blue family */
+    --sidebar-accent:             oklch(0.93 0.02 255); /* hover: slightly darker slate */
+    --sidebar-accent-foreground:  oklch(0.18 0.02 255);
+    --sidebar-border:             oklch(0.88 0.02 255); /* cohesive border */
 
     /* Sidebar — active state (light) */
-    --sidebar-active-bg:          oklch(0.90 0.07 260);
+    --sidebar-active-bg:          oklch(0.92 0.025 255);
     --sidebar-active-fg:          oklch(0.38 0.18 260);
     --sidebar-active-border:      oklch(0.55 0.18 260);
 
