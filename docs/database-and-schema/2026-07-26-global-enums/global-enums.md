@@ -75,12 +75,25 @@ enum AttemptStatus {
 
 ---
 
-## Subscription Plan
+## Subscription Tier
 
 ```typescript
-enum SubscriptionPlan {
+enum SubscriptionTier {
   FREE
-  PREMIUM
+  PRO
+  ELITE
+}
+```
+
+---
+
+## Access Tier
+
+```typescript
+enum AccessTier {
+  FREE
+  PRO
+  EXCLUSIVE
 }
 ```
 
