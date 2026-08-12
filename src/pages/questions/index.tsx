@@ -144,7 +144,7 @@ export default function QuestionsPage() {
             };
           });
           setParsedQuestions(questions);
-        } catch (err) {
+        } catch {
           toast.error("Failed to parse CSV format.");
         }
       },

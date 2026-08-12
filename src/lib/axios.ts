@@ -57,12 +57,13 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      return new Promise(async (resolve, reject) => {
-        try {
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1"}/auth/refresh`,
-            {},
-            { withCredentials: true }
+      return new Promise((resolve, reject) => {
+        (async () => {
+          try {
+            const response = await axios.post(
+              `${import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1"}/auth/refresh`,
+              {},
+              { withCredentials: true }
           );
           
           const newAccessToken = response.data.data.accessToken;
@@ -72,13 +73,14 @@ api.interceptors.response.use(
           
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           resolve(api(originalRequest));
-        } catch (refreshError) {
-          processQueue(refreshError, null);
-          useAuthStore.getState().logout();
-          reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
+          } catch (refreshError) {
+            processQueue(refreshError, null);
+            useAuthStore.getState().logout();
+            reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
+        })();
       });
     }
     
