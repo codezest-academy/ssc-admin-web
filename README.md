@@ -71,3 +71,8 @@ ssc-admin-web/
 
 ## 🤖 AI Assistant Guidelines
 Please refer to [GEMINI.md](GEMINI.md) and [CLAUDE.md](CLAUDE.md) for strict architectural and typing rules (e.g., no `any` types allowed).
+
+## 🆕 Recent Updates
+- **PYQ Enhancements:** Added `pyqShift` and `pyqDate` inputs to the Question Editor for granular tracking of previous year questions.
+- **Rich Text Explanation:** Upgraded the Trap Explanation (`distractorRationale`) field to use the `<RichTextEditor>` for KaTeX math support.
+

@@ -64,6 +64,8 @@ export default function QuestionEditor() {
   );
   const [isPYQ, setIsPYQ] = useState(false);
   const [pyqYear, setPyqYear] = useState<number | "">("");
+  const [pyqShift, setPyqShift] = useState<number | "">("");
+  const [pyqDate, setPyqDate] = useState<string>("");
   const [examTypes, setExamTypes] = useState<ExamType[]>([]);
 
   const [questionText, setQuestionText] = useState("");
@@ -103,6 +105,8 @@ export default function QuestionEditor() {
       setDifficulty(existingQuestion.difficulty);
       setIsPYQ(existingQuestion.isPYQ);
       setPyqYear(existingQuestion.pyqYear || "");
+      setPyqShift(existingQuestion.pyqShift || "");
+      setPyqDate(existingQuestion.pyqDate ? existingQuestion.pyqDate.split('T')[0] : "");
       setExamTypes(existingQuestion.examTypes || []);
       setQuestionText(existingQuestion.questionText);
       setQuestionImageUrl(existingQuestion.questionImageUrl || "");
@@ -156,6 +160,8 @@ export default function QuestionEditor() {
       difficulty,
       isPYQ,
       pyqYear: isPYQ ? Number(pyqYear) || null : null,
+      pyqShift: isPYQ ? Number(pyqShift) || null : null,
+      pyqDate: isPYQ && pyqDate ? new Date(pyqDate).toISOString() : null,
       examTypes,
       questionText,
       questionImageUrl: questionImageUrl || null,
@@ -315,16 +321,43 @@ export default function QuestionEditor() {
                 <Label htmlFor="isPYQ">Is Previous Year Question (PYQ)?</Label>
               </div>
               {isPYQ && (
-                <div className="space-y-2 pl-6">
-                  <Label>PYQ Year</Label>
-                  <Input
-                    type="number"
-                    value={pyqYear}
-                    onChange={(e) =>
-                      setPyqYear(e.target.value ? parseInt(e.target.value) : "")
-                    }
-                    placeholder="e.g. 2023"
-                  />
+                <div className="space-y-4 pl-6">
+                  <div className="space-y-2">
+                    <Label>PYQ Year</Label>
+                    <Input
+                      type="number"
+                      value={pyqYear}
+                      onChange={(e) =>
+                        setPyqYear(e.target.value ? parseInt(e.target.value) : "")
+                      }
+                      placeholder="e.g. 2023"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>PYQ Shift</Label>
+                    <Select
+                      value={pyqShift.toString()}
+                      onValueChange={(val) => setPyqShift(parseInt(val))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Shift" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Shift 1</SelectItem>
+                        <SelectItem value="2">Shift 2</SelectItem>
+                        <SelectItem value="3">Shift 3</SelectItem>
+                        <SelectItem value="4">Shift 4</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>PYQ Date</Label>
+                    <Input
+                      type="date"
+                      value={pyqDate}
+                      onChange={(e) => setPyqDate(e.target.value)}
+                    />
+                  </div>
                 </div>
               )}
               <div className="space-y-3 pt-4 border-t">
@@ -466,12 +499,13 @@ export default function QuestionEditor() {
                           <span>Trap Explanation / Rationale (Optional)</span>
                           <span className="text-[10px] bg-warning/10 text-warning px-1.5 py-0.5 rounded border-none">Shown if selected</span>
                         </Label>
-                        <Textarea
-                          value={opt.rationale || ""}
-                          onChange={(e) => updateOption(i, "rationale", e.target.value)}
-                          placeholder={`Explain why choosing Option ${opt.key} is a common mistake...`}
-                          className="min-h-[60px] text-sm bg-warning/5 border-warning/20 focus-visible:ring-warning/30"
-                        />
+                        <div className="bg-warning/5 border border-warning/20 rounded-md">
+                          <RichTextEditor
+                            value={opt.rationale || ""}
+                            onChange={(val) => updateOption(i, "rationale", val)}
+                            placeholder={`Explain why choosing Option ${opt.key} is a common mistake (supports math/KaTeX)...`}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

@@ -25,6 +25,8 @@ export interface Question {
   difficulty: Difficulty;
   examTypes: ExamType[];
   pyqYear?: number | null;
+  pyqShift?: number | null;
+  pyqDate?: string | null;
   isPYQ: boolean;
   tags: string[];
   language: Language;
