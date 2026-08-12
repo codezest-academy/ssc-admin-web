@@ -1,7 +1,7 @@
 # SSC Admin Web — Master Progress Tracker
 
-**Last Updated:** 2026-08-08
-**Overall Status:** ✅ All Phases (1-10) Complete.
+**Last Updated:** 2026-08-12  
+**Overall Status:** ✅ All Phases (1–11) Complete. 🟡 Phase 4 Polish Sprint In Progress.
 
 ---
 
@@ -31,7 +31,19 @@
 | **Phase 8** | Student management (SUPER_ADMIN) | ✅ Complete | API Phase 3 |
 | **Phase 9** | Admin management (SUPER_ADMIN) | ✅ Complete | API Phase 3 |
 | **Phase 10** | Cloudflare R2 file uploads integration | ✅ Complete | API Phase 9 |
-| **Phase 11** | Security & UX Polish (Token Refresh Queue, Skeleton UIs) | ✅ Complete | All |
+| **Phase 11** | Security & UX Polish (Token Refresh Queue, Skeleton UIs, PYQ Metadata) | ✅ Complete | All |
+
+---
+
+## Phase 4 Polish Sprint (Current)
+
+| Task | Status |
+|---|---|
+| `pyqShift` + `pyqDate` fields in Question Editor | ✅ Complete |
+| `<RichTextEditor />` for `distractorRationale` (KaTeX support) | ✅ Complete |
+| Axios token refresh queue (prevent 401 race conditions) | ✅ Complete |
+| **`<ErrorState />` component** | 🔴 Not Started |
+| **`isError` + retry button on all 14 pages** | 🔴 Not Started |
 
 ---
 
@@ -51,6 +63,7 @@
 | Document | Link |
 |---|---|
 | Core Architecture | [core-architecture.md](../../architecture-and-infrastructure/2026-07-26-core-architecture/core-architecture.md) |
-| UX/UI Guidelines | [ux-ui-guidelines.md](../../frontend-and-ux/2026-07-26-ux-ui-guidelines/ux-ui-guidelines.md) |
+| UX/UI Guidelines | [ux-ui-guidelines.md](../../frontend-and-ux/2026-08-03-ux-architecture-and-standards/ux-ui-guidelines.md) |
 | Theme System | [theme-system.md](../../frontend-and-ux/2026-07-26-theme-system/theme-system.md) |
 | Global Enums Reference | [global-enums.md](../../database-and-schema/2026-07-26-global-enums/global-enums.md) |
+| **Phase 4 Roadmap** | [2026-08-12-phase-4-roadmap.md](../2026-08-12-phase-4-roadmap.md) |

@@ -1,30 +1,36 @@
 # SSC Admin Web
 
-The admin portal for the SSC Competitive Exam Education Platform. 
-Used by `SUPER_ADMIN` and `ADMIN` roles to manage users, syllabus content, mock tests, and view analytics.
+The admin portal for the SSC Competitive Exam Education Platform.  
+Used by `SUPER_ADMIN` and `ADMIN` roles to manage curriculum, questions, tests, users, and products.
 
 ## 🚀 Features
-- **Dashboard:** Overview of active students, mock tests, and recent revenue.
-- **Curriculum Management:** Create, Read, Update, Delete operations for Subjects, Chapters, and Lessons.
-- **Exam Builders:** Interactive builders to assemble Questions into Practice Sets and Mock Tests.
-- **Product Management:** Configure pricing and access tiers (`FREE`, `PRO`, `EXCLUSIVE`).
-- **Dark Mode:** Built-in semantic dark mode supporting the brand theme.
+- **Dashboard:** Real-time platform overview — student count, active exams, question bank size, test attempts.
+- **Curriculum Management:** Full CRUD for Subjects, Chapters, and Lessons with drag-and-drop reordering.
+- **Question Bank:** Rich MCQ editor with KaTeX math support, PYQ metadata (`pyqYear`, `pyqShift`, `pyqDate`), distractors, and `<RichTextEditor />` for explanations.
+- **Practice Set & Mock Test Builders:** Drag-and-drop builders for assembling Questions into timed exams with sections.
+- **Product Management:** Configure pricing tiers (`FREE`, `PRO`, `EXCLUSIVE`) and Razorpay-backed products.
+- **Student Management:** View registered students, subscription tiers, and activity (SUPER_ADMIN).
+- **Feedback Inbox:** Review and respond to student-submitted content feedback.
+- **File Uploads:** Direct-to-Cloudflare-R2 presigned URL upload for media assets.
+- **Dark Mode:** Full semantic dark mode via the brand design system.
 
 ## 🛠️ Tech Stack
 - **Framework:** React (Vite)
-- **State Management:** Zustand (for Auth), TanStack Query (React Query for server state)
+- **State Management:** Zustand (auth), TanStack Query / React Query (server state with caching + `refetch`)
 - **Forms & Validation:** React Hook Form + Zod
 - **Styling:** Tailwind CSS v4
-- **UI Components:** Shadcn UI (Customized to match strict brand theme)
-- **API Client:** Axios (with JWT interceptors)
+- **UI Components:** Shadcn UI (customized to "Great Flattening" design paradigm)
+- **Rich Text:** Tiptap WYSIWYG with KaTeX extension
+- **Drag & Drop:** @hello-pangea/dnd
+- **API Client:** Axios (with JWT interceptors + token refresh queue)
 
 ## 📋 Prerequisites
 - **Node.js**: >= 18.x
-- **npm** or **yarn**
+- **bun** (preferred) or npm
 - **Backend API**: Running instance of `ssc-api`
 
 ## ⚙️ Environment Variables
-Create a `.env.local` file in the root. Key variables include:
+Create a `.env.local` file in the root:
 
 | Variable | Description | Required |
 |----------|-------------|----------|
@@ -34,45 +40,51 @@ Create a `.env.local` file in the root. Key variables include:
 
 1. **Install dependencies**
 ```bash
-npm install
+bun install
 ```
 
 2. **Start development server**
 ```bash
-npm run dev
+bun run dev
 ```
-Open the provided local URL (usually `http://localhost:5173`) in your browser.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## 📜 Available Scripts
-- `npm run dev` - Starts the Vite development server.
-- `npm run build` - Compiles the React application for production.
-- `npm run preview` - Previews the production build locally.
-- `npm run lint` - Runs ESLint.
-- `npm run typecheck` - Validates TypeScript types.
+- `bun run dev` - Starts the Vite development server.
+- `bun run build` - Compiles TypeScript and builds for production.
+- `bun run typecheck` - Validates TypeScript types (also run on commit via Husky).
+- `bun run lint` - Runs ESLint.
 
 ## 📂 Project Structure
 ```text
 ssc-admin-web/
 ├── src/
-│   ├── api/            # API client calls (Domain specific)
-│   ├── components/     # Reusable React components (UI, Layouts)
-│   ├── lib/            # Utilities (Axios client, Theme utils)
-│   ├── pages/          # Application views / screens
-│   ├── types/          # Global TypeScript definitions
-│   └── App.tsx         # Main application routing entry
-├── docs/               # Documentation & Architecture records
+│   ├── api/            # Domain-specific API client calls (questions, subjects, etc.)
+│   ├── components/
+│   │   ├── layout/     # AppShell, Sidebar, TopBar
+│   │   └── ui/         # Shared UI: EmptyState (planned), Skeleton, RichTextEditor, ...
+│   ├── lib/            # axios.ts, utils.ts
+│   ├── pages/          # Application views (Dashboard, Subjects, Questions, etc.)
+│   ├── store/          # Zustand stores (auth)
+│   ├── types/          # Global TypeScript interfaces
+│   └── App.tsx         # Root routing (React Router v6)
+├── docs/               # Architecture & planning docs
 └── package.json
 ```
 
 ## 📚 Documentation
 - [Core Architecture](docs/architecture-and-infrastructure/2026-07-26-core-architecture/core-architecture.md)
 - [Theme System](docs/frontend-and-ux/2026-07-26-theme-system/theme-system.md)
+- [UX/UI Guidelines](docs/frontend-and-ux/2026-08-03-ux-architecture-and-standards/ux-ui-guidelines.md)
+- [Phase 4 Roadmap](docs/progress-and-planning/2026-08-12-phase-4-roadmap.md)
 - [Progress Tracker](docs/progress-and-planning/2026-07-26-master-progress-tracker/progress-tracker.md)
 
 ## 🤖 AI Assistant Guidelines
-Please refer to [GEMINI.md](GEMINI.md) and [CLAUDE.md](CLAUDE.md) for strict architectural and typing rules (e.g., no `any` types allowed).
+Refer to [GEMINI.md](GEMINI.md) for strict design system rules.  
+No `any` types. No raw Tailwind colors. Use semantic tokens only. Cards must use `rounded-xl`. No gradients on admin pages.
 
-## 🆕 Recent Updates
-- **PYQ Enhancements:** Added `pyqShift` and `pyqDate` inputs to the Question Editor for granular tracking of previous year questions.
-- **Rich Text Explanation:** Upgraded the Trap Explanation (`distractorRationale`) field to use the `<RichTextEditor>` for KaTeX math support.
-
+## 🆕 Recent Updates (2026-08-12)
+- **PYQ Metadata:** Added `pyqShift` and `pyqDate` fields to the Question Editor for granular PYQ tracking.
+- **RichTextEditor Explanations:** Upgraded `distractorRationale` field to use `<RichTextEditor />` for full KaTeX math support.
+- **Token Refresh Queue:** Axios interceptor now queues concurrent requests during token refresh to prevent race conditions.
+- **Skeleton UI:** Loading states use `<Skeleton />` components across all major data-fetching pages.
