@@ -70,6 +70,13 @@
   --color-subject-reason: var(--subject-reason);
   --color-subject-science: var(--subject-science);
 
+  /* Exam Colors */
+  --color-exam-cgl: var(--exam-cgl);
+  --color-exam-chsl: var(--exam-chsl);
+  --color-exam-mts: var(--exam-mts);
+  --color-exam-cpo: var(--exam-cpo);
+  --color-exam-gd: var(--exam-gd);
+
   /* Chart Colors */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -142,6 +149,13 @@
     --subject-ga: oklch(0.65 0.18 300);
     --subject-reason: oklch(0.65 0.18 145);
     --subject-science: oklch(0.65 0.18 190);
+
+    /* Exam Colors (L=0.65, C=0.18) */
+    --exam-cgl: oklch(0.65 0.18 275);
+    --exam-chsl: oklch(0.65 0.18 175);
+    --exam-mts: oklch(0.65 0.18 55);
+    --exam-cpo: oklch(0.65 0.18 310);
+    --exam-gd: oklch(0.65 0.18 350);
 
     /* Chart Colors */
     --chart-1: oklch(0.65 0.18 220);
@@ -234,6 +248,13 @@
     --subject-ga: oklch(0.6 0.18 300);
     --subject-reason: oklch(0.6 0.18 145);
     --subject-science: oklch(0.6 0.18 190);
+
+    /* Exam Colors (Slightly adjusted L for dark mode) */
+    --exam-cgl: oklch(0.60 0.18 275);
+    --exam-chsl: oklch(0.60 0.18 175);
+    --exam-mts: oklch(0.60 0.18 55);
+    --exam-cpo: oklch(0.60 0.18 310);
+    --exam-gd: oklch(0.60 0.18 350);
 
     /* Chart Colors */
     --chart-1: oklch(0.6 0.18 220);
