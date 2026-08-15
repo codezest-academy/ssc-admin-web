@@ -28,6 +28,9 @@ import FeedbackPage from "./pages/feedback/index";
 import CategoriesPage from "./pages/categories/index";
 import ArticlesPage from "./pages/articles/index";
 import ArticleEditor from "./pages/articles/editor";
+import ErrorsIndex from "./pages/errors/index";
+import ErrorDetail from "./pages/errors/detail";
+import ErrorAnalytics from "./pages/errors/analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,6 +86,11 @@ function App() {
               <Route path="articles" element={<ArticlesPage />} />
               <Route path="articles/new" element={<ArticleEditor />} />
               <Route path="articles/:id/edit" element={<ArticleEditor />} />
+
+              {/* Error Reporting Routes */}
+              <Route path="errors" element={<ErrorsIndex />} />
+              <Route path="errors/analytics" element={<ErrorAnalytics />} />
+              <Route path="errors/:id" element={<ErrorDetail />} />
             </Route>
 
             {/* Future Routes */}
