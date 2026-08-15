@@ -52,12 +52,12 @@ export function ErrorState({
       )}
       {...props}
     >
-      <div className="relative mb-6">
+      <div className="mb-6 flex flex-col items-center gap-3">
         <div className={cn("flex h-16 w-16 items-center justify-center rounded-full", iconBgStyles[variant])}>
           <Icon className="h-8 w-8" strokeWidth={1.5} />
         </div>
         {errorCode && (
-          <span className="absolute -bottom-2 -right-4 rotate-12 rounded-full bg-background px-2 py-0.5 text-xs font-bold shadow-sm border border-border text-foreground">
+          <span className="rounded-full bg-background/50 px-2.5 py-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase border border-border">
             {errorCode}
           </span>
         )}
