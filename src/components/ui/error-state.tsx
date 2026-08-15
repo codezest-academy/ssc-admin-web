@@ -1,6 +1,7 @@
 import * as React from "react"
 import { ServerCrash, type LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "./button"
 
 export interface ErrorStateProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: LucideIcon
@@ -8,6 +9,9 @@ export interface ErrorStateProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string
   onRetry?: () => void
   fullPage?: boolean
+  errorCode?: string | number
+  customActions?: React.ReactNode
+  variant?: "destructive" | "warning" | "default"
 }
 
 export function ErrorState({
@@ -16,33 +20,64 @@ export function ErrorState({
   description = "Please check your connection and try again.",
   onRetry,
   fullPage,
+  errorCode,
+  customActions,
+  variant = "destructive",
   className,
   ...props
 }: ErrorStateProps) {
+  
+  const variantStyles = {
+    destructive: "border-destructive/20 bg-destructive/5 text-destructive",
+    warning: "border-warning/20 bg-warning/5 text-warning",
+    default: "border-border bg-muted/5 text-foreground",
+  }
+
+  const iconBgStyles = {
+    destructive: "bg-destructive/10 text-destructive",
+    warning: "bg-warning/10 text-warning",
+    default: "bg-muted text-muted-foreground",
+  }
+
   return (
     <div
       className={cn(
-        "flex w-full flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/5 p-8 text-center",
+        "flex w-full flex-col items-center justify-center rounded-xl border border-t-4 p-8 text-center shadow-sm",
         fullPage ? "min-h-[60vh]" : "min-h-[300px]",
+        variant === "destructive" && "border-t-destructive",
+        variant === "warning" && "border-t-warning",
+        variant === "default" && "border-t-muted-foreground",
+        variantStyles[variant],
         className
       )}
       {...props}
     >
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-        <Icon className="h-8 w-8 text-destructive" strokeWidth={1.5} />
+      <div className="relative mb-6">
+        <div className={cn("flex h-16 w-16 items-center justify-center rounded-full", iconBgStyles[variant])}>
+          <Icon className="h-8 w-8" strokeWidth={1.5} />
+        </div>
+        {errorCode && (
+          <span className="absolute -bottom-2 -right-4 rotate-12 rounded-full bg-background px-2 py-0.5 text-xs font-bold shadow-sm border border-border text-foreground">
+            {errorCode}
+          </span>
+        )}
       </div>
       <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
-      <p className="mb-6 max-w-sm text-sm text-muted-foreground line-clamp-2">
+      <p className="mb-6 max-w-sm text-sm text-muted-foreground">
         {description}
       </p>
-      {onRetry && (
-        <button
-          onClick={onRetry}
-          className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-colors hover:bg-destructive/90"
-        >
-          Try Again
-        </button>
-      )}
+      
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {onRetry && (
+          <Button
+            onClick={onRetry}
+            variant={variant === "default" ? "outline" : variant === "warning" ? "secondary" : variant}
+          >
+            Try Again
+          </Button>
+        )}
+        {customActions}
+      </div>
     </div>
   )
 }
