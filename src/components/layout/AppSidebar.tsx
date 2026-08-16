@@ -31,6 +31,7 @@ import {
   IndianRupee,
   ChevronRight,
   MessageSquare,
+  Target,
 } from "lucide-react";
 
 type NavItem = {
@@ -59,6 +60,7 @@ const navGroups: NavGroup[] = [
     items: [
       { name: "Users",         href: "/users",         icon: Users },
       { name: "Staff",         href: "/staff",         icon: Shield },
+      { name: "Exams",         href: "/exams",         icon: Target },
       { name: "Subjects",      href: "/subjects",      icon: BookOpen },
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]
