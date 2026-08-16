@@ -144,3 +144,20 @@ HARD   → bg-destructive/10 text-destructive
 active → bg-success/10 text-success
 inactive → bg-destructive/10 text-destructive
 ```
+
+
+## 7. Error Handling & Feedback Collection (Industry Best Practices)
+
+To minimize friction and maximize telemetry context, our application must adhere to the following standards:
+
+### 7.1 Zero-Friction Crash Reporting
+When a fatal error occurs (Error Boundaries), the user is inherently frustrated.
+- **Rule:** Provide an **immediate, inline text area** asking, "Help us fix this. What were you doing right before the crash?"
+- **Banned:** Hiding the feedback form behind a "Click here to report" button or modal.
+- **Telemetry:** Silently capture the route path, error fingerprint, and stack trace alongside the user's message. Never ask the user for technical details.
+
+### 7.2 Omnipresent Support Widget
+For non-fatal issues (e.g., content typos, feature suggestions), users must be able to report issues from anywhere.
+- **Rule:** Utilize a Floating Action Button (FAB) anchored to the bottom-right corner of the screen (`fixed bottom-6 right-6`).
+- **Interaction:** The FAB should open a lightweight popover offering categorized feedback (e.g., "Report Bug", "Suggest Feature") mapped to our backend `FeedbackType` enum.
+- **Context:** Submissions must retain the current page's URL context automatically.
