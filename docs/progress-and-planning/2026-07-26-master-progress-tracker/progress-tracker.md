@@ -1,6 +1,6 @@
 # SSC Admin Web — Master Progress Tracker
 
-**Last Updated:** 2026-08-12  
+**Last Updated:** 2026-08-16  
 **Overall Status:** ✅ All Phases (1–11) Complete. 🟡 Phase 4 Polish Sprint In Progress.
 
 ---
@@ -43,7 +43,9 @@
 | `<RichTextEditor />` for `distractorRationale` (KaTeX support) | ✅ Complete |
 | Axios token refresh queue (prevent 401 race conditions) | ✅ Complete |
 | **`<ErrorState />` component** | 🔴 Not Started |
-| **`isError` + retry button on all 14 pages** | 🔴 Not Started |
+| **`isError` + retry button on all 14 pages** | ✅ Complete |
+| **Exam & Syllabus Builder** (`/exams`) | ✅ Complete |
+| **System Health Dashboard** (`/system-health`) | ✅ Complete |
 
 ---
 

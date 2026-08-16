@@ -75,3 +75,20 @@ This document serves as the comprehensive blueprint for the missing pillars of t
     *   Real-time line charts for CPU/Memory load.
     *   KPI cards for active users and current latency.
     *   Integration of the existing Crash Reports (`/errors/analytics`) into this centralized DevOps view.
+
+## Pillar 4: Freemium Model & Marketing Hooks
+
+### 4.1 Navbar "Upgrade" Button Logic
+**Goal:** Promote subscriptions without annoying paying users.
+*   **Target Audience:** The `Upgrade` button in the navbar (e.g., `FloatingNav.tsx`) should **ONLY** be displayed to users whose `subscriptionTier` is `FREE`.
+*   **Implementation:** Wrap the `Upgrade` button logic with a check: `user.subscriptionTier === 'FREE'`. Users with `PRO` or `LIFETIME` tiers will have a cleaner navbar without the upsell.
+
+### 4.2 Action Modals & Paywalls (Marketing Strategy)
+**Goal:** Convert free users to paid users by intercepting high-value actions with context-aware marketing modals (Paywalls).
+*   **When to trigger Action Modals:**
+    1.  **Premium Mock Tests:** When a free user attempts to start a mock test marked as `isPremium`.
+    2.  **Advanced Analytics Depth:** Free users can see basic stats (total tests, accuracy), but clicking into "Subject-wise Weaknesses" or "Historical Trends" triggers a paywall modal.
+    3.  **Daily Limits (Freemium Hook):** Allow free users to use the "Daily 10-Min Target" or Custom Practice Generator *once* per day. If they try a second time, trigger an "Upgrade to unlock unlimited practice" modal.
+*   **UI Implementation:**
+    *   Create a reusable `<PaywallModal />` component.
+    *   The modal should dynamically accept `featureName` and display the specific benefits they are missing out on (e.g., "Unlock Advanced Analytics with Pro").

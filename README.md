@@ -11,6 +11,8 @@ Used by `SUPER_ADMIN` and `ADMIN` roles to manage curriculum, questions, tests, 
 - **Product Management:** Configure pricing tiers (`FREE`, `PRO`, `EXCLUSIVE`) and Razorpay-backed products.
 - **Student Management:** View registered students, subscription tiers, and activity (SUPER_ADMIN).
 - **Feedback Inbox:** Review and respond to student-submitted content feedback.
+- **Exam & Syllabus Builder:** Create and manage `TargetExam` entries and build year-specific, hierarchical `SyllabusNode` trees with a recursive tree editor.
+- **System Health Dashboard:** Real-time DevOps dashboard (`/system-health`) — live CPU load, memory usage, API latency, DB and Redis liveness. Auto-refreshes every 5 seconds.
 - **File Uploads:** Direct-to-Cloudflare-R2 presigned URL upload for media assets.
 - **Dark Mode:** Full semantic dark mode via the brand design system.
 

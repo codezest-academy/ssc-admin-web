@@ -23,9 +23,9 @@ Axios interceptor now queues all concurrent requests during a token refresh cycl
 
 ---
 
-## 2. 🔴 Error Handling: Industry Standard Implementation
+## 2. ✅ Error Handling: Industry Standard Implementation
 
-**Status:** Not Started — Ready to Implement
+**Status:** ✅ Complete (2026-08-16)
 
 ### Current State (Problems Identified)
 - Only `Dashboard.tsx` checks `isError` from React Query. All other 13+ pages skip it entirely.
@@ -82,7 +82,23 @@ if (isError) return (
 
 ---
 
-## 3. Future: Quality & Tooling
+## 3. ✅ Feature Additions (Pillar 2 & 3)
+
+**Status:** ✅ Complete (2026-08-16)
+
+### 3a. Exam & Syllabus Builder
+- Built `/exams` page with full `TargetExam` CRUD (list, create, edit, delete).
+- Built `/exams/:id/syllabus` recursive `SyllabusNode` tree editor — supports nested sections/topics.
+- Syllabus is versioned by `year` and linked to a specific `TargetExam`.
+
+### 3b. System Health Dashboard
+- Built `/system-health` page with real-time metrics (auto-refreshes every 5s).
+- Displays CPU load averages (1m/5m), system memory, Node.js heap usage, API latency, DB and Redis liveness status.
+- Created `src/api/health.ts` client; registered route in `App.tsx`.
+
+---
+
+## 4. Future: Quality & Tooling
 
 - **E2E Testing (Playwright):** Core admin flows — Create Question, Publish Practice Set, Manage Feedback.
 - **Sentry Integration:** Real-time frontend error tracking and alerting.
