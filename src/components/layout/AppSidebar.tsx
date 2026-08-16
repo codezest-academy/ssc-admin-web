@@ -24,6 +24,7 @@ import {
 import {
   LayoutDashboard,
   Users,
+  Shield,
   BookOpen,
   ClipboardList,
   Package,
@@ -59,6 +60,7 @@ const navGroups: NavGroup[] = [
     title: "MANAGEMENT",
     items: [
       { name: "Users",         href: "/users",         icon: Users },
+      { name: "Staff",         href: "/staff",         icon: Shield },
       { name: "Subjects",      icon: BookOpen, children: [
         { name: "All Subjects", href: "/subjects" },
         { name: "Chapters",     href: "/chapters" },

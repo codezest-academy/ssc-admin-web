@@ -5,7 +5,6 @@ import {
   updateUserRole,
   toggleUserStatus,
   type Role,
-  type StudyPersona,
 } from "@/api/users";
 
 import {
@@ -38,33 +37,16 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const PERSONA_LABELS: Record<StudyPersona, { label: string; className: string }> = {
-  FULL_TIME_ASPIRANT: { label: "Full-Time", className: "text-[var(--info-text-on-tint)] bg-info/15" },
-  PART_TIME_ASPIRANT: { label: "Part-Time", className: "text-[var(--warning-text-on-tint)] bg-warning/15" },
-  REPEAT_ASPIRANT: { label: "Repeat", className: "text-subject-quant bg-subject-quant/15" },
-};
-
-const TIER_CLASSES: Record<string, string> = {
-  FREE: "text-muted-foreground bg-muted",
-  PRO: "text-success bg-success/15",
-  ELITE: "text-[var(--warning-text-on-tint)] bg-warning/15",
-};
-
 const ROLE_CLASSES: Record<string, string> = {
   SUPER_ADMIN: "text-[var(--destructive-text-on-tint)] bg-destructive/15",
   ADMIN: "text-[var(--warning-text-on-tint)] bg-warning/15",
   STAFF: "text-[var(--subject-ga-text-on-tint)] bg-subject-ga/15",
-  STUDENT: "text-[var(--info-text-on-tint)] bg-info/15",
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-export default function UsersPage() {
+export default function StaffPage() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   const { data: users, isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
@@ -90,7 +72,7 @@ export default function UsersPage() {
   });
 
   const filtered = (users ?? [])
-    .filter((u) => u.role === "STUDENT")
+    .filter((u) => u.role !== "STUDENT")
     .filter(
       (u) =>
         u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -103,12 +85,11 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6 max-w-full w-full">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Users</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Staff</h2>
           <p className="text-muted-foreground mt-1">
-            Manage student accounts, roles, and persona insights.
+            Manage administrative and staff accounts.
           </p>
         </div>
         <Badge variant="outline" className="text-sm">
@@ -116,7 +97,6 @@ export default function UsersPage() {
         </Badge>
       </div>
 
-      {/* Search */}
       <div className="relative w-full max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -127,22 +107,18 @@ export default function UsersPage() {
         />
       </div>
 
-      {/* Table */}
       {filtered.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground border-2 border-dashed border-border rounded-xl">
-          {searchQuery ? "No users match your search." : "No users match your search."}
+          {searchQuery ? "No staff match your search." : "No staff yet."}
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden surface-elevated">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/40">
-                <TableHead>User</TableHead>
+                <TableHead>Staff Member</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Tier</TableHead>
-                <TableHead>Persona</TableHead>
-                <TableHead>Exam</TableHead>
-                <TableHead>Onboarded</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -171,39 +147,11 @@ export default function UsersPage() {
                   </TableCell>
 
                   <TableCell>
-                    <span className={`badge-status ${TIER_CLASSES[user.subscriptionTier] ?? ""}`}>
-                      {user.subscriptionTier}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    {user.studyPersona ? (
-                      <span className={`badge-status ${PERSONA_LABELS[user.studyPersona]?.className ?? ""}`}>
-                        {PERSONA_LABELS[user.studyPersona]?.label}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground font-medium italic">
-                        {user.onboardingComplete ? "—" : "Not onboarded"}
-                      </span>
-                    )}
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-xs text-muted-foreground">
-                      {user.targetExam?.replace(/_/g, " ") ?? "—"}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    {user.onboardingComplete ? (
-                      <span className="badge-status text-success border border-success/30 bg-success/15 shadow-sm">
-                        ✓ Done
-                      </span>
-                    ) : (
-                      <span className="badge-status text-[var(--warning-text-on-tint)] border border-warning/30 bg-warning/15 shadow-sm">
-                        Pending
-                      </span>
-                    )}
+                     {user.isActive ? (
+                        <span className="badge-status text-success border border-success/30 bg-success/15 shadow-sm">Active</span>
+                      ) : (
+                        <span className="badge-status text-[var(--warning-text-on-tint)] border border-warning/30 bg-warning/15 shadow-sm">Inactive</span>
+                      )}
                   </TableCell>
 
                   <TableCell>
@@ -231,16 +179,16 @@ export default function UsersPage() {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => rolesMutation.mutate({ id: user.id, role: "STAFF" })}
-                          disabled={user.role === "STAFF"}
+                          disabled={user.role === "STAFF" || user.role === "SUPER_ADMIN"}
                         >
                           <ShieldCheck className="w-4 h-4 mr-2" />
                           Make Staff
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => rolesMutation.mutate({ id: user.id, role: "STUDENT" })}
-                          disabled={user.role === "STUDENT"}
+                          disabled={user.role === "STUDENT" || user.role === "SUPER_ADMIN"}
                         >
-                          Make Student
+                          Make Student (Remove Access)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
