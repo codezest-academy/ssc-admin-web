@@ -6,6 +6,7 @@ export interface PracticeSet {
   title: string;
   subjectId: string;
   chapterId?: string | null;
+  lessonId?: string | null;
   questionCount: number;
   accessTier: 'FREE' | 'PRO' | 'EXCLUSIVE';
   order: number;
@@ -42,6 +43,7 @@ export type CreatePracticeSetInput = {
   title: string;
   subjectId: string;
   chapterId?: string | null;
+  lessonId?: string | null;
   accessTier?: 'FREE' | 'PRO' | 'EXCLUSIVE';
   order?: number;
   isActive?: boolean;

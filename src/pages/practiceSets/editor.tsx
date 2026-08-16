@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSubjects } from "@/api/subjects";
 import { getChaptersBySubject } from "@/api/chapters";
+import { getLessonsByChapter } from "@/api/lessons";
 import {
   getPracticeSetById,
   createPracticeSet,
@@ -32,8 +33,9 @@ export default function PracticeSetEditor() {
 
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState("");
-  const [scope, setScope] = useState<"subject" | "chapter">("subject");
+  const [scope, setScope] = useState<"subject" | "chapter" | "lesson">("subject");
   const [chapterId, setChapterId] = useState("none");
+  const [lessonId, setLessonId] = useState("none");
   const [order, setOrder] = useState<number>(0);
   const [accessTier, setAccessTier] = useState<"FREE" | "PRO" | "EXCLUSIVE">(
     "FREE",
@@ -55,6 +57,13 @@ export default function PracticeSetEditor() {
     enabled: Boolean(subjectId),
   });
 
+  
+  const { data: lessons } = useQuery({
+    queryKey: ["lessons", chapterId],
+    queryFn: () => getLessonsByChapter(chapterId),
+    enabled: Boolean(chapterId && chapterId !== "none"),
+  });
+
   const { data: practiceSet, isLoading: initialLoading } = useQuery({
     queryKey: ["practiceSet", id],
     queryFn: () => getPracticeSetById(id!),
@@ -66,8 +75,9 @@ export default function PracticeSetEditor() {
     if (practiceSet) {
       setTitle(practiceSet.title);
       setSubjectId(practiceSet.subjectId);
-      setScope(practiceSet.chapterId ? "chapter" : "subject");
+      setScope(practiceSet.lessonId ? "lesson" : practiceSet.chapterId ? "chapter" : "subject");
       setChapterId(practiceSet.chapterId || "none");
+      setLessonId(practiceSet.lessonId || "none");
       setOrder(practiceSet.order);
       setAccessTier(practiceSet.accessTier);
       setIsActive(practiceSet.isActive);
@@ -112,7 +122,11 @@ export default function PracticeSetEditor() {
       toast.error("Subject is required");
       return;
     }
-    if (scope === "chapter" && (!chapterId || chapterId === "none")) {
+    if (scope === "lesson" && (!lessonId || lessonId === "none")) {
+      toast.error("Lesson is required for Lesson Level scope");
+      return;
+    }
+    if ((scope === "chapter" || scope === "lesson") && (!chapterId || chapterId === "none")) {
       toast.error("Chapter is required for Chapter Level scope");
       return;
     }
@@ -120,7 +134,8 @@ export default function PracticeSetEditor() {
     const payload = {
       title,
       subjectId,
-      chapterId: scope === "chapter" ? chapterId : null,
+      chapterId: (scope === "chapter" || scope === "lesson") ? chapterId : null,
+      lessonId: scope === "lesson" ? lessonId : null,
       order: Number(order),
       accessTier,
       isActive,
@@ -168,6 +183,7 @@ export default function PracticeSetEditor() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
           <div className="space-y-2">
             <Label>Subject</Label>
             <Select onValueChange={setSubjectId} value={subjectId}>
@@ -187,7 +203,7 @@ export default function PracticeSetEditor() {
           <div className="space-y-2">
             <Label>Test Scope</Label>
             <Select
-              onValueChange={(val: "subject" | "chapter") => {
+              onValueChange={(val: "subject" | "chapter" | "lesson") => {
                 setScope(val);
                 if (val === "subject") setChapterId("none");
               }}
@@ -203,12 +219,15 @@ export default function PracticeSetEditor() {
                 <SelectItem value="chapter">
                   Chapter Level (Topic Test)
                 </SelectItem>
+                <SelectItem value="lesson">
+                  Lesson Level (Knowledge Check)
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {scope === "chapter" && (
+        {["chapter", "lesson"].includes(scope) && (
           <div className="space-y-2">
             <Label>Chapter</Label>
             <Select
@@ -234,8 +253,39 @@ export default function PracticeSetEditor() {
                 ))}
               </SelectContent>
             </Select>
+
+            {scope === "lesson" && (
+              <div className="space-y-2 mt-4">
+                <Label>Lesson</Label>
+                <Select
+                  value={lessonId}
+                  onValueChange={setLessonId}
+                  disabled={!chapters || !chapterId || chapterId === "none" || !lessons}
+                >
+                  <SelectTrigger className="bg-card">
+                    <SelectValue placeholder="Select a lesson" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Select a lesson...</SelectItem>
+                    {lessons?.map((lesson: any) => (
+                      <SelectItem key={lesson.id} value={lesson.id}>
+                        {lesson.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {(!lessons || lessons.length === 0) && chapterId !== "none" && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    No lessons found in this chapter.
+                  </p>
+                )}
+              </div>
+            )}
+
           </div>
         )}
+        </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
