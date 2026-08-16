@@ -29,7 +29,6 @@ import {
   ClipboardList,
   Package,
   IndianRupee,
-  BarChart3,
   ChevronRight,
   MessageSquare,
 } from "lucide-react";
@@ -53,7 +52,6 @@ const navGroups: NavGroup[] = [
     title: "OVERVIEW",
     items: [
       { name: "Dashboard",     href: "/dashboard",     icon: LayoutDashboard },
-      { name: "Attempts",      href: "/attempts",      icon: BarChart3 },
     ]
   },
   {
