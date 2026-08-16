@@ -80,8 +80,6 @@ function App() {
               <Route path="users" element={<UsersPage />} />
               <Route path="staff" element={<StaffPage />} />
               <Route path="feedback" element={<FeedbackPage />} />
-              <Route path="chapters" element={<ChaptersPage />} />
-              <Route path="lessons" element={<LessonsPage />} />
               
               {/* CMS Routes */}
               <Route path="categories" element={<CategoriesPage />} />

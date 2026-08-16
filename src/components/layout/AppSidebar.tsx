@@ -61,11 +61,7 @@ const navGroups: NavGroup[] = [
     items: [
       { name: "Users",         href: "/users",         icon: Users },
       { name: "Staff",         href: "/staff",         icon: Shield },
-      { name: "Subjects",      icon: BookOpen, children: [
-        { name: "All Subjects", href: "/subjects" },
-        { name: "Chapters",     href: "/chapters" },
-        { name: "Lessons",      href: "/lessons" }
-      ]},
+      { name: "Subjects",      href: "/subjects",      icon: BookOpen },
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]
   },
