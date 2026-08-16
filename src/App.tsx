@@ -32,6 +32,7 @@ import ArticleEditor from "./pages/articles/editor";
 import ErrorsIndex from "./pages/errors/index";
 import ErrorDetail from "./pages/errors/detail";
 import ErrorAnalytics from "./pages/errors/analytics";
+import SystemHealthPage from './pages/system-health';
 import ExamsPage from './pages/exams/index';
 import SyllabusBuilder from './pages/exams/syllabus';
 
@@ -81,6 +82,7 @@ function App() {
               <Route path="sales" element={<PurchasesPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="staff" element={<StaffPage />} />
+              <Route path="system-health" element={<SystemHealthPage />} />
               <Route path="exams" element={<ExamsPage />} />
               <Route path="exams/:id/syllabus" element={<SyllabusBuilder />} />
               <Route path="feedback" element={<FeedbackPage />} />
