@@ -34,6 +34,7 @@ import {
   UserX,
   UserCheck,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
@@ -213,49 +214,54 @@ export default function UsersPage() {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => rolesMutation.mutate({ id: user.id, role: "ADMIN" })}
-                          disabled={user.role === "ADMIN" || user.role === "SUPER_ADMIN"}
-                        >
-                          <ShieldCheck className="w-4 h-4 mr-2" />
-                          Make Admin
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => rolesMutation.mutate({ id: user.id, role: "STAFF" })}
-                          disabled={user.role === "STAFF"}
-                        >
-                          <ShieldCheck className="w-4 h-4 mr-2" />
-                          Make Staff
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => rolesMutation.mutate({ id: user.id, role: "STUDENT" })}
-                          disabled={user.role === "STUDENT"}
-                        >
-                          Make Student
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className={user.isActive ? "text-destructive focus:text-destructive" : ""}
-                          onClick={() => toggleMutation.mutate(user.id)}
-                          disabled={user.role === "SUPER_ADMIN"}
-                        >
-                          {user.isActive ? (
-                            <><UserX className="w-4 h-4 mr-2" /> Deactivate</>
-                          ) : (
-                            <><UserCheck className="w-4 h-4 mr-2" /> Reactivate</>
-                          )}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center justify-end gap-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={`h-8 w-8 ${user.isActive ? "text-destructive hover:bg-destructive/10 hover:text-destructive" : "text-success hover:bg-success/10 hover:text-success"}`}
+                            onClick={() => toggleMutation.mutate(user.id)}
+                            disabled={user.role === "SUPER_ADMIN" || toggleMutation.isPending}
+                          >
+                            {user.isActive ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{user.isActive ? "Deactivate User" : "Reactivate User"}</TooltipContent>
+                      </Tooltip>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Change Role</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => rolesMutation.mutate({ id: user.id, role: "ADMIN" })}
+                            disabled={user.role === "ADMIN" || user.role === "SUPER_ADMIN"}
+                          >
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            Make Admin
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => rolesMutation.mutate({ id: user.id, role: "STAFF" })}
+                            disabled={user.role === "STAFF"}
+                          >
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            Make Staff
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => rolesMutation.mutate({ id: user.id, role: "STUDENT" })}
+                            disabled={user.role === "STUDENT"}
+                          >
+                            Make Student
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

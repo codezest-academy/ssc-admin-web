@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronRight, Loader2, Plus, Trash2, Package } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { BuilderSkeleton } from "@/components/ui/loading-skeletons";
@@ -164,18 +165,23 @@ export default function ProductBuilder() {
                     {item.itemId}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => {
-                        if (window.confirm("Remove this item?")) {
-                          removeMutation.mutate(item.id);
-                        }
-                      }}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => {
+                            if (window.confirm("Remove this item?")) {
+                              removeMutation.mutate(item.id);
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Remove Item</TooltipContent>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))
