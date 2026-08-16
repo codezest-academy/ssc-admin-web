@@ -171,7 +171,7 @@ export default function ChaptersPage() {
     setIsEditModalOpen(true);
   };
 
-  if (isSubjectLoading) {
+  if (isSubjectLoading || isChaptersLoading) {
     return <TableSkeleton />;
   }
 
@@ -224,14 +224,7 @@ export default function ChaptersPage() {
             <Droppable droppableId="chapters" direction="vertical">
               {(provided) => (
                 <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-                  {isChaptersLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                        Loading chapters...
-                      </TableCell>
-                    </TableRow>
-                  ) : chapters?.length === 0 ? (
+                  {chapters?.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                         No chapters found. Create one to get started.

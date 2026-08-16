@@ -432,8 +432,13 @@ export default function MockTestBuilder() {
                       className="flex-1 overflow-y-auto p-4 space-y-3"
                     >
                       {isBankLoading ? (
-                        <div className="flex justify-center py-8">
-                          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                        <div className="space-y-3">
+                          {[...Array(5)].map((_, i) => (
+                            <div key={i} className="p-4 bg-background border rounded-lg shadow-sm">
+                               <div className="h-4 w-3/4 bg-muted animate-pulse rounded-md mb-2"></div>
+                               <div className="h-3 w-1/4 bg-muted animate-pulse rounded-md"></div>
+                            </div>
+                          ))}
                         </div>
                       ) : availableQuestions.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground text-sm">

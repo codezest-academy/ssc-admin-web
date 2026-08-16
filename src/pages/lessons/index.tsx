@@ -270,7 +270,7 @@ export default function LessonsPage() {
     setIsEditModalOpen(true);
   };
 
-  if (isChapterLoading) {
+  if (isChapterLoading || isLessonsLoading) {
     return <TableSkeleton />;
   }
 
@@ -340,17 +340,7 @@ export default function LessonsPage() {
             <Droppable droppableId="lessons" direction="vertical">
               {(provided) => (
                 <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-                  {isLessonsLoading ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={6}
-                        className="h-32 text-center text-muted-foreground"
-                      >
-                        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-                        Loading lessons...
-                      </TableCell>
-                    </TableRow>
-                  ) : lessons?.length === 0 ? (
+                  {lessons?.length === 0 ? (
                     <TableRow>
                       <TableCell
                         colSpan={6}
