@@ -32,6 +32,7 @@ import {
   ChevronRight,
   MessageSquare,
   Target,
+  Bell,
 } from "lucide-react";
 
 type NavItem = {
@@ -61,6 +62,7 @@ const navGroups: NavGroup[] = [
       { name: "Users",         href: "/users",         icon: Users },
       { name: "Staff",         href: "/staff",         icon: Shield },
       { name: "Exams",         href: "/exams",         icon: Target },
+      { name: "Exam Alerts",   href: "/notifications", icon: Bell },
       { name: "Subjects",      href: "/subjects",      icon: BookOpen },
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]

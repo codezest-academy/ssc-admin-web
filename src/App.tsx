@@ -35,6 +35,7 @@ import ErrorAnalytics from "./pages/errors/analytics";
 import SystemHealthPage from './pages/system-health';
 import ExamsPage from './pages/exams/index';
 import SyllabusBuilder from './pages/exams/syllabus';
+import NotificationsPage from './pages/notifications/index';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,6 +86,7 @@ function App() {
               <Route path="system-health" element={<SystemHealthPage />} />
               <Route path="exams" element={<ExamsPage />} />
               <Route path="exams/:id/syllabus" element={<SyllabusBuilder />} />
+              <Route path="notifications" element={<NotificationsPage />} />
               <Route path="feedback" element={<FeedbackPage />} />
               
               {/* CMS Routes */}
