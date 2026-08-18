@@ -36,7 +36,7 @@ export default function ArticlesPage() {
   const queryClient = useQueryClient();
   const [deletingArticle, setDeletingArticle] = useState<Article | null>(null);
 
-  const { data: articles, isLoading , isError, refetch } = useQuery({
+  const { data: articles, isLoading, isError, refetch } = useQuery({
     queryKey: ["articles"],
     queryFn: () => getArticles(),
   });
@@ -48,7 +48,7 @@ export default function ArticlesPage() {
       toast.success("Article deleted successfully");
       setDeletingArticle(null);
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to delete article");
     },
   });
@@ -119,11 +119,13 @@ export default function ArticlesPage() {
                     </TableCell>
                     <TableCell>
                       {article.isPublished ? (
-                        <Badge variant="default" className="bg-green-500/10 text-green-500 hover:bg-green-500/20">
+                        <Badge variant="default" className="text-success bg-success/10 border-success/20 hover:bg-success/20">
                           <Globe className="h-3 w-3 mr-1" /> Published
                         </Badge>
                       ) : (
-                        <Badge variant="secondary">Draft</Badge>
+                        <Badge variant="secondary" className="text-warning bg-warning/10 border-warning/20">
+                          Draft
+                        </Badge>
                       )}
                     </TableCell>
                     <TableCell>{format(new Date(article.createdAt), "MMM d, yyyy")}</TableCell>
@@ -131,11 +133,7 @@ export default function ArticlesPage() {
                       <div className="flex items-center justify-end gap-1">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              asChild
-                            >
+                            <Button variant="ghost" size="icon" asChild>
                               <Link to={`/articles/${article.id}/edit`}>
                                 <Edit2 className="h-4 w-4" />
                               </Link>
@@ -171,7 +169,7 @@ export default function ArticlesPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Article</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deletingArticle?.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{deletingArticle?.title}&quot;? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
