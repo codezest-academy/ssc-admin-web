@@ -51,6 +51,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
 import { GripVertical } from "lucide-react";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function LessonsPage() {
   const { chapterId } = useParams<{ chapterId: string }>();
@@ -75,7 +76,7 @@ export default function LessonsPage() {
   >("FREE");
   const [editIsActive, setEditIsActive] = useState(true);
 
-  const { data: chapter, isLoading: isChapterLoading } = useQuery({
+  const { data: chapter, isLoading: isChapterLoading , isError, refetch } = useQuery({
     queryKey: ["chapter", chapterId],
     queryFn: () => getChapterById(chapterId!),
     enabled: !!chapterId,
@@ -262,6 +263,10 @@ export default function LessonsPage() {
     setEditIsActive(lesson.isActive);
     setIsEditModalOpen(true);
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isChapterLoading || isLessonsLoading) {
     return <TableSkeleton />;

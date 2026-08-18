@@ -38,6 +38,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -66,7 +67,7 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   
-  const { data: users, isLoading } = useQuery({
+  const { data: users, isLoading , isError, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
   });
@@ -97,6 +98,10 @@ export default function UsersPage() {
         u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         u.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

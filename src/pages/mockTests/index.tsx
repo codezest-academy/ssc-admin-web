@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import { Plus, Trash2, Pencil, Search, Timer } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function MockTestsPage() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function MockTestsPage() {
   const [page] = useState(1);
   const [search, setSearch] = useState("");
 
-  const { data: testsData, isLoading } = useQuery({
+  const { data: testsData, isLoading , isError, refetch } = useQuery({
     queryKey: ["mockTests", page, search],
     queryFn: getMockTests,
     // Add simple frontend filtering for search if API doesn't support it directly yet
@@ -39,6 +40,10 @@ export default function MockTestsPage() {
       toast.error("Failed to delete mock test");
     }
   });
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

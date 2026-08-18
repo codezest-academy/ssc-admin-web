@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { ChevronRight, Save, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EditorSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function MockTestEditor() {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +42,7 @@ export default function MockTestEditor() {
   );
   const [isActive, setIsActive] = useState(true);
 
-  const { data: mockTest, isLoading: initialLoading } = useQuery({
+  const { data: mockTest, isLoading: initialLoading , isError, refetch } = useQuery({
     queryKey: ["mockTest", id],
     queryFn: () => getMockTestById(id!),
     enabled: isEditing,
@@ -106,6 +107,10 @@ export default function MockTestEditor() {
     };
     mutation.mutate(payload);
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (initialLoading) {
     return <EditorSkeleton />;

@@ -35,7 +35,7 @@ export function ErrorState({
 
   const iconBgStyles = {
     destructive: "bg-destructive/10 text-destructive",
-    warning: "bg-warning/10 text-warning",
+    warning: "bg-warning/10 text-warning-text-on-tint",
     default: "bg-muted text-muted-foreground",
   }
 

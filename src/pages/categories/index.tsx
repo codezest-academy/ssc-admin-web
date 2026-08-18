@@ -37,6 +37,7 @@ import {
 
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/api/categories";
 import type { Category } from "@/api/categories";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function CategoriesPage() {
   const queryClient = useQueryClient();
@@ -45,7 +46,7 @@ export default function CategoriesPage() {
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
 
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isLoading , isError, refetch } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
@@ -106,6 +107,14 @@ export default function CategoriesPage() {
     setEditingCategory(null);
     setFormData({ name: "", description: "" });
   };
+
+  if (isError) {
+    return (
+      <div className="flex-1 w-full flex flex-col pt-10">
+        <ErrorState title="Failed to load categories" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

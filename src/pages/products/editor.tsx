@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { ChevronRight, Save, Loader2, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EditorSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function ProductEditor() {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +42,7 @@ export default function ProductEditor() {
   const [isActive, setIsActive] = useState(true);
   const [recommendedFor, setRecommendedFor] = useState<StudyPersona[]>([]);
 
-  const { data: product, isLoading: initialLoading } = useQuery({
+  const { data: product, isLoading: initialLoading , isError, refetch } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getProductById(id!),
     enabled: isEditing,
@@ -105,6 +106,10 @@ export default function ProductEditor() {
 
     mutation.mutate(payload);
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (initialLoading) {
     return <EditorSkeleton />;

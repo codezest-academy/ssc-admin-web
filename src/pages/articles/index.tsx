@@ -30,12 +30,13 @@ import {
 
 import { getArticles, deleteArticle } from "@/api/articles";
 import type { Article } from "@/api/articles";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function ArticlesPage() {
   const queryClient = useQueryClient();
   const [deletingArticle, setDeletingArticle] = useState<Article | null>(null);
 
-  const { data: articles, isLoading } = useQuery({
+  const { data: articles, isLoading , isError, refetch } = useQuery({
     queryKey: ["articles"],
     queryFn: () => getArticles(),
   });
@@ -51,6 +52,14 @@ export default function ArticlesPage() {
       toast.error(error.response?.data?.message || "Failed to delete article");
     },
   });
+
+  if (isError) {
+    return (
+      <div className="flex-1 w-full flex flex-col pt-10">
+        <ErrorState title="Failed to load articles" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

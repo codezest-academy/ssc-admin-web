@@ -23,13 +23,14 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function ProductsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: products, isLoading } = useQuery({
+  const { data: products, isLoading , isError, refetch } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
@@ -54,6 +55,10 @@ export default function ProductsPage() {
   const filteredProducts = products?.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

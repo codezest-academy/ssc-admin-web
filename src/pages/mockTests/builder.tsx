@@ -1,3 +1,4 @@
+import { ErrorState } from "@/components/ui/error-state";
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -43,7 +44,7 @@ export default function MockTestBuilder() {
   const queryClient = useQueryClient();
 
   // Fetch Mock Test & Subjects
-  const { data: mockTest, isLoading: isTestLoading } = useQuery({
+  const { data: mockTest, isLoading: isTestLoading , isError, refetch } = useQuery({
     queryKey: ["mockTest", id],
     queryFn: () => getMockTestById(id!),
     enabled: Boolean(id),
@@ -222,6 +223,10 @@ export default function MockTestBuilder() {
     });
     setHasUnsavedChanges(true);
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isTestLoading) {
     return <BuilderSkeleton />;

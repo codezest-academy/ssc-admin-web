@@ -1,3 +1,4 @@
+import { ErrorState } from "@/components/ui/error-state";
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -47,7 +48,7 @@ export default function ProductBuilder() {
   const [selectedItemType, setSelectedItemType] = useState<string>("MOCK_TEST");
   const [selectedItemId, setSelectedItemId] = useState<string>("");
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading , isError, refetch } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getProductById(id!),
   });
@@ -97,6 +98,10 @@ export default function ProductBuilder() {
     }
     addMutation.mutate({ itemType: selectedItemType, itemId: selectedItemId });
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading || !product) {
     return <BuilderSkeleton />;

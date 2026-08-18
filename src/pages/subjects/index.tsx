@@ -39,6 +39,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ErrorState } from "@/components/ui/error-state";
 
 
 export default function SubjectsPage() {
@@ -54,7 +55,7 @@ export default function SubjectsPage() {
   const [editSubjectName, setEditSubjectName] = useState("");
   const [editIsActive, setEditIsActive] = useState(true);
 
-  const { data: subjects, isLoading } = useQuery({
+  const { data: subjects, isLoading , isError, refetch } = useQuery({
     queryKey: ["subjects"],
     queryFn: getSubjects,
   });
@@ -114,6 +115,10 @@ export default function SubjectsPage() {
     setEditIsActive(subject.isActive);
     setIsEditModalOpen(true);
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 interface Feedback {
   id: string;
@@ -34,7 +35,7 @@ export default function FeedbackPage() {
   const queryClient = useQueryClient();
   const [filterType, setFilterType] = useState<string>("ALL");
 
-  const { data: feedback = [], isLoading } = useQuery({
+  const { data: feedback = [], isLoading , isError, refetch } = useQuery({
     queryKey: ["feedback", filterType],
     queryFn: async () => {
       const params = filterType !== "ALL" ? { type: filterType } : {};
@@ -65,6 +66,10 @@ export default function FeedbackPage() {
       default: return "outline";
     }
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

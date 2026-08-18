@@ -13,11 +13,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Search, IndianRupee } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function PurchasesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: purchases, isLoading } = useQuery({
+  const { data: purchases, isLoading , isError, refetch } = useQuery({
     queryKey: ["purchases"],
     queryFn: getAllPurchases,
   });
@@ -65,6 +66,10 @@ export default function PurchasesPage() {
     purchases
       ?.filter((p) => p.status === "SUCCESS")
       .reduce((sum, p) => sum + p.amountPaid, 0) || 0;
+
+  if (isError) {
+    return <ErrorState title="Failed to load data" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;
