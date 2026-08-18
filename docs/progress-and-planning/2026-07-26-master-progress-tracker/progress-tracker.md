@@ -32,6 +32,7 @@
 | **Phase 9** | Admin management (SUPER_ADMIN) | ✅ Complete | API Phase 3 |
 | **Phase 10** | Cloudflare R2 file uploads integration | ✅ Complete | API Phase 9 |
 | **Phase 11** | Security & UX Polish (Token Refresh Queue, Skeleton UIs, PYQ Metadata) | ✅ Complete | All |
+| **Phase 12** | Exam Notifications (Job Alerts) Management CRUD | 🟡 In Progress | API Phase 14 |
 
 ---
 
