@@ -46,7 +46,12 @@
 | **`<ErrorState />` component** | ✅ Complete |
 | **`isError` + retry button on all 14 pages** | ✅ Complete |
 | **Exam & Syllabus Builder** (`/exams`) | ✅ Complete |
-| **System Health Dashboard** (`/system-health`) | ✅ Complete |
+| **System Health Dashboard** (`/system-health`, SUPER_ADMIN only) | ✅ Complete |
+| **Purchases Page** (`/purchases`) — view student purchase records | ✅ Complete |
+| **Staff Management Page** (`/staff`) — SUPER_ADMIN user management | ✅ Complete |
+| **Feedback Inbox** (`/feedback`) — triage ISSUE / FEATURE_REQUEST / TESTIMONIAL | ✅ Complete |
+| **Exam Notifications Page** (`/notifications`) — CRUD for Job Alert entries | ✅ Complete |
+| **Gamification admin controls** | 🔴 Not built — no admin UI for XP / streak / badge management |
 
 ---
 
