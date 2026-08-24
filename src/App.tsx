@@ -22,6 +22,7 @@ import ProductEditor from "./pages/products/editor";
 import ProductBuilder from "./pages/products/builder";
 import PurchasesPage from "./pages/purchases/index";
 import UsersPage from "./pages/users/index";
+import GamificationPage from "./pages/gamification/index";
 import StaffPage from "./pages/staff/index";
 import ProfilePage from "./pages/profile/index";
 import DesignSystemLayout from "./pages/design-system/DesignSystemLayout";
@@ -82,6 +83,7 @@ function App() {
               <Route path="products/:id" element={<ProductBuilder />} />
               <Route path="sales" element={<PurchasesPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="gamification" element={<GamificationPage />} />
               <Route path="staff" element={<StaffPage />} />
               <Route path="system-health" element={<SystemHealthPage />} />
               <Route path="exams" element={<ExamsPage />} />

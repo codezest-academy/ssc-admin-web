@@ -33,6 +33,7 @@ import {
   MessageSquare,
   Target,
   Bell,
+  Trophy,
 } from "lucide-react";
 
 type NavItem = {
@@ -64,6 +65,7 @@ const navGroups: NavGroup[] = [
       { name: "Exams",         href: "/exams",         icon: Target },
       { name: "Exam Alerts",   href: "/notifications", icon: Bell },
       { name: "Subjects",      href: "/subjects",      icon: BookOpen },
+      { name: "Gamification",  href: "/gamification",  icon: Trophy },
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]
   },
