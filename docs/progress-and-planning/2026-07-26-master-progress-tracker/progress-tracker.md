@@ -1,7 +1,7 @@
 # SSC Admin Web — Master Progress Tracker
 
-**Last Updated:** 2026-08-21  
-**Overall Status:** ✅ All Phases (1–12) Complete. ✅ Phase 4 Polish Sprint Complete.
+**Last Updated:** 2026-08-25  
+**Overall Status:** ✅ Phases 1–12 Complete. 🔴 Phase 13 (Multilingual Admin) — Not Started.
 
 ---
 
@@ -33,6 +33,7 @@
 | **Phase 10** | Cloudflare R2 file uploads integration | ✅ Complete | API Phase 9 |
 | **Phase 11** | Security & UX Polish (Token Refresh Queue, Skeleton UIs, PYQ Metadata) | ✅ Complete | All |
 | **Phase 12** | Exam Notifications (Job Alerts) Management CRUD | ✅ Complete | API Phase 14 |
+| **Phase 13** | Multilingual Admin — `/translations` page: review + verify AI-generated HI/TE translations per question/lesson, inline edit, `isVerified` toggle, re-translate button. Noto font loading for script preview. | 🔴 Not Started | API Phase 17 |
 
 ---
 
@@ -75,3 +76,4 @@
 | Theme System | [theme-system.md](../../frontend-and-ux/2026-07-26-theme-system/theme-system.md) |
 | Global Enums Reference | [global-enums.md](../../database-and-schema/2026-07-26-global-enums/global-enums.md) |
 | **Phase 4 Roadmap** | [2026-08-12-phase-4-roadmap.md](../2026-08-12-phase-4-roadmap.md) |
+| **Multilingual HI + TE (Phase 13)** | [multilingual-admin.md](../../frontend-and-ux/2026-08-25-multilingual-i18n/multilingual-admin.md) |

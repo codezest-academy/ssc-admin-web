@@ -1,0 +1,230 @@
+import { useState } from 'react';
+import { useTranslations, useTranslationStats, type TranslationType } from '@/api/translations';
+import type { Language } from '@/api/translations';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Loader2, CheckCircle2, XCircle, Edit } from 'lucide-react';
+import QuestionReviewModal from './components/QuestionReviewModal';
+import LessonReviewModal from './components/LessonReviewModal';
+import { format } from 'date-fns';
+
+export default function TranslationsDashboard() {
+  const [activeTab, setActiveTab] = useState<TranslationType>('question');
+  const [locale, setLocale] = useState<Language>('HI');
+  const [isVerified, setIsVerified] = useState<'all' | 'true' | 'false'>('all');
+  const [page, setPage] = useState(1);
+
+  const { data: stats, isLoading: statsLoading } = useTranslationStats();
+
+  const queryParams = {
+    type: activeTab,
+    locale,
+    isVerified: isVerified === 'all' ? undefined : isVerified === 'true',
+    page,
+    limit: 20,
+  };
+
+  const { data, isLoading } = useTranslations(queryParams);
+
+  const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Translation Review</h1>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Questions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {statsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{stats?.questions.total || 0} Total</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stats?.questions.verified || 0} Verified ({Math.round(((stats?.questions.verified || 0) / (stats?.questions.total || 1)) * 100)}%)
+                </p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Lessons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {statsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold">{stats?.lessons.total || 0} Total</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stats?.lessons.verified || 0} Verified ({Math.round(((stats?.lessons.verified || 0) / (stats?.lessons.total || 1)) * 100)}%)
+                </p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Content List</CardTitle>
+            <div className="flex items-center gap-4">
+              <Select value={locale} onValueChange={(val: Language) => { setLocale(val); setPage(1); }}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="HI">Hindi (HI)</SelectItem>
+                  <SelectItem value="TE">Telugu (TE)</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={isVerified} onValueChange={(val: any) => { setIsVerified(val); setPage(1); }}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="true">Verified</SelectItem>
+                  <SelectItem value="false">Pending Review</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardHeader>
+        
+        <CardContent>
+          <div>
+            <div className="flex gap-2 mb-4 border-b pb-2">
+              <button className={`px-4 py-2 font-medium ${activeTab === "question" ? "border-b-2 border-primary text-foreground" : "text-muted-foreground"}`} onClick={() => { setActiveTab("question"); setPage(1); }}>Questions</button>
+              <button className={`px-4 py-2 font-medium ${activeTab === "lesson" ? "border-b-2 border-primary text-foreground" : "text-muted-foreground"}`} onClick={() => { setActiveTab("lesson"); setPage(1); }}>Lessons (Articles)</button>
+            </div>
+            
+            {isLoading ? (
+              <div className="py-12 flex justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="border rounded-md">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted text-muted-foreground border-b">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">Type / ID</th>
+                      <th className="px-4 py-3 font-medium">Topic</th>
+                      <th className="px-4 py-3 font-medium">Last Updated</th>
+                      <th className="px-4 py-3 font-medium">Status</th>
+                      <th className="px-4 py-3 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {data?.data?.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                          No translations found.
+                        </td>
+                      </tr>
+                    )}
+                    {data?.data?.map((item: any) => (
+                      <tr key={item.id} className="hover:bg-muted/50">
+                        <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[120px] truncate">
+                          {activeTab === 'question' ? item.questionId : item.lessonId}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-foreground">
+                            {activeTab === 'question' 
+                              ? `${item.question?.subject?.name} > ${item.question?.chapter?.name}`
+                              : item.title}
+                          </div>
+                          {activeTab === 'question' && (
+                            <div className="text-xs text-muted-foreground truncate max-w-md mt-1">
+                              {item.questionText?.replace(/<[^>]+>/g, '').substring(0, 100)}...
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {format(new Date(item.updatedAt), 'MMM d, yyyy HH:mm')}
+                        </td>
+                        <td className="px-4 py-3">
+                          {item.isVerified ? (
+                            <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> Verified
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20">
+                              <XCircle className="w-3 h-3 mr-1" /> Pending
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => activeTab === 'question' ? setSelectedQuestion(item) : setSelectedLesson(item)}
+                          >
+                            <Edit className="w-4 h-4 mr-2" /> Review
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            
+            {/* Pagination Controls */}
+            {data?.meta && data.meta.totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-sm text-muted-foreground">
+                  Page {data.meta.page} of {data.meta.totalPages} ({data.meta.total} items)
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    disabled={page === 1}
+                    onClick={() => setPage(p => p - 1)}
+                  >
+                    Previous
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    disabled={page === data.meta.totalPages}
+                    onClick={() => setPage(p => p + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {selectedQuestion && (
+        <QuestionReviewModal 
+          translation={selectedQuestion} 
+          onClose={() => setSelectedQuestion(null)} 
+        />
+      )}
+      
+      {selectedLesson && (
+        <LessonReviewModal 
+          translation={selectedLesson} 
+          onClose={() => setSelectedLesson(null)} 
+        />
+      )}
+    </div>
+  );
+}

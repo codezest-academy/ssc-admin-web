@@ -1,0 +1,94 @@
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useUpdateLessonTranslation } from '@/api/translations';
+
+export default function LessonReviewModal({ translation, onClose }: { translation: any; onClose: () => void }) {
+  const [title, setTitle] = useState(translation.title || '');
+  const [articleHtml, setArticleHtml] = useState(translation.articleHtml || '');
+
+  const { mutate: updateTranslation, isPending } = useUpdateLessonTranslation();
+
+  const handleSave = (isVerified: boolean) => {
+    updateTranslation({
+      id: translation.id,
+      data: {
+        title,
+        articleHtml,
+        isVerified,
+      }
+    }, {
+      onSuccess: () => {
+        onClose();
+      }
+    });
+  };
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-5xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Review Lesson Translation ({translation.locale})</DialogTitle>
+        </DialogHeader>
+        
+        <div className="flex-1 overflow-hidden flex gap-4 mt-4">
+          {/* Editor Side */}
+          <div className="flex-1 pr-4">
+            <div className="space-y-4 pb-4">
+              <div className="space-y-2">
+                <Label>Lesson Title</Label>
+                <Input 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Article HTML</Label>
+                <Textarea 
+                  value={articleHtml} 
+                  onChange={(e) => setArticleHtml(e.target.value)} 
+                  className="min-h-[500px] font-mono text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Preview Side */}
+          <div className="flex-1 pl-4 border-l">
+            <div className="space-y-4 pb-4">
+              <div className="p-6 bg-background rounded-md border shadow-sm">
+                <h1 className="text-2xl font-bold mb-4">{title}</h1>
+                <div 
+                  className="prose prose-sm md:prose-base max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: articleHtml }} 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter className="pt-4 mt-auto border-t">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSave(false)}
+            disabled={isPending}
+          >
+            Save Draft
+          </Button>
+          <Button 
+            onClick={() => handleSave(true)}
+            disabled={isPending}
+            className="bg-success text-success-foreground hover:bg-success/90"
+          >
+            Mark Verified
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

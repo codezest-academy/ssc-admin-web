@@ -1,0 +1,102 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from '@/lib/axios';
+export type Language = 'EN' | 'HI' | 'TE';
+import { toast } from 'sonner';
+
+export type TranslationType = 'question' | 'lesson';
+
+export interface TranslationParams {
+  locale?: Language;
+  isVerified?: boolean;
+  page?: number;
+  limit?: number;
+  type?: TranslationType;
+}
+
+export interface QuestionTranslationRow {
+  id: string;
+  locale: Language;
+  questionText: string;
+  options: { key: string; text: string; imageUrl?: string }[];
+  explanation: string | null;
+  isVerified: boolean;
+  translatedBy: string;
+  updatedAt: string;
+  question: {
+    subject: { name: string };
+    chapter: { name: string };
+  };
+}
+
+export interface LessonTranslationRow {
+  id: string;
+  locale: Language;
+  title: string;
+  articleHtml: string | null;
+  isVerified: boolean;
+  translatedBy: string;
+  updatedAt: string;
+  lesson: {
+    subject: { name: string };
+    chapter: { name: string };
+  };
+}
+
+export interface TranslationStats {
+  questions: { total: number; verified: number };
+  lessons: { total: number; verified: number };
+}
+
+export function useTranslations(params: TranslationParams) {
+  return useQuery({
+    queryKey: ['translations', params],
+    queryFn: async () => {
+      const { data } = await axios.get('/translations', { params });
+      return data; // { data: [], meta: { total, page, limit, totalPages } }
+    },
+  });
+}
+
+export function useTranslationStats() {
+  return useQuery({
+    queryKey: ['translations', 'stats'],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: TranslationStats }>('/translations/stats');
+      return data.data;
+    },
+  });
+}
+
+export function useUpdateQuestionTranslation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<QuestionTranslationRow> }) => {
+      const res = await axios.patch(`/translations/questions/${id}`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['translations'] });
+      toast.success('Translation updated successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to update translation');
+    }
+  });
+}
+
+export function useUpdateLessonTranslation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<LessonTranslationRow> }) => {
+      const res = await axios.patch(`/translations/lessons/${id}`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['translations'] });
+      toast.success('Lesson translation updated successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to update translation');
+    }
+  });
+}

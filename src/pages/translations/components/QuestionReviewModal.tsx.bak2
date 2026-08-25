@@ -1,0 +1,140 @@
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useUpdateQuestionTranslation } from '@/api/translations';
+import { QuestionRenderer } from '@/components/ui/question-renderer';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+export default function QuestionReviewModal({ translation, onClose }: { translation: any; onClose: () => void }) {
+  const [questionText, setQuestionText] = useState(translation.questionText || '');
+  const [explanation, setExplanation] = useState(translation.explanation || '');
+  const [options, setOptions] = useState<any[]>(translation.options || []);
+
+  const { mutate: updateTranslation, isPending } = useUpdateQuestionTranslation();
+
+  const handleSave = (isVerified: boolean) => {
+    updateTranslation({
+      id: translation.id,
+      data: {
+        questionText,
+        explanation,
+        options,
+        isVerified,
+      }
+    }, {
+      onSuccess: () => {
+        onClose();
+      }
+    });
+  };
+
+  const handleOptionChange = (idx: number, field: string, value: string) => {
+    const newOptions = [...options];
+    newOptions[idx] = { ...newOptions[idx], [field]: value };
+    setOptions(newOptions);
+  };
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Review Question Translation ({translation.locale})</DialogTitle>
+        </DialogHeader>
+        
+        <div className="flex-1 overflow-hidden flex gap-4 mt-4">
+          {/* Editor Side */}
+          div className="flex-1 pr-4">
+            <div className="space-y-4 pb-4">
+              <div className="space-y-2">
+                <Label>Question Text</Label>
+                <Textarea 
+                  value={questionText} 
+                  onChange={(e) => setQuestionText(e.target.value)} 
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label>Options</Label>
+                {options.map((opt, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-bold">
+                      {opt.key}
+                    </div>
+                    <Input 
+                      value={opt.text} 
+                      onChange={(e) => handleOptionChange(idx, 'text', e.target.value)} 
+                      className="flex-1"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Explanation (Optional)</Label>
+                <Textarea 
+                  value={explanation} 
+                  onChange={(e) => setExplanation(e.target.value)} 
+                  className="min-h-[100px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Preview Side */}
+          div className="flex-1 pl-4 border-l">
+            <div className="space-y-4 pb-4">
+              <div>
+                <Label className="text-muted-foreground mb-2 block">Preview</Label>
+                <div className="p-4 rounded-md border bg-card">
+                  <QuestionRenderer content={questionText} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {options.map((opt, idx) => (
+                  <div key={idx} className="p-3 rounded-md border flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full border flex items-center justify-center text-xs">
+                      {opt.key}
+                    </div>
+                    <div className="flex-1">
+                      <QuestionRenderer content={opt.text} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {explanation && (
+                <div className="mt-4 p-4 rounded-md bg-muted/50 border">
+                  <div className="font-semibold text-sm mb-2">Explanation:</div>
+                  <QuestionRenderer content={explanation} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter className="pt-4 mt-auto border-t">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSave(false)}
+            disabled={isPending}
+          >
+            Save Draft
+          </Button>
+          <Button 
+            onClick={() => handleSave(true)}
+            disabled={isPending}
+            className="bg-success text-success-foreground hover:bg-success/90"
+          >
+            Mark Verified
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

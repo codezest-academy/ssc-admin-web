@@ -97,7 +97,6 @@ function App() {
               <Route path="articles" element={<ArticlesPage />} />
               <Route path="articles/new" element={<ArticleEditor />} />
               <Route path="articles/:id/edit" element={<ArticleEditor />} />
-              <Route path="translations" element={<TranslationsPage />} />
 
               {/* Error Reporting Routes */}
               <Route path="errors" element={<ErrorsIndex />} />
