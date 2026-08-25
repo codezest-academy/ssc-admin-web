@@ -1,3 +1,4 @@
+import { ShoppingCart } from 'lucide-react';
 import { Link, useLocation } from "react-router-dom";
 import { useMemo } from "react";
 import { useAuthStore } from "@/store/auth";
@@ -67,6 +68,10 @@ const navGroups: NavGroup[] = [
       { name: "Exam Alerts",   href: "/notifications", icon: Bell },
       { name: "Subjects",      href: "/subjects",      icon: BookOpen },
       { name: "Gamification",  href: "/gamification",  icon: Trophy },
+      { name: "Rewards Store", icon: ShoppingCart, children: [
+        { name: "Inventory", href: "/store/inventory" },
+        { name: "Orders", href: "/store/orders" }
+      ]},
       { name: "Feedback",      href: "/feedback",      icon: MessageSquare },
     ]
   },

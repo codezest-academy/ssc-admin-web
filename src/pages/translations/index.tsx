@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslations, useTranslationStats, type TranslationType } from '@/api/translations';
 import type { Language } from '@/api/translations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

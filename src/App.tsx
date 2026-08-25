@@ -39,6 +39,9 @@ import SyllabusBuilder from './pages/exams/syllabus';
 import NotificationsPage from './pages/notifications/index';
 import TranslationsPage from './pages/translations/index';
 
+import StoreInventoryPage from './pages/store/inventory/index';
+import StoreOrdersPage from './pages/store/orders/index';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -97,7 +100,11 @@ function App() {
               <Route path="articles" element={<ArticlesPage />} />
               <Route path="articles/new" element={<ArticleEditor />} />
               <Route path="articles/:id/edit" element={<ArticleEditor />} />
-              <Route path="translations" element={<TranslationsPage />} />
+                            <Route path="translations" element={<TranslationsPage />} />
+
+              {/* Store Routes */}
+              <Route path="store/inventory" element={<StoreInventoryPage />} />
+              <Route path="store/orders" element={<StoreOrdersPage />} />
 
               {/* Error Reporting Routes */}
               <Route path="errors" element={<ErrorsIndex />} />
