@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { Link } from "react-router-dom";
 import { errorsApi } from "@/api/errors";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,10 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, AlertOctagon, Users, Clock, Activity } from "lucide-react";
 
 export default function ErrorAnalytics() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["error-analytics"],
     queryFn: () => errorsApi.getAnalytics(),
   });
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load analytics" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="p-8">Loading analytics...</div>;
   if (!data?.data) return <div className="p-8">No analytics data available.</div>;

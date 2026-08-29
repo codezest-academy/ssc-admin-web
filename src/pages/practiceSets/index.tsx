@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { useNavigate } from "react-router-dom";
 import { getPracticeSets, deletePracticeSet } from "@/api/practiceSets";
 import { getSubjects } from "@/api/subjects";
@@ -34,7 +35,7 @@ export default function PracticeSetsPage() {
     enabled: subjectId !== "all",
   });
 
-  const { data: setsData, isLoading } = useQuery({
+  const { data: setsData, isLoading, isError, refetch } = useQuery({
     queryKey: ["practiceSets", page, search, subjectId, chapterId],
     queryFn: () => getPracticeSets({
       page,
@@ -57,6 +58,14 @@ export default function PracticeSetsPage() {
       toast.error("Failed to delete practice set");
     }
   });
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load practice sets" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

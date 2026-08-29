@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { getSubjects } from "@/api/subjects";
 import { getChaptersBySubject } from "@/api/chapters";
 import { getLessonsByChapter } from "@/api/lessons";
@@ -64,7 +65,7 @@ export default function PracticeSetEditor() {
     enabled: Boolean(chapterId && chapterId !== "none"),
   });
 
-  const { data: practiceSet, isLoading: initialLoading } = useQuery({
+  const { data: practiceSet, isLoading: initialLoading, isError, refetch } = useQuery({
     queryKey: ["practiceSet", id],
     queryFn: () => getPracticeSetById(id!),
     enabled: isEditing,
@@ -142,6 +143,14 @@ export default function PracticeSetEditor() {
     };
     mutation.mutate(payload);
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load practice set" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (initialLoading) {
     return <EditorSkeleton />;

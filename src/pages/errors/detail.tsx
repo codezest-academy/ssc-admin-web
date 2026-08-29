@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { errorsApi } from "@/api/errors";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -15,7 +16,7 @@ export default function ErrorDetail() {
   const queryClient = useQueryClient();
   const [notes, setNotes] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["error", id],
     queryFn: () => errorsApi.getById(id!),
     enabled: !!id,
@@ -30,6 +31,14 @@ export default function ErrorDetail() {
     },
     onError: () => toast.error("Failed to update error report"),
   });
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load details" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="p-8">Loading...</div>;
   if (!data?.data) return <div className="p-8">Error report not found.</div>;

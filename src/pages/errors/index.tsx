@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { Link } from "react-router-dom";
 import { errorsApi } from "@/api/errors";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function ErrorsIndex() {
   const [status, setStatus] = useState<string>("UNRESOLVED");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["errors", { status }],
     queryFn: () => errorsApi.list(status !== "ALL" ? { status } : {}),
   });
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load error logs" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

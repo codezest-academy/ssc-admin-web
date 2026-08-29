@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { StoreAPI, type StoreOrder } from "@/api/store";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,7 @@ const COLUMNS = [
 
 export default function StoreOrdersPage() {
   const queryClient = useQueryClient();
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["store-orders"],
     queryFn: StoreAPI.getOrders,
   });
@@ -80,6 +81,14 @@ export default function StoreOrdersPage() {
 
     statusMutation.mutate({ id: orderId, status: newStatus });
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load orders" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) return <div>Loading orders...</div>;
 

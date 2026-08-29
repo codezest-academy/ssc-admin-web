@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import {
   getUsers,
   updateUserRole,
@@ -48,7 +49,7 @@ export default function StaffPage() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: users, isLoading } = useQuery({
+  const { data: users, isLoading, isError, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
   });
@@ -79,6 +80,14 @@ export default function StaffPage() {
         u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         u.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load staff list" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

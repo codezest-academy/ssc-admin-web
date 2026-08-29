@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { examsApi } from "@/api/exams";
 import type { SyllabusNode } from "@/api/exams";
 import { getSubjects } from "@/api/subjects";
@@ -45,7 +46,7 @@ export default function SyllabusBuilder() {
     order: "0",
   });
 
-  const { data: exam, isLoading: isLoadingExam } = useQuery({
+  const { data: exam, isLoading: isLoadingExam, isError, refetch } = useQuery({
     queryKey: ["exam", id],
     queryFn: () => examsApi.getById(id!),
     enabled: !!id,
@@ -107,6 +108,14 @@ export default function SyllabusBuilder() {
       deleteMutation.mutate(nodeId);
     }
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load exam syllabus" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoadingExam) return <div className="p-8">Loading exam details...</div>;
   if (!exam) return <div className="p-8">Exam not found</div>;

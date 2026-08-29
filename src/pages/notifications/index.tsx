@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ExamNotification, CreateExamNotificationPayload } from '@/api/notifications';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ErrorState } from "@/components/ui/error-state";
 import {
   getNotifications,
   createNotification,
@@ -46,7 +47,7 @@ export default function NotificationsPage() {
     isActive: true,
   });
 
-  const { data: notifications, isLoading } = useQuery({
+  const { data: notifications, isLoading, isError, refetch } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => getNotifications(true),
   });
@@ -113,6 +114,14 @@ export default function NotificationsPage() {
     });
     setIsDialogOpen(true);
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load notifications" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="p-8">Loading notifications...</div>;
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { StoreAPI, type StoreItem } from "@/api/store";
 import {
   Table,
@@ -27,7 +28,7 @@ import { Switch } from "@/components/ui/switch";
 
 export default function StoreInventoryPage() {
   const queryClient = useQueryClient();
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["store-items"],
     queryFn: StoreAPI.getItems,
   });
@@ -56,6 +57,14 @@ export default function StoreInventoryPage() {
     setEditingItem({ name: "", description: "", cost: 500, stock: 10, isActive: true, imageUrl: "" });
     setIsModalOpen(true);
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load inventory" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading) return <div>Loading inventory...</div>;
 

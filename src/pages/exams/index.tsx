@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { examsApi } from "@/api/exams";
 import type { TargetExam } from "@/api/exams";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,7 @@ export default function ExamsPage() {
     isActive: true,
   });
 
-  const { data: exams, isLoading } = useQuery({
+  const { data: exams, isLoading, isError, refetch } = useQuery({
     queryKey: ["exams"],
     queryFn: examsApi.getAll,
   });
@@ -109,6 +110,14 @@ export default function ExamsPage() {
       deleteMutation.mutate(id);
     }
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load exams" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

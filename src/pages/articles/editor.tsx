@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { ArrowLeft, Save, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,7 +47,7 @@ export default function ArticleEditor() {
     queryFn: getCategories,
   });
 
-  const { data: article, isLoading: isArticleLoading } = useQuery({
+  const { data: article, isLoading: isArticleLoading, isError, refetch } = useQuery({
     queryKey: ["article", id],
     queryFn: () => getArticleById(id!),
     enabled: isEditing,
@@ -95,6 +96,14 @@ export default function ArticleEditor() {
     key: K,
     value: ArticleFormData[K]
   ) => setFormData((prev) => ({ ...prev, [key]: value }));
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load article" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isEditing && isArticleLoading) {
     return (

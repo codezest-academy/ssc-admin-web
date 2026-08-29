@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ErrorState } from "@/components/ui/error-state";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
 import { getPracticeSetById, assignQuestionsToSet } from "@/api/practiceSets";
@@ -26,7 +27,7 @@ export default function PracticeSetBuilder() {
   const queryClient = useQueryClient();
 
   // Practice Set Data
-  const { data: practiceSet, isLoading: isSetLoading } = useQuery({
+  const { data: practiceSet, isLoading: isSetLoading, isError, refetch } = useQuery({
     queryKey: ["practiceSet", id],
     queryFn: () => getPracticeSetById(id!),
     enabled: Boolean(id),
@@ -136,6 +137,14 @@ export default function PracticeSetBuilder() {
     });
     setHasUnsavedChanges(true);
   };
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load practice set" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isSetLoading) {
     return <BuilderSkeleton />;
