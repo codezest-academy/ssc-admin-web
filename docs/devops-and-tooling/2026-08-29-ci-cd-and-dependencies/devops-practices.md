@@ -27,7 +27,12 @@ To ensure the admin portal remains snappy even for users with large datasets:
 - **Core Web Vitals:** We monitor LCP (Largest Contentful Paint) and CLS (Cumulative Layout Shift). 
 - **Query Optimization:** React Query must be configured with sensible `staleTime` and `cacheTime` defaults to prevent spamming the backend API.
 
-## 4. Release Process
+## 4. UI Component Documentation
+- **Storybook:** We use Storybook (`npm run storybook`) for developing, documenting, and testing UI components in isolation.
+- **Colocation:** Component stories (`.stories.tsx`) MUST be co-located alongside their component files in `src/components/ui/`.
+- **Testing:** Storybook runs independently of the main vitest runner to prevent ESM module resolution conflicts.
+
+## 5. Release Process
 - Merge to `main` triggers a production build.
 - Deployment is handled automatically (e.g., to Vercel, Netlify, or an S3/CloudFront bucket).
 - Releases are tagged using Semantic Versioning.

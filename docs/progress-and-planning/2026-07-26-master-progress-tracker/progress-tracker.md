@@ -53,6 +53,7 @@
 | **Feedback Inbox** (`/feedback`) — triage ISSUE / FEATURE_REQUEST / TESTIMONIAL | ✅ Complete |
 | **Exam Notifications Page** (`/notifications`) — CRUD for Job Alert entries | ✅ Complete |
 | **Gamification admin controls** | ✅ Complete |
+| **Storybook Component Documentation** (`.storybook`) — UI isolation & testing | ✅ Complete |
 
 ---
 

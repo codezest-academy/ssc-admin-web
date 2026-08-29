@@ -652,6 +652,13 @@ grep -rn 'style=.*color' src/ --include='*.tsx'
 grep -rn 'text-subject-\(quant\|english\|ga\|reason\|science\)[^-]' src/ --include='*.tsx'
 ```
 
+### Component Documentation (Storybook)
+
+All new UI components added to `src/components/ui/` **MUST** be documented in Storybook.
+- **Colocation:** Create a `.stories.tsx` file directly next to the component (e.g., `error-state.stories.tsx`).
+- **Variants:** Ensure you document all major states (e.g., Default, Active, Disabled, Error).
+- **Run local:** `npm run storybook`
+
 ---
 
 ## 15. Governance & Ownership
