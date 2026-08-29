@@ -14,14 +14,12 @@ The `ssc-admin-web` is the internal dashboard used by `ADMIN` and `SUPER_ADMIN` 
 
 ## Decisions
 
-*(To be filled in when frontend development begins)*
-
-### Planned Stack
-- **Framework:** React (Vite or Next.js — TBD)
-- **State Management:** TBD (Zustand / React Query)
-- **API Client:** Axios with typed wrappers matching the `ssc-api` route contract
-- **UI Library:** TBD
-- **Auth:** Store JWT access token in memory; refresh token in httpOnly cookie (handled by API)
+### Stack Decisions
+- **Framework:** React via Vite (Note: `ssc-client` uses Next.js, while this admin repo is strictly Vite).
+- **State Management:** Zustand (for global UI state) & React Query (for server state and caching).
+- **API Client:** Axios with typed wrappers matching the `ssc-api` route contract.
+- **UI Library:** Tailwind CSS combined with accessible shadcn/ui components (strictly adhering to our semantic token system).
+- **Auth:** Store JWT access token in memory; refresh token in httpOnly cookie (handled by API).
 
 ---
 

@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { ChevronRight, Save, Loader2, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EditorSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 
 const EXAM_TYPES: ExamType[] = [
   "SSC_CGL",
@@ -92,7 +93,7 @@ export default function QuestionEditor() {
     enabled: Boolean(subjectId),
   });
 
-  const { data: existingQuestion, isLoading: isFetching } = useQuery({
+  const { data: existingQuestion, isLoading: isFetching, isError, refetch } = useQuery({
     queryKey: ["question", questionId],
     queryFn: () => getQuestionById(questionId!),
     enabled: isEditing,
@@ -192,6 +193,14 @@ export default function QuestionEditor() {
     newOptions[index] = { ...newOptions[index], [field]: value };
     setOptions(newOptions);
   };
+
+  if (isEditing && isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load question details" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isEditing && isFetching) {
     return <EditorSkeleton />;

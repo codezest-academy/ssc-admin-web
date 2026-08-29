@@ -13,14 +13,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ErrorState } from "@/components/ui/error-state";
 
 
 export default function SystemHealthPage() {
-  const { data: metrics, isLoading, refetch, isFetching } = useQuery({
+  const { data: metrics, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["healthMetrics"],
     queryFn: healthApi.getMetrics,
     refetchInterval: 5000, // Refetch every 5 seconds
   });
+
+  if (isError) {
+    return (
+      <div className="p-8">
+        <ErrorState title="Failed to load system metrics" onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading && !metrics) {
     return <div className="p-8">Loading system health metrics...</div>;

@@ -47,6 +47,7 @@ import {
   Download,
 } from "lucide-react";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { ErrorState } from "@/components/ui/error-state";
 import Papa from "papaparse";
 import { downloadCSVTemplate } from "@/utils/csv";
 
@@ -87,7 +88,7 @@ export default function QuestionsPage() {
     enabled: !!importSubjectId,
   });
 
-  const { data: questionsData, isLoading } = useQuery({
+  const { data: questionsData, isLoading, isError, refetch } = useQuery({
     queryKey: ["questions", page, search, subjectId, chapterId],
     queryFn: () =>
       getQuestions({
@@ -189,6 +190,10 @@ export default function QuestionsPage() {
     const text = tmp.textContent || tmp.innerText || "";
     return text.length > 60 ? text.substring(0, 60) + "..." : text;
   };
+
+  if (isError) {
+    return <ErrorState title="Failed to load questions" onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return <TableSkeleton />;

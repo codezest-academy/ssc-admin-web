@@ -14,6 +14,9 @@ Deprecated or superseded decisions are moved to the `archive/` folder.
 Decisions regarding the core frontend architecture, state management, API client integration, and RBAC implementation.
 
 - [2026-07-26: Core Admin Web Architecture](architecture-and-infrastructure/2026-07-26-core-architecture/core-architecture.md)
+- [2026-08-29: Role-Based Access Control & Auth Patterns](architecture-and-infrastructure/2026-08-29-rbac-and-auth-patterns/rbac-and-auth.md)
+- [2026-08-29: Security & Privacy Guidelines](architecture-and-infrastructure/2026-08-29-security-and-privacy/security-guidelines.md)
+- [2026-08-29: ADR Process & Template](architecture-and-infrastructure/2026-08-29-adr-process/adr-template.md)
 
 ---
 
@@ -22,6 +25,9 @@ Guidelines for UI/UX, styling system, theming, component library choices, and pa
 
 - [2026-07-26: Theme System — Single Source of Truth ← **READ FIRST**](frontend-and-ux/2026-07-26-theme-system/theme-system.md)
 - [2026-07-26: UX/UI Guidelines](frontend-and-ux/2026-07-26-ux-ui-guidelines/ux-ui-guidelines.md)
+- [2026-08-29: Form Validation Strategies](frontend-and-ux/2026-08-29-form-validation/form-validation.md)
+- [2026-08-29: Accessibility (a11y) Guidelines](frontend-and-ux/2026-08-29-accessibility-protocols/a11y-guidelines.md)
+- [2026-08-29: Client-Side i18n Strategy](frontend-and-ux/2026-08-29-client-i18n/client-i18n.md)
 
 ---
 
@@ -35,7 +41,14 @@ Documentation mirroring schema decisions from the API repository that impact the
 ### 🧪 Testing & QA
 Admin panel testing strategies, E2E test plans, role-based access testing.
 
-*(No entries yet — add the first one when testing begins)*
+- [2026-08-29: Testing Strategy](testing-and-qa/2026-08-29-testing-strategy/testing-strategy.md)
+
+---
+
+### 🛠️ DevOps & Tooling
+Infrastructure, CI/CD, dependency management, and observability.
+
+- [2026-08-29: DevOps Practices & CI/CD](devops-and-tooling/2026-08-29-ci-cd-and-dependencies/devops-practices.md)
 
 ---
 
